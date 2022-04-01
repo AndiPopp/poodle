@@ -82,7 +82,7 @@ public class MainLayout extends AppLayout {
         this.accessChecker = accessChecker;
 
         setPrimarySection(Section.DRAWER);
-        addToNavbar(true, createHeaderContent());
+        addToNavbar(createHeaderContent());
         addToDrawer(createDrawerContent());
     }
 
