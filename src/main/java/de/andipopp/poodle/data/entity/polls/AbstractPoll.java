@@ -7,6 +7,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -17,6 +18,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 
 import de.andipopp.poodle.data.entity.AbstractEntity;
+import de.andipopp.poodle.data.entity.User;
 
 @Entity
 public abstract class AbstractPoll<O extends AbstractOption<?>> extends AbstractEntity {
@@ -34,6 +36,12 @@ public abstract class AbstractPoll<O extends AbstractOption<?>> extends Abstract
 	 * An optional poll description
 	 */
 	private String description;
+	
+	/**
+	 * The poll's owner
+	 */
+	@ManyToOne
+	private User owner;
 	
 	@NotNull
 	@OneToMany(cascade = CascadeType.PERSIST, targetEntity=AbstractOption.class)
@@ -89,6 +97,22 @@ public abstract class AbstractPoll<O extends AbstractOption<?>> extends Abstract
 		this.title = Jsoup.clean(title, Safelist.none());
 	}
 	
+	/**
+	 * Getter for {@link #owner}
+	 * @return the {@link #owner}
+	 */
+	public User getOwner() {
+		return owner;
+	}
+
+	/**
+	 * Setter for {@link #owner}
+	 * @param owner the {@link #owner} to set
+	 */
+	public void setOwner(User owner) {
+		this.owner = owner;
+	}
+
 	/**
 	 * Getter for {@link #description}
 	 * @return the {@link #description}

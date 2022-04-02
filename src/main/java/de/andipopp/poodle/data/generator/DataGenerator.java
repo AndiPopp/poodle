@@ -52,17 +52,18 @@ public class DataGenerator {
             userRepository.save(admin);
 
             //polls
-            populatePollRepository(pollRepository, logger);
+            populatePollRepository(pollRepository, logger, user);
             
             logger.info("Generated demo data");
         };
     }
     
-    private void populatePollRepository(PollRepository pollRepository, Logger logger) {
+    private void populatePollRepository(PollRepository pollRepository, Logger logger, User owner) {
     	DatePoll poll = new DatePoll();
     	poll.setTitle("Master of the Universe get-together");
     	poll.setDescription("He-Man will be there.");
     	poll.setLocation("Castle Greyskull (unless specified otherwise)");
+    	poll.setOwner(owner);
     	
     	poll.addOption(new DateOption(
 				"With Skeletor", 
