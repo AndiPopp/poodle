@@ -5,10 +5,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
@@ -32,8 +34,17 @@ public abstract class AbstractPoll<O extends AbstractOption<?>> extends Abstract
 	 */
 	private String description;
 	
+	@NotNull
 	@OneToMany(cascade = CascadeType.PERSIST, targetEntity=AbstractOption.class)
 	private List<O> options;
+	
+	/**
+	 * Set of winning options.
+	 * If this field is not null, this indicates that the poll is closed.
+	 */
+	@Nullable
+	@OneToMany(cascade = CascadeType.MERGE, targetEntity=AbstractOption.class)
+	private List<O> winners;
 	
 	/* ================
 	 * = Constructors =
@@ -149,5 +160,23 @@ public abstract class AbstractPoll<O extends AbstractOption<?>> extends Abstract
 	 */
 	public Iterator<O> getOptionIterator() {
 		return options.iterator();
+	}
+	
+	
+	/**
+	 * Check if the poll is closed
+	 * @return
+	 */
+	public boolean isClosed() {
+		return winners != null;
+	}
+	
+	/**
+	 * Get the iterator for {@link #winners}
+	 * @return the iterator for {@link #winners, null if #winners is null
+	 */
+	public Iterator<O> getWinnerIterator() {
+		if (winners == null) return null;
+		return winners.iterator();
 	}
 }

@@ -1,5 +1,6 @@
 package de.andipopp.poodle.data.entity.polls;
 
+import java.util.Iterator;
 import java.util.TimeZone;
 
 import javax.persistence.Entity;
@@ -90,7 +91,7 @@ public class DatePoll extends AbstractPoll<DateOption> {
 	}
 
 	public String metaInf() {
-		//First line is always the type identifier and the RUID
+		//First line is always the type identifier and the UUID
 		String result = "DatePoll@" + getId().toString();
 		//add the name
 		if (getTitle() != null) result += "\r\nTitle: " + getTitle();
@@ -99,6 +100,29 @@ public class DatePoll extends AbstractPoll<DateOption> {
 		//add time zone
 		if (timeZone != null) result += "\r\nTimeZome: " + timeZone.getID();
 		
+		return result;
+	}
+	
+	@Override
+	public String toString() {
+		//start with the meta info
+		String result = metaInf();
+		//add the strings for the options
+		for (Iterator<DateOption> it = getOptionIterator(); it.hasNext(); ) {
+			result += "\r\n" + it.next().toString();
+		}
+		//add winners if present
+		Iterator<DateOption> it = getWinnerIterator();
+		if (it != null) {
+			result += "\r\n" + "Winners: ";
+			String sep = "";
+			while(it.hasNext()) {
+				result += sep + it.next().getId();
+				sep = ",";
+			}
+		}
+		
+		//return result
 		return result;
 	}
 
