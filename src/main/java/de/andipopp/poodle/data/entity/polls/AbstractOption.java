@@ -42,5 +42,22 @@ public abstract class AbstractOption<P extends AbstractPoll<?>> extends Abstract
 		this.title = Jsoup.clean(title, Safelist.none());
 	}
 
+	/**
+	 * Getter for {@link #parent}
+	 * @return the {@link #parent}
+	 */
+	public P getParent() {
+		return parent;
+	}
+
+	/**
+	 * Setter for {@link #parent}
+	 * @param parent the {@link #parent} to set
+	 */
+	public void setParent(P parent) {
+		this.parent = parent;
+	}
+
+	
 	
 }
