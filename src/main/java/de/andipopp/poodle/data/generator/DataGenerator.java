@@ -77,8 +77,7 @@ public class DataGenerator {
 			));
     	poll.addOption(new DateOption(
     			new GregorianCalendar(2022, 4-1, 11, 8, 0).getTime(), 
-    			new GregorianCalendar(2022, 4-1, 11, 10, 0).getTime(), 
-    			"at Man-at-Arm's"
+    			new GregorianCalendar(2022, 4-1, 11, 10, 0).getTime()
     		));
     	poll.addOption(new DateOption(
     			new GregorianCalendar(2022, 4-1, 11, 15, 15).getTime(), 

@@ -1,13 +1,17 @@
 package de.andipopp.poodle.views.viewpoll;
 
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Image;
+import javax.swing.text.html.parser.ContentModel;
+
+import com.vaadin.flow.component.charts.model.Label;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+
+import de.andipopp.poodle.data.entity.polls.AbstractPoll;
+import de.andipopp.poodle.data.service.PollService;
 import de.andipopp.poodle.views.MainLayout;
 
 @PageTitle("View Poll")
@@ -16,20 +20,38 @@ import de.andipopp.poodle.views.MainLayout;
 @AnonymousAllowed
 public class ViewPollView extends VerticalLayout {
 
-    public ViewPollView() {
-        setSpacing(false);
+	private static final long serialVersionUID = 1L;
+	
+	PollService pollService;
 
-        Image img = new Image("images/empty-plant.png", "placeholder plant");
-        img.setWidth("200px");
-        add(img);
-
-        add(new H2("This place intentionally left empty"));
-        add(new Paragraph("It’s a place where you can grow your own UI 🤗"));
-
-        setSizeFull();
-        setJustifyContentMode(JustifyContentMode.CENTER);
-        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-        getStyle().set("text-align", "center");
-    }
+	/**
+	 * @param pollService
+	 */
+	public ViewPollView(PollService pollService) {
+		super();
+		this.pollService = pollService;
+		
+		for(AbstractPoll<?> poll : pollService.findAll()) {
+			add(new Paragraph(poll.toString()));
+		}
+	}
+	
+    
+    
+//    public ViewPollView() {
+//        setSpacing(false);
+//
+//        Image img = new Image("images/empty-plant.png", "placeholder plant");
+//        img.setWidth("200px");
+//        add(img);
+//
+//        add(new H2("This place intentionally left empty"));
+//        add(new Paragraph("It’s a place where you can grow your own UI 🤗"));
+//
+//        setSizeFull();
+//        setJustifyContentMode(JustifyContentMode.CENTER);
+//        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+//        getStyle().set("text-align", "center");
+//    }
 
 }

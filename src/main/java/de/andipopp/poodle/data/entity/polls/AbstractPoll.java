@@ -1,7 +1,6 @@
 package de.andipopp.poodle.data.entity.polls;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,6 +11,8 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 
@@ -36,6 +37,7 @@ public abstract class AbstractPoll<O extends AbstractOption<?>> extends Abstract
 	
 	@NotNull
 	@OneToMany(cascade = CascadeType.PERSIST, targetEntity=AbstractOption.class)
+	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<O> options;
 	
 	/**
@@ -44,6 +46,7 @@ public abstract class AbstractPoll<O extends AbstractOption<?>> extends Abstract
 	 */
 	@Nullable
 	@OneToMany(cascade = CascadeType.MERGE, targetEntity=AbstractOption.class)
+	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<O> winners;
 	
 	/* ================
@@ -154,14 +157,22 @@ public abstract class AbstractPoll<O extends AbstractOption<?>> extends Abstract
 		return removeOption(UUID.fromString(id));
 	}
 	
-	/**
-	 * Get the iterator for {@link #options}
-	 * @return the iterator for {@link #options}
-	 */
-	public Iterator<O> getOptionIterator() {
-		return options.iterator();
-	}
+//	/**
+//	 * Get the iterator for {@link #options}
+//	 * @return the iterator for {@link #options}
+//	 */
+//	public Iterator<O> getOptionIterator() {
+//		return options.iterator();
+//	}
 	
+	
+	/**
+	 * Getter for {@link #options}
+	 * @return the {@link #options}
+	 */
+	public List<O> getOptions() {
+		return options;
+	}
 	
 	/**
 	 * Check if the poll is closed
@@ -170,13 +181,15 @@ public abstract class AbstractPoll<O extends AbstractOption<?>> extends Abstract
 	public boolean isClosed() {
 		return winners != null;
 	}
+
 	
-	/**
-	 * Get the iterator for {@link #winners}
-	 * @return the iterator for {@link #winners, null if #winners is null
-	 */
-	public Iterator<O> getWinnerIterator() {
-		if (winners == null) return null;
-		return winners.iterator();
-	}
+	
+//	/**
+//	 * Get the iterator for {@link #winners}
+//	 * @return the iterator for {@link #winners, null if #winners is null
+//	 */
+//	public Iterator<O> getWinnerIterator() {
+//		if (winners == null) return null;
+//		return winners.iterator();
+//	}
 }
