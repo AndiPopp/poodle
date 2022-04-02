@@ -115,4 +115,21 @@ public class DateOption extends AbstractOption<DatePoll> {
 		//return VEvent
 		return event;
 	}
+	
+	@Override
+	public String toString() {
+		
+		//start with header:UUID and name
+		String result = "DateOption" + getId().toString()  
+				+ "\r\n" + "Title:" + getTitle();
+		
+		//add dates
+		result += "\r\n" + "Start:" + start;
+		result += "\r\n" + "End:" + end;
+		
+		if (location != null && location.length()>0) result += "\r\n" + "Location:" + location;
+		
+		//close with end line
+		return result + "\r\n" + "EndOfDateOption";
+	}
 }
