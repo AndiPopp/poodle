@@ -16,7 +16,7 @@ import de.andipopp.poodle.views.MainLayout;
 
 @PageTitle("View Poll")
 @Route(value = "view-poll", layout = MainLayout.class)
-@RouteAlias(value = "", layout = MainLayout.class)
+//@RouteAlias(value = "", layout = MainLayout.class)
 @AnonymousAllowed
 public class ViewPollView extends VerticalLayout {
 
