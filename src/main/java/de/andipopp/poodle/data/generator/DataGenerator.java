@@ -23,7 +23,6 @@ public class DataGenerator {
                 logger.info("Using existing database");
                 return;
             }
-            int seed = 123;
 
             logger.info("Generating demo data");
 
