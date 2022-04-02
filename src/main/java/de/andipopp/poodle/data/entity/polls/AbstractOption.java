@@ -26,6 +26,30 @@ public abstract class AbstractOption<P extends AbstractPoll<?>> extends Abstract
 	 */
 	private String title;
 
+	/* ================
+	 * = Constructors =
+	 * ================ */
+
+	/**
+	 * Empty constructor
+	 */
+	public AbstractOption() {
+		
+	}
+
+	/**
+	 * Construct a new Option with a given title
+	 * @param title value for {@link #title}
+	 */
+	public AbstractOption(String title) {
+		this();
+		this.title = title;
+	}
+	
+	/* ======================
+	 * = Getters and Setter =
+	 * ====================== */
+	
 	/**
 	 * Getter for {@link #title}
 	 * @return the {@link #title}

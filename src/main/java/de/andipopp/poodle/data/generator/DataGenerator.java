@@ -1,22 +1,29 @@
 package de.andipopp.poodle.data.generator;
 
-import com.vaadin.flow.spring.annotation.SpringComponent;
-import de.andipopp.poodle.data.Role;
-import de.andipopp.poodle.data.entity.User;
-import de.andipopp.poodle.data.service.UserRepository;
 import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.vaadin.flow.spring.annotation.SpringComponent;
+
+import de.andipopp.poodle.data.Role;
+import de.andipopp.poodle.data.entity.User;
+import de.andipopp.poodle.data.entity.polls.DateOption;
+import de.andipopp.poodle.data.entity.polls.DatePoll;
+import de.andipopp.poodle.data.service.PollRepository;
+import de.andipopp.poodle.data.service.UserRepository;
+
 @SpringComponent
 public class DataGenerator {
 
     @Bean
-    public CommandLineRunner loadData(PasswordEncoder passwordEncoder, UserRepository userRepository) {
+    public CommandLineRunner loadData(PasswordEncoder passwordEncoder, UserRepository userRepository, PollRepository pollRepository) {
         return args -> {
             Logger logger = LoggerFactory.getLogger(getClass());
             if (userRepository.count() != 0L) {
@@ -44,8 +51,43 @@ public class DataGenerator {
             admin.setRoles(Set.of(Role.USER, Role.ADMIN));
             userRepository.save(admin);
 
+            //polls
+            populatePollRepository(pollRepository, logger);
+            
             logger.info("Generated demo data");
         };
+    }
+    
+    private void populatePollRepository(PollRepository pollRepository, Logger logger) {
+    	DatePoll poll = new DatePoll();
+    	poll.setTitle("Master of the Universe get-together");
+    	poll.setDescription("He-Man will be there.");
+    	poll.setLocation("Castle Greyskull (unless specified otherwise)");
+    	
+    	poll.addOption(new DateOption(
+				"With Skeletor", 
+				new GregorianCalendar(2022, 2-1, 28, 9, 30).getTime(), 
+				new GregorianCalendar(2022, 2-1, 28, 11, 0).getTime(), 
+				"Snake Mountain"
+			));
+    	poll.addOption(new DateOption(
+				new GregorianCalendar(2022, 2-1, 28, 15, 0).getTime(), 
+				new GregorianCalendar(2022, 2-1, 28, 16, 30).getTime(), 
+				"at Man-at-Arm's"
+			));
+    	poll.addOption(new DateOption(
+    			new GregorianCalendar(2022, 4-1, 11, 8, 0).getTime(), 
+    			new GregorianCalendar(2022, 4-1, 11, 10, 0).getTime(), 
+    			"at Man-at-Arm's"
+    		));
+    	poll.addOption(new DateOption(
+    			new GregorianCalendar(2022, 4-1, 11, 15, 15).getTime(), 
+    			new GregorianCalendar(2022, 4-1, 11, 16, 45).getTime()
+    		));
+    	
+    	
+    	pollRepository.save(poll);
+    	logger.info("Created " + pollRepository.count() +" example polls.");
     }
 
 }
