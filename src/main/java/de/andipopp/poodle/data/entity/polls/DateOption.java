@@ -2,6 +2,8 @@ package de.andipopp.poodle.data.entity.polls;
 
 import java.util.Date;
 
+import javax.persistence.Entity;
+
 import biweekly.component.VEvent;
 
 /**
@@ -9,7 +11,8 @@ import biweekly.component.VEvent;
  * @author Andi Popp
  *
  */
-public class DateOption extends AbstractOption {
+@Entity
+public class DateOption extends AbstractOption<DatePoll> {
 
 	/**
 	 * The start date for this option

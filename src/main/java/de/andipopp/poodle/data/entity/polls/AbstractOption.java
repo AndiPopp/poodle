@@ -3,7 +3,8 @@
  */
 package de.andipopp.poodle.data.entity.polls;
 
-import javax.persistence.MappedSuperclass;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
@@ -14,10 +15,11 @@ import de.andipopp.poodle.data.entity.AbstractEntity;
  * An abstract representation of an option in a poll
  * @author Andi Popp
  */
-@MappedSuperclass
-public abstract class AbstractOption extends AbstractEntity implements Comparable<DateOption> {
+@Entity
+public abstract class AbstractOption<P extends AbstractPoll<?>> extends AbstractEntity implements Comparable<DateOption> {
 	
-
+	@ManyToOne(targetEntity=AbstractPoll.class)
+	private P parent;
 	
 	/**
 	 * An optional human readable title
