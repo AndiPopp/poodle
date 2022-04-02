@@ -3,6 +3,7 @@ package de.andipopp.poodle.data.entity.polls;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
 
 import biweekly.component.VEvent;
 
@@ -29,6 +30,48 @@ public class DateOption extends AbstractOption<DatePoll> {
 	 */
 	private String location;
 
+	/* ================
+	 * = Constructors =
+	 * ================ */
+	
+	/**
+	 * Empty constructor
+	 */
+	public DateOption() {}
+	
+	/**
+	 * Full parameter constructor
+	 * @param title value for {@link #getTitle()}
+	 * @param start value for {@link #start}
+	 * @param end value for {@link #end}
+	 * @param location value for {@link #location}
+	 */
+	public DateOption(String title, @NotNull Date start, @NotNull Date end, String location) {
+		super(title);
+		setStart(start);
+		setEnd(end);
+		setLocation(location);
+	}
+
+	/**
+	 * Construct new DateOption without title
+	 * @param start value for {@link #start}
+	 * @param end value for {@link #end}
+	 * @param location value for {@link #location}
+	 */
+	public DateOption(@NotNull Date start, @NotNull Date end, String location) {
+		this(null, start, end, location);
+	}
+	
+	/**
+	 * Construct new DateOption without title or location
+	 * @param start value for {@link #start}
+	 * @param end value for {@link #end}
+	 */
+	public DateOption(@NotNull Date start, @NotNull Date end) {
+		this(null, start, end, null);
+	}
+	
 	/* ======================
 	 * = Getters and Setter =
 	 * ====================== */
