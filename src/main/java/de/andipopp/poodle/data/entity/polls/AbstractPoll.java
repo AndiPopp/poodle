@@ -1,6 +1,7 @@
 package de.andipopp.poodle.data.entity.polls;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,6 +23,7 @@ import de.andipopp.poodle.data.entity.User;
 
 @Entity
 public abstract class AbstractPoll<O extends AbstractOption<?>> extends AbstractEntity {
+	
 	/* ==========
 	 * = Fields =
 	 * ========== */
@@ -181,22 +183,14 @@ public abstract class AbstractPoll<O extends AbstractOption<?>> extends Abstract
 		return removeOption(UUID.fromString(id));
 	}
 	
-//	/**
-//	 * Get the iterator for {@link #options}
-//	 * @return the iterator for {@link #options}
-//	 */
-//	public Iterator<O> getOptionIterator() {
-//		return options.iterator();
-//	}
-	
-	
 	/**
-	 * Getter for {@link #options}
-	 * @return the {@link #options}
+	 * Get the iterator for {@link #options}
+	 * @return the iterator for {@link #options}
 	 */
-	public List<O> getOptions() {
-		return options;
+	public Iterator<O> getOptionIterator() {
+		return options.iterator();
 	}
+	
 	
 	/**
 	 * Check if the poll is closed
@@ -205,15 +199,14 @@ public abstract class AbstractPoll<O extends AbstractOption<?>> extends Abstract
 	public boolean isClosed() {
 		return winners != null;
 	}
-
 	
 	
-//	/**
-//	 * Get the iterator for {@link #winners}
-//	 * @return the iterator for {@link #winners, null if #winners is null
-//	 */
-//	public Iterator<O> getWinnerIterator() {
-//		if (winners == null) return null;
-//		return winners.iterator();
-//	}
+	/**
+	 * Get the iterator for {@link #winners}
+	 * @return the iterator for {@link #winners, null if #winners is null
+	 */
+	public Iterator<O> getWinnerIterator() {
+		if (winners == null) return null;
+		return winners.iterator();
+	}
 }

@@ -108,22 +108,22 @@ public class DatePoll extends AbstractPoll<DateOption> {
 		//start with the meta info
 		String result = metaInf();
 		//add the strings for the options
-//		for (Iterator<DateOption> it = getOptionIterator(); it.hasNext(); ) {
-//			result += "\r\n" + it.next().toString();
-//		}
-		for (DateOption option : getOptions()) {
-		result += "\r\n" + option.toString();
+		for (Iterator<DateOption> it = getOptionIterator(); it.hasNext(); ) {
+			result += "\r\n" + it.next().toString();
 		}
-//		//add winners if present
-//		Iterator<DateOption> it = getWinnerIterator();
-//		if (it != null) {
-//			result += "\r\n" + "Winners: ";
-//			String sep = "";
-//			while(it.hasNext()) {
-//				result += sep + it.next().getId();
-//				sep = ",";
-//			}
+//		for (DateOption option : getOptions()) {
+//		result += "\r\n" + option.toString();
 //		}
+		//add winners if present
+		Iterator<DateOption> it = getWinnerIterator();
+		if (it != null) {
+			result += "\r\n" + "Winners: ";
+			String sep = "";
+			while(it.hasNext()) {
+				result += sep + it.next().getId();
+				sep = ",";
+			}
+		}
 		
 		//return result
 		return result;
