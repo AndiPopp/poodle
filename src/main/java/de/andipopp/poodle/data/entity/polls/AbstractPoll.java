@@ -1,6 +1,7 @@
 package de.andipopp.poodle.data.entity.polls;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -47,6 +48,12 @@ public abstract class AbstractPoll<O extends AbstractOption<?>> extends Abstract
 	@NotNull
 	private User owner;
 	
+	/**
+	 * The date this poll was created
+	 */
+	@NotNull
+	private Date createDate;
+	
 	@NotNull
 	@OneToMany(cascade = CascadeType.PERSIST, targetEntity=AbstractOption.class)
 	@LazyCollection(LazyCollectionOption.FALSE)
@@ -70,6 +77,7 @@ public abstract class AbstractPoll<O extends AbstractOption<?>> extends Abstract
 	 */
 	public AbstractPoll() {
 		this.options = new ArrayList<O>();
+		this.createDate = new Date();
 	}
 	
 	/**
@@ -116,6 +124,22 @@ public abstract class AbstractPoll<O extends AbstractOption<?>> extends Abstract
 	public void setOwner(User owner) {
 		this.owner = owner;
 	}
+	
+	/**
+	 * Getter for {@link #createDate}
+	 * @return the {@link #createDate}
+	 */
+	public Date getCreateDate() {
+		return createDate;
+	}
+
+	/**
+	 * Setter for {@link #createDate}
+	 * @param createDate the {@link #createDate} to set
+	 */
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
 
 	/**
 	 * Getter for {@link #description}
@@ -131,6 +155,14 @@ public abstract class AbstractPoll<O extends AbstractOption<?>> extends Abstract
 	 */
 	public void setDescription(String description) {
 		this.description = Jsoup.clean(description, Safelist.basic());
+	}
+	
+	/**
+	 * Get the number of {@link #options}
+	 * @return the number of {@link #options}
+	 */
+	public int getNumberOfOptions() {
+		return options.size();
 	}
 	
 	/**
@@ -196,10 +228,10 @@ public abstract class AbstractPoll<O extends AbstractOption<?>> extends Abstract
 	
 	/**
 	 * Check if the poll is closed
-	 * @return
+	 * @return true if the poll is closed, false otherwise
 	 */
 	public boolean isClosed() {
-		return winners != null;
+		return winners != null && !winners.isEmpty();
 	}
 	
 	
