@@ -1,5 +1,6 @@
 package de.andipopp.poodle.views.mypolls;
 
+import java.awt.GridBagConstraints;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 
@@ -108,25 +109,29 @@ public class MyPollsView extends VerticalLayout {
 		grid.removeAllColumns(); //empty out
 		Grid.Column<AbstractPoll> titleCol = grid.addColumn(new ComponentRenderer<>(poll -> new GotoPollAnchor(poll)))
 			.setHeader("My Polls")
-			.setWidth("200px")
-			.setFlexGrow(8);
+			.setWidth("250px")
+			.setFlexGrow(4);
 		
-		//for the reduced version we basically stop her //TODO make more appealing list for reduced version
-		if (reduced) return;
+		//Reduced version does not get those//TODO make more appealing list for reduced version
+		if (!reduced) {
 		
-		titleCol.setHeader("Title").setComparator(AbstractPoll::getTitle);
-		grid.addColumn(new LocalDateRenderer<>(
-				AbstractPoll::getLocalCreateDate,
-		        DateTimeFormatter.ofLocalizedDate(
-		                FormatStyle.MEDIUM)))
-		    .setHeader("Creation Date")
-		    .setWidth("100px")
-		    .setComparator(AbstractPoll::getCreateDate);
-		grid.addColumn("closed").setFlexGrow(0);
-		grid.addColumn(new ComponentRenderer<>(poll -> {
-			if (poll.getOwner().equals(user)) return new EditPollButton(poll);
+			titleCol.setHeader("Title").setComparator(AbstractPoll::getTitle);
+			grid.addColumn(new LocalDateRenderer<>(
+					AbstractPoll::getLocalCreateDate,
+			        DateTimeFormatter.ofLocalizedDate(
+			                FormatStyle.MEDIUM)))
+			    .setHeader("Creation Date")
+			    .setWidth("100px")
+			    .setComparator(AbstractPoll::getCreateDate);
+			grid.addColumn("closed").setFlexGrow(0);
+		}
+		
+		//Reduced version gets that
+		Grid.Column<AbstractPoll> editCol = grid.addColumn(new ComponentRenderer<>(poll -> {
+			if (poll.getOwner().equals(user)) return new EditPollIcon(poll);
 			return new Label("");
-		})).setFlexGrow(0);
+		})).setWidth("3em");
+		if (!reduced) editCol.setFlexGrow(0);
 	}
 
 }

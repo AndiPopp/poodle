@@ -1,20 +1,23 @@
 package de.andipopp.poodle.views.mypolls;
 
-import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
+import de.andipopp.poodle.views.MainLayout;
 
-public class EditPollButton extends Button {
+public class EditPollIcon extends Span {
 
 	AbstractPoll<?> poll;
 
 	/**
 	 * @param poll
 	 */
-	public EditPollButton(AbstractPoll<?> poll) {
+	public EditPollIcon(AbstractPoll<?> poll) {
 		this.poll = poll;
-		this.setText("Edit");
+		this.setClassName("edit-poll-icon");
+		this.getStyle().set("cursor", "pointer");
+		this.add(new MainLayout.MenuItemInfo.LineAwesomeIcon("la la-edit"));
 		this.addClickListener( e -> {
 			Notification.show("Edit "+poll.getTitle());
 		});
