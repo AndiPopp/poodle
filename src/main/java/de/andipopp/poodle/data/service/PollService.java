@@ -47,11 +47,13 @@ public class PollService {
     	return repository.findAllByOrderByCreateDateDesc();
     }
     
-    public List<AbstractPoll> findAllNewest(String titleFilter) { //TODO probably faster when done correctly in the backend
+    public List<AbstractPoll> findAllNewest(String titleFilter, Boolean closedFilter) { //TODO probably faster when done correctly in the backend
     	List<AbstractPoll> list = findAllNewest();
     	List<AbstractPoll> result = new LinkedList<AbstractPoll>();
     	for(AbstractPoll poll : list) {
-    		if (poll.getTitle().toLowerCase().contains(titleFilter.toLowerCase())) result.add(poll);
+    		if ((titleFilter == null || titleFilter.isEmpty() || poll.getTitle().toLowerCase().contains(titleFilter.toLowerCase()))
+    				&& (closedFilter == null || poll.isClosed() == closedFilter)
+    			) result.add(poll);
     	}
     	return result;
     }
@@ -60,11 +62,20 @@ public class PollService {
     	return repository.findByOwner(owner);
     }
     
-    public List<AbstractPoll> findByOwnerNewest(User owner) {
+    public List<AbstractPoll> findNewestByOwner(User owner) {
     	return repository.findByOwnerOrderByCreateDateDesc(owner);
     }
 
-
+    public List<AbstractPoll> findNewestByOwner(User owner, String titleFilter, Boolean closedFilter) { //TODO probably faster when done correctly in the backend
+    	List<AbstractPoll> list = findNewestByOwner(owner);
+    	List<AbstractPoll> result = new LinkedList<AbstractPoll>();
+    	for(AbstractPoll poll : list) {
+    		if ((titleFilter == null || titleFilter.isEmpty() || poll.getTitle().toLowerCase().contains(titleFilter.toLowerCase()))
+    				&& (closedFilter == null || poll.isClosed() == closedFilter)
+    			) result.add(poll);
+    	}
+    	return result;
+    }
     
     public int count() {
         return (int) repository.count();

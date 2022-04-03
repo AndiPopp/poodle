@@ -5,12 +5,16 @@ import java.time.format.FormatStyle;
 
 import javax.annotation.security.PermitAll;
 
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.LocalDateRenderer;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinRequest;
@@ -36,7 +40,15 @@ public class MyPollsView extends VerticalLayout {
 	
 	TextField filterText = new TextField();
 	
-	ComboBox<String> stateCombobox = new ComboBox<String>("State");
+	ComboBox<String> stateCombobox;
+	
+	private static final String STATE_COMBOBOX_EITHER = "Open/Closed";
+	
+	private static final String STATE_COMBOBOX_OPEN = "Open";
+	
+	private static final String STATE_COMBOBOX_CLOSED = "Closed";
+	
+	private static final String WIDTH = "1000px";
 	
     public MyPollsView(UserService userService, PollService pollService) {
     	String userName = VaadinRequest.getCurrent().getUserPrincipal().getName();
@@ -45,17 +57,51 @@ public class MyPollsView extends VerticalLayout {
     	addClassName("myPolls-view");
 //        setSizeFull();
     	setHeight("100%");
+    	setMaxWidth(WIDTH);
     	
     	boolean reduced = VaadinRequest.getCurrent().getHeader("user-agent").contains("Mobile");
     	
         configureGrid(reduced);
-        add(grid);
+        add(
+        	getToolbar(reduced),
+        	grid
+        );
         updateList();
     }
 
+	private Component getToolbar(boolean reduced) {
+		filterText.setPlaceholder("Filter by title ...");
+		filterText.setClearButtonVisible(true);
+		filterText.setValueChangeMode(ValueChangeMode.LAZY);
+		filterText.addValueChangeListener(e -> updateList());
+		filterText.setWidthFull();
+		
+		stateCombobox = new ComboBox<>(null, STATE_COMBOBOX_EITHER, STATE_COMBOBOX_OPEN, STATE_COMBOBOX_CLOSED);
+		stateCombobox.setValue(STATE_COMBOBOX_EITHER);
+		stateCombobox.addValueChangeListener(e -> updateList());
+		stateCombobox.setWidth("9em");
+		
+//		Button addContactButton = new Button("Add contact");
+		HorizontalLayout toolbar = new HorizontalLayout(filterText, stateCombobox);
+		toolbar.setWidthFull();
+		return toolbar;
+	}
+
 	private void updateList() {
-//		grid.setItems(pollService.findByOwner(user));
-		grid.setItems(pollService.findByOwnerNewest(user));
+		if (filterText.isEmpty() && (stateCombobox.getValue() == null || stateCombobox.getValue().equals(""))) {
+			grid.setItems(pollService.findNewestByOwner(user));
+		} else {
+			Boolean closed = null;
+			if (stateCombobox.getValue() != null) {
+				if (stateCombobox.getValue().equals(STATE_COMBOBOX_CLOSED)) {
+					closed = true;
+				}
+				else if (stateCombobox.getValue().equals(STATE_COMBOBOX_OPEN)) {
+					closed = false;
+				}
+			}
+			grid.setItems(pollService.findNewestByOwner(user, filterText.getValue(), closed));
+		}
 	}
 
 	private void configureGrid(boolean reduced) {
@@ -64,12 +110,12 @@ public class MyPollsView extends VerticalLayout {
 		Grid.Column<AbstractPoll> titleCol = grid.addColumn(new ComponentRenderer<>(poll -> new GotoPollAnchor(poll)))
 			.setHeader("My Polls")
 			.setWidth("200px")
-			.setFlexGrow(10);
+			.setFlexGrow(8);
 		
 		//for the reduced version we basically stop her //TODO make more appealing list for reduced version
 		if (reduced) return;
 		
-		grid.setMaxWidth("1000px");
+//		grid.setMaxWidth(WIDTH);
 		titleCol.setHeader("Title").setComparator(AbstractPoll::getTitle);
 		grid.addColumn(new LocalDateRenderer<>(
 				AbstractPoll::getLocalCreateDate,
@@ -82,8 +128,10 @@ public class MyPollsView extends VerticalLayout {
 		grid.addColumn("closed").setFlexGrow(0);
 //		grid.addColumn("id"); //for debug purposes
 //		grid.getColumns().forEach(col -> col.setAutoWidth(true));
-		grid.addColumn(new ComponentRenderer<>(poll -> new EditPollButton(poll))).setFlexGrow(0);
-		grid.addColumn(new ComponentRenderer<>(poll -> new GotoPollButtonAnchor(poll))).setFlexGrow(0);
+		grid.addColumn(new ComponentRenderer<>(poll -> {
+			return new EditPollButton(poll);
+		})).setFlexGrow(0);
+//		grid.addColumn(new ComponentRenderer<>(poll -> new GotoPollButtonAnchor(poll))).setFlexGrow(0);
 	}
 
 }
