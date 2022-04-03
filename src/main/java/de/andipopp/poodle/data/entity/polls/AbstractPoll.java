@@ -289,4 +289,9 @@ public abstract class AbstractPoll<O extends AbstractOption<?>> extends Abstract
 		if (winners == null) return null;
 		return winners.iterator();
 	}
+	
+	/* =================
+	 * = Other Methods =
+	 * ================= */
+	
 }

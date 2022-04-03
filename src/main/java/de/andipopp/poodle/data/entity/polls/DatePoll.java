@@ -128,5 +128,4 @@ public class DatePoll extends AbstractPoll<DateOption> {
 		//return result
 		return result;
 	}
-
 }
