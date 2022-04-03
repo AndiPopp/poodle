@@ -54,8 +54,8 @@ public class MyPollsView extends VerticalLayout {
     	String userName = VaadinRequest.getCurrent().getUserPrincipal().getName();
     	this.user = userService.get(userName);
     	this.pollService = pollService;
+    	
     	addClassName("myPolls-view");
-//        setSizeFull();
     	setHeight("100%");
     	setMaxWidth(WIDTH);
     	
@@ -81,7 +81,6 @@ public class MyPollsView extends VerticalLayout {
 		stateCombobox.addValueChangeListener(e -> updateList());
 		stateCombobox.setWidth("9em");
 		
-//		Button addContactButton = new Button("Add contact");
 		HorizontalLayout toolbar = new HorizontalLayout(filterText, stateCombobox);
 		toolbar.setWidthFull();
 		return toolbar;
@@ -115,7 +114,6 @@ public class MyPollsView extends VerticalLayout {
 		//for the reduced version we basically stop her //TODO make more appealing list for reduced version
 		if (reduced) return;
 		
-//		grid.setMaxWidth(WIDTH);
 		titleCol.setHeader("Title").setComparator(AbstractPoll::getTitle);
 		grid.addColumn(new LocalDateRenderer<>(
 				AbstractPoll::getLocalCreateDate,
@@ -124,15 +122,11 @@ public class MyPollsView extends VerticalLayout {
 		    .setHeader("Creation Date")
 		    .setWidth("100px")
 		    .setComparator(AbstractPoll::getCreateDate);
-//		grid.addColumn("numberOfOptions");
 		grid.addColumn("closed").setFlexGrow(0);
-//		grid.addColumn("id"); //for debug purposes
-//		grid.getColumns().forEach(col -> col.setAutoWidth(true));
 		grid.addColumn(new ComponentRenderer<>(poll -> {
 			if (poll.getOwner().equals(user)) return new EditPollButton(poll);
 			return new Label("");
 		})).setFlexGrow(0);
-//		grid.addColumn(new ComponentRenderer<>(poll -> new GotoPollButtonAnchor(poll))).setFlexGrow(0);
 	}
 
 }
