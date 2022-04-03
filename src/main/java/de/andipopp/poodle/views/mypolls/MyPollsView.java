@@ -81,6 +81,7 @@ public class MyPollsView extends VerticalLayout {
 		    .setHeader("Creation Date").setComparator(AbstractPoll::getCreateDate);
 //		grid.addColumn("numberOfOptions");
 		grid.addColumn("closed");
+		grid.addColumn("id"); //for debug purposes
 		grid.getColumns().forEach(col -> col.setAutoWidth(true));
 		grid.addColumn(new ComponentRenderer<>(poll -> new EditPollButton(poll))).setFlexGrow(0);
 		grid.addColumn(new ComponentRenderer<>(poll -> new GotoPollAnchor(poll))).setFlexGrow(0);

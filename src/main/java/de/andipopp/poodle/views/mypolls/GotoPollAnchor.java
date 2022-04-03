@@ -22,7 +22,6 @@ public class GotoPollAnchor extends Anchor{
 	public GotoPollAnchor(AbstractPoll<?> poll) {
 		this.poll = poll;
 		this.add(new Button("Go to"));
-//		this.setHref("https://google.com");
 		RouterLink link = new RouterLink("Test", PollView.class);
 		this.setHref(link.getHref()+"?pollId="+UUIDUtils.uuidToBase64url(poll.getId()));
 	}
