@@ -9,7 +9,7 @@ import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.util.UUIDUtils;
 import de.andipopp.poodle.views.poll.PollView;
 
-public class GotoPollAnchor extends Anchor{
+public class GotoPollButtonAnchor extends Anchor{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -19,9 +19,9 @@ public class GotoPollAnchor extends Anchor{
 	 * Construct a new follow
 	 * @param poll
 	 */
-	public GotoPollAnchor(AbstractPoll<?> poll) {
+	public GotoPollButtonAnchor(AbstractPoll<?> poll) {
 		this.poll = poll;
-		this.setText(poll.getTitle());
+		this.add(new Button("Go to"));
 		RouterLink link = new RouterLink("Test", PollView.class);
 		this.setHref(link.getHref()+"?pollId="+UUIDUtils.uuidToBase64url(poll.getId()));
 	}

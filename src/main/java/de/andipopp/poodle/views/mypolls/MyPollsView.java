@@ -2,6 +2,7 @@ package de.andipopp.poodle.views.mypolls;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.Iterator;
 
 import javax.annotation.security.PermitAll;
 
@@ -42,27 +43,12 @@ public class MyPollsView extends VerticalLayout {
     	this.user = userService.get(userName);
     	this.pollService = pollService;
     	addClassName("myPolls-view");
-        setSizeFull();
-    	
-        configureGrid();
-        
-        add(grid);
-        
-        updateList();
-        
-//        setSpacing(false);
-//
-//        Image img = new Image("images/empty-plant.png", "placeholder plant");
-//        img.setWidth("200px");
-//        add(img);
-//
-//        add(new H2("This place intentionally left empty"));
-//        add(new Paragraph("It’s a place where you can grow your own UI 🤗"));
-//
 //        setSizeFull();
-//        setJustifyContentMode(JustifyContentMode.CENTER);
-//        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-//        getStyle().set("text-align", "center");
+    	setHeight("100%");
+    	
+        configureGrid(VaadinRequest.getCurrent().getHeader("user-agent").contains("Mobile"));
+        add(grid);
+        updateList();
     }
 
 	private void updateList() {
@@ -70,21 +56,30 @@ public class MyPollsView extends VerticalLayout {
 		
 	}
 
-	private void configureGrid() {
+	private void configureGrid(boolean reduced) {
 		grid.addClassName("polls-grid");
-		grid.setSizeFull();
-		grid.setColumns("title");
+		grid.setMinWidth("300px");
+		grid.setMaxWidth("1000px");
+		grid.removeAllColumns(); //empty out
+		grid.addColumn(new ComponentRenderer<>(poll -> new GotoPollAnchor(poll)))
+			.setComparator(AbstractPoll::getTitle)
+			.setHeader("Title")
+			.setWidth("200px");
+		if (reduced) return;
+		
 		grid.addColumn(new LocalDateTimeRenderer<>(
 				AbstractPoll::getLocalCreateDate,
 		        DateTimeFormatter.ofLocalizedDateTime(
 		                FormatStyle.MEDIUM)))
-		    .setHeader("Creation Date").setComparator(AbstractPoll::getCreateDate);
+		    .setHeader("Creation Date")
+		    .setWidth("100px")
+		    .setComparator(AbstractPoll::getCreateDate);
 //		grid.addColumn("numberOfOptions");
-		grid.addColumn("closed");
-		grid.addColumn("id"); //for debug purposes
+		grid.addColumn("closed").setFlexGrow(0);
+//		grid.addColumn("id"); //for debug purposes
 		grid.getColumns().forEach(col -> col.setAutoWidth(true));
 		grid.addColumn(new ComponentRenderer<>(poll -> new EditPollButton(poll))).setFlexGrow(0);
-		grid.addColumn(new ComponentRenderer<>(poll -> new GotoPollAnchor(poll))).setFlexGrow(0);
+		grid.addColumn(new ComponentRenderer<>(poll -> new GotoPollButtonAnchor(poll))).setFlexGrow(0);
 	}
 
 }
