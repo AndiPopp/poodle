@@ -5,9 +5,12 @@ import java.time.format.FormatStyle;
 
 import javax.annotation.security.PermitAll;
 
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -24,9 +27,12 @@ import de.andipopp.poodle.views.MainLayout;
 @PermitAll
 public class MyPollsView extends VerticalLayout {
 
+	private static final long serialVersionUID = 1L;
+
 	User user;
 	
 	PollService pollService;
+	
 	
 	Grid<AbstractPoll> grid = new Grid<AbstractPoll>(AbstractPoll.class);
 	TextField filterText = new TextField();
@@ -68,18 +74,16 @@ public class MyPollsView extends VerticalLayout {
 		grid.addClassName("polls-grid");
 		grid.setSizeFull();
 		grid.setColumns("title");
-//		grid.addColumn("createDate");
-//		grid.addColumn(new LocalDateRenderer<>(
-//		        AbstractPoll::getLocalCreateDate,
-//		        "dd/MM/yyyy"))
-//		    .setHeader("Creation Date");
 		grid.addColumn(new LocalDateTimeRenderer<>(
 				AbstractPoll::getLocalCreateDate,
 		        DateTimeFormatter.ofLocalizedDateTime(
 		                FormatStyle.MEDIUM)))
 		    .setHeader("Creation Date").setComparator(AbstractPoll::getCreateDate);
-		grid.addColumns("numberOfOptions", "closed");
-		
+//		grid.addColumn("numberOfOptions");
+		grid.addColumn("closed");
+		grid.getColumns().forEach(col -> col.setAutoWidth(true));
+		grid.addColumn(new ComponentRenderer<>(poll -> new EditPollButton(poll))).setFlexGrow(0);
+		grid.addColumn(new ComponentRenderer<>(poll -> new GotoPollAnchor(poll))).setFlexGrow(0);
 	}
 
 }

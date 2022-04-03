@@ -1,13 +1,9 @@
 package de.andipopp.poodle.views.viewpoll;
 
-import javax.swing.text.html.parser.ContentModel;
-
-import com.vaadin.flow.component.charts.model.Label;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
