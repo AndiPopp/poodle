@@ -11,4 +11,8 @@ import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 public interface PollRepository extends JpaRepository<AbstractPoll<?>, UUID>{
 
 	List<AbstractPoll> findByOwner(User owner);
+	
+	List<AbstractPoll> findByOwnerOrderByCreateDateDesc(User owner);
+	
+	List<AbstractPoll> findAllByOrderByCreateDateDesc();
 }

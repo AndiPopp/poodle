@@ -2,17 +2,14 @@ package de.andipopp.poodle.views.mypolls;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.Iterator;
 
 import javax.annotation.security.PermitAll;
 
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
-import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
+import com.vaadin.flow.data.renderer.LocalDateRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinRequest;
@@ -46,30 +43,34 @@ public class MyPollsView extends VerticalLayout {
 //        setSizeFull();
     	setHeight("100%");
     	
-        configureGrid(VaadinRequest.getCurrent().getHeader("user-agent").contains("Mobile"));
+    	boolean reduced = VaadinRequest.getCurrent().getHeader("user-agent").contains("Mobile");
+    	
+        configureGrid(reduced);
         add(grid);
         updateList();
     }
 
 	private void updateList() {
-		grid.setItems(pollService.findByOwner(user));
-		
+//		grid.setItems(pollService.findByOwner(user));
+		grid.setItems(pollService.findByOwnerNewest(user));
 	}
 
 	private void configureGrid(boolean reduced) {
 		grid.addClassName("polls-grid");
-		grid.setMinWidth("300px");
-		grid.setMaxWidth("1000px");
 		grid.removeAllColumns(); //empty out
-		grid.addColumn(new ComponentRenderer<>(poll -> new GotoPollAnchor(poll)))
-			.setComparator(AbstractPoll::getTitle)
-			.setHeader("Title")
-			.setWidth("200px");
+		Grid.Column<AbstractPoll> titleCol = grid.addColumn(new ComponentRenderer<>(poll -> new GotoPollAnchor(poll)))
+			.setHeader("My Polls")
+			.setWidth("200px")
+			.setFlexGrow(10);
+		
+		//for the reduced version we basically stop her //TODO make more appealing list for reduced version
 		if (reduced) return;
 		
-		grid.addColumn(new LocalDateTimeRenderer<>(
+		grid.setMaxWidth("1000px");
+		titleCol.setHeader("Title").setComparator(AbstractPoll::getTitle);
+		grid.addColumn(new LocalDateRenderer<>(
 				AbstractPoll::getLocalCreateDate,
-		        DateTimeFormatter.ofLocalizedDateTime(
+		        DateTimeFormatter.ofLocalizedDate(
 		                FormatStyle.MEDIUM)))
 		    .setHeader("Creation Date")
 		    .setWidth("100px")
@@ -77,7 +78,7 @@ public class MyPollsView extends VerticalLayout {
 //		grid.addColumn("numberOfOptions");
 		grid.addColumn("closed").setFlexGrow(0);
 //		grid.addColumn("id"); //for debug purposes
-		grid.getColumns().forEach(col -> col.setAutoWidth(true));
+//		grid.getColumns().forEach(col -> col.setAutoWidth(true));
 		grid.addColumn(new ComponentRenderer<>(poll -> new EditPollButton(poll))).setFlexGrow(0);
 		grid.addColumn(new ComponentRenderer<>(poll -> new GotoPollButtonAnchor(poll))).setFlexGrow(0);
 	}

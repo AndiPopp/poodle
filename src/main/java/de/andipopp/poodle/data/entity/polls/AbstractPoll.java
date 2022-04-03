@@ -1,7 +1,7 @@
 package de.andipopp.poodle.data.entity.polls;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -153,8 +153,8 @@ public abstract class AbstractPoll<O extends AbstractOption<?>> extends Abstract
 		return createDate;
 	}
 	
-	public LocalDateTime getLocalCreateDate() {
-		return LocalDateTime.ofInstant(createDate, TimeZone.getDefault().toZoneId()); //TODO adjust to user's time zone (from VaadinRequest?)
+	public LocalDate getLocalCreateDate() {
+		return LocalDate.ofInstant(createDate, TimeZone.getDefault().toZoneId()); //TODO adjust to user's time zone (from VaadinRequest?)
 	}
 
 	/**

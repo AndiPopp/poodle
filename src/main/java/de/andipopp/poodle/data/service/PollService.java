@@ -2,6 +2,7 @@ package de.andipopp.poodle.data.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.SortedSet;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +43,16 @@ public class PollService {
     	return repository.findAll();
     }
     
+    public List<AbstractPoll> findAllNewest() {
+    	return repository.findAllByOrderByCreateDateDesc();
+    }
+    
     public List<AbstractPoll> findByOwner(User owner) {
     	return repository.findByOwner(owner);
+    }
+    
+    public List<AbstractPoll> findByOwnerNewest(User owner) {
+    	return repository.findByOwnerOrderByCreateDateDesc(owner);
     }
 
     public int count() {

@@ -101,6 +101,16 @@ public class DataGenerator {
     	pollRepository.save(poll);
     	
     	poll = new DatePoll();
+    	poll.setTitle("This is a really long title just to see what happens if we have a really long title and even longer titles");
+    	poll.setDescription("Man this title is long");
+    	poll.setOwner(user);
+    	poll.addOption(new DateOption(
+    			new GregorianCalendar(2022, 1-1, 1, 8, 0).getTime(), 
+    			new GregorianCalendar(2022, 1-1, 1, 10, 0).getTime()
+    		));
+    	pollRepository.save(poll);
+    	
+    	poll = new DatePoll();
     	poll.setTitle("Only for admin's eyes");
     	poll.setDescription("Only the admin should see this");
     	poll.setOwner(admin);
