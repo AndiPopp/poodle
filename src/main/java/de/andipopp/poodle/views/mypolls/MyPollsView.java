@@ -12,6 +12,8 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.LocalDateRenderer;
@@ -33,6 +35,14 @@ public class MyPollsView extends VerticalLayout {
 
 	private static final long serialVersionUID = 1L;
 
+	private static final String STATE_COMBOBOX_EITHER = "Open/Closed";
+	
+	private static final String STATE_COMBOBOX_OPEN = "Open";
+	
+	private static final String STATE_COMBOBOX_CLOSED = "Closed";
+	
+	private static final String WIDTH = "1000px";
+	
 	User user;
 	
 	PollService pollService;
@@ -43,13 +53,7 @@ public class MyPollsView extends VerticalLayout {
 	
 	ComboBox<String> stateCombobox;
 	
-	private static final String STATE_COMBOBOX_EITHER = "Open/Closed";
-	
-	private static final String STATE_COMBOBOX_OPEN = "Open";
-	
-	private static final String STATE_COMBOBOX_CLOSED = "Closed";
-	
-	private static final String WIDTH = "1000px";
+	DatePollForm datePollForm;
 	
     public MyPollsView(UserService userService, PollService pollService) {
     	String userName = VaadinRequest.getCurrent().getUserPrincipal().getName();
@@ -63,10 +67,16 @@ public class MyPollsView extends VerticalLayout {
     	boolean reduced = VaadinRequest.getCurrent().getHeader("user-agent").contains("Mobile");
     	
         configureGrid(reduced);
+        configureDatePollForm();
+        
         add(
         	getToolbar(reduced),
         	grid
+//        	getContent()
         );
+        setJustifyContentMode(JustifyContentMode.CENTER);
+        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        
         updateList();
     }
 
@@ -87,23 +97,20 @@ public class MyPollsView extends VerticalLayout {
 		return toolbar;
 	}
 
-	private void updateList() {
-		if (filterText.isEmpty() && (stateCombobox.getValue() == null || stateCombobox.getValue().equals(""))) {
-			grid.setItems(pollService.findNewestByOwner(user));
-		} else {
-			Boolean closed = null;
-			if (stateCombobox.getValue() != null) {
-				if (stateCombobox.getValue().equals(STATE_COMBOBOX_CLOSED)) {
-					closed = true;
-				}
-				else if (stateCombobox.getValue().equals(STATE_COMBOBOX_OPEN)) {
-					closed = false;
-				}
-			}
-			grid.setItems(pollService.findNewestByOwner(user, filterText.getValue(), closed));
-		}
+	private Component getContent() {
+		HorizontalLayout content = new HorizontalLayout(grid, datePollForm);
+		content.setFlexGrow(2, grid);
+		content.setFlexGrow(1, datePollForm);
+		content.addClassName("mypolls-content");
+		return content;
+		
 	}
-
+	
+	private void configureDatePollForm() {
+		this.datePollForm = new DatePollForm();
+		this.datePollForm.setWidth("25em");
+	}
+	
 	private void configureGrid(boolean reduced) {
 		grid.addClassName("polls-grid");
 		grid.removeAllColumns(); //empty out
@@ -132,6 +139,23 @@ public class MyPollsView extends VerticalLayout {
 			return new Label("");
 		})).setWidth("3em");
 		if (!reduced) editCol.setFlexGrow(0);
+	}
+
+	private void updateList() {
+		if (filterText.isEmpty() && (stateCombobox.getValue() == null || stateCombobox.getValue().equals(""))) {
+			grid.setItems(pollService.findNewestByOwner(user));
+		} else {
+			Boolean closed = null;
+			if (stateCombobox.getValue() != null) {
+				if (stateCombobox.getValue().equals(STATE_COMBOBOX_CLOSED)) {
+					closed = true;
+				}
+				else if (stateCombobox.getValue().equals(STATE_COMBOBOX_OPEN)) {
+					closed = false;
+				}
+			}
+			grid.setItems(pollService.findNewestByOwner(user, filterText.getValue(), closed));
+		}
 	}
 
 }

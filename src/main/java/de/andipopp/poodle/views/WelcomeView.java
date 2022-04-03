@@ -1,14 +1,18 @@
 package de.andipopp.poodle.views;
 
-import com.vaadin.flow.component.dependency.NpmPackage;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.Locale;
+
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 @PageTitle("Welcome to Poodle")
@@ -27,8 +31,8 @@ public class WelcomeView extends VerticalLayout {
 
         add(new H1("Welcome"));
         add(new H2("This place intentionally left empty"));
-        add(new MainLayout.MenuItemInfo.LineAwesomeIcon("la la-edit"));
         add(new Paragraph("It’s a place where you can grow your own UI 🤗"));
+        add(listHttpHeaders());
         
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
@@ -36,18 +40,16 @@ public class WelcomeView extends VerticalLayout {
         getStyle().set("text-align", "center");
     }
 	
-//	/**
-//     * Simple wrapper to create icons using LineAwesome iconset. See
-//     * https://icons8.com/line-awesome
-//     */
-//    @NpmPackage(value = "line-awesome", version = "1.3.0")
-//    public class LineAwesomeIcon extends Span {
-//        public LineAwesomeIcon(String lineawesomeClassnames) {
-//            addClassNames("menu-item-icon");
-//            if (!lineawesomeClassnames.isEmpty()) {
-//                addClassNames(lineawesomeClassnames);
-//            }
-//        }
-//    }
+	private Component listHttpHeaders() {
+		VerticalLayout result = new VerticalLayout();
+		for(Iterator<String> it = VaadinRequest.getCurrent().getHeaderNames().asIterator(); it.hasNext();) {
+			String name = it.next();
+			result.add(new Paragraph(name + ": " + VaadinRequest.getCurrent().getHeader(name)));
+		}
+		Locale locale = VaadinRequest.getCurrent().getLocale();
+		result.add(new Paragraph("Locale: "+getLocale()));
+		result.add(new Paragraph(new GregorianCalendar(locale).getTimeZone().getID()));
+		return result;
+	}
 
 }

@@ -81,7 +81,7 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 					System.out.println("Did not find anything :(");
 				}
 			} catch (NotAUuidException e) {
-				//do nothing, keep the not found
+				//do nothing, keep the "not found"
 			}
 		}
 	}
