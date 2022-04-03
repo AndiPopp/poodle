@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 
 @Service
@@ -39,6 +40,10 @@ public class PollService {
     
     public List<AbstractPoll<?>> findAll() {
     	return repository.findAll();
+    }
+    
+    public List<AbstractPoll> findByOwner(User owner) {
+    	return repository.findByOwner(owner);
     }
 
     public int count() {

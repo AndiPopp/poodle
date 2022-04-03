@@ -1,7 +1,5 @@
 package de.andipopp.poodle.views;
 
-import javax.annotation.security.PermitAll;
-
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
@@ -9,13 +7,16 @@ import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.auth.AnonymousAllowed;
 
-@PageTitle("Welcome")
+@PageTitle("Welcome to Poodle")
 @Route(value = "", layout = MainLayout.class)
-@PermitAll
+@AnonymousAllowed
 public class WelcomeView extends VerticalLayout {
 
-    public WelcomeView() {
+    private static final long serialVersionUID = 1L;
+
+	public WelcomeView() {
         setSpacing(false);
 
         Image img = new Image("images/empty-plant.png", "placeholder plant");

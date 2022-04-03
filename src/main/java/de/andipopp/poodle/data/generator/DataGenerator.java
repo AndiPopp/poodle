@@ -52,18 +52,18 @@ public class DataGenerator {
             userRepository.save(admin);
 
             //polls
-            populatePollRepository(pollRepository, logger, user);
+            populatePollRepository(pollRepository, logger, user, admin);
             
             logger.info("Generated demo data");
         };
     }
     
-    private void populatePollRepository(PollRepository pollRepository, Logger logger, User owner) {
+    private void populatePollRepository(PollRepository pollRepository, Logger logger, User user, User admin) {
     	DatePoll poll = new DatePoll();
     	poll.setTitle("Master of the Universe get-together");
     	poll.setDescription("He-Man will be there.");
     	poll.setLocation("Castle Greyskull (unless specified otherwise)");
-    	poll.setOwner(owner);
+    	poll.setOwner(user);
     	
     	poll.addOption(new DateOption(
 				"With Skeletor", 
@@ -84,9 +84,32 @@ public class DataGenerator {
     			new GregorianCalendar(2022, 4-1, 11, 15, 15).getTime(), 
     			new GregorianCalendar(2022, 4-1, 11, 16, 45).getTime()
     		));
-    	
-    	
     	pollRepository.save(poll);
+    	
+    	poll = new DatePoll();
+    	poll.setTitle("Becoming Hokage");
+    	poll.setLocation("Konohagekure");
+    	poll.setOwner(user);
+    	poll.addOption(new DateOption(
+    			new GregorianCalendar(2022, 11-1, 23, 9, 10).getTime(), 
+    			new GregorianCalendar(2022, 11-1, 23, 10, 40).getTime()
+    		));
+    	poll.addOption(new DateOption(
+    			new GregorianCalendar(2022, 11-1, 23, 19, 10).getTime(), 
+    			new GregorianCalendar(2022, 11-1, 23, 20, 40).getTime()
+    		));
+    	pollRepository.save(poll);
+    	
+    	poll = new DatePoll();
+    	poll.setTitle("Only for admin's eyes");
+    	poll.setDescription("Only the admin should see this");
+    	poll.setOwner(admin);
+    	poll.addOption(new DateOption(
+    			new GregorianCalendar(2022, 1-1, 1, 8, 0).getTime(), 
+    			new GregorianCalendar(2022, 1-1, 1, 10, 0).getTime()
+    		));
+    	pollRepository.save(poll);
+    	
     	logger.info("Created " + pollRepository.count() +" example polls.");
     }
 

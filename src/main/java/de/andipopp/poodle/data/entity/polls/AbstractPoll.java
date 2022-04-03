@@ -31,6 +31,7 @@ public abstract class AbstractPoll<O extends AbstractOption<?>> extends Abstract
 	/**
 	 * The poll's title
 	 */
+	@NotNull
 	@NotEmpty
 	private String title;
 	
@@ -43,6 +44,7 @@ public abstract class AbstractPoll<O extends AbstractOption<?>> extends Abstract
 	 * The poll's owner
 	 */
 	@ManyToOne
+	@NotNull
 	private User owner;
 	
 	@NotNull

@@ -21,6 +21,10 @@ public class UserService {
     public Optional<User> get(UUID id) {
         return repository.findById(id);
     }
+    
+    public User get(String userName) {
+    	return repository.findByUsername(userName);
+    }
 
     public User update(User entity) {
         return repository.save(entity);
