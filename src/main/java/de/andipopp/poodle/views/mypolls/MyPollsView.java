@@ -6,9 +6,9 @@ import java.time.format.FormatStyle;
 import javax.annotation.security.PermitAll;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -129,7 +129,8 @@ public class MyPollsView extends VerticalLayout {
 //		grid.addColumn("id"); //for debug purposes
 //		grid.getColumns().forEach(col -> col.setAutoWidth(true));
 		grid.addColumn(new ComponentRenderer<>(poll -> {
-			return new EditPollButton(poll);
+			if (poll.getOwner().equals(user)) return new EditPollButton(poll);
+			return new Label("");
 		})).setFlexGrow(0);
 //		grid.addColumn(new ComponentRenderer<>(poll -> new GotoPollButtonAnchor(poll))).setFlexGrow(0);
 	}
