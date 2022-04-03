@@ -31,7 +31,7 @@ import de.andipopp.poodle.views.MainLayout;
 @PageTitle("My Polls")
 @Route(value = "mypolls", layout = MainLayout.class)
 @PermitAll
-public class MyPollsView extends VerticalLayout {
+public class MyPollsView extends HorizontalLayout {
 
 	private static final long serialVersionUID = 1L;
 
@@ -41,7 +41,7 @@ public class MyPollsView extends VerticalLayout {
 	
 	private static final String STATE_COMBOBOX_CLOSED = "Closed";
 	
-	private static final String WIDTH = "1000px";
+	private static final String MAX_CONTENT_WIDTH = "1000px";
 	
 	User user;
 	
@@ -62,21 +62,18 @@ public class MyPollsView extends VerticalLayout {
     	
     	addClassName("myPolls-view");
     	setHeight("100%");
-    	setMaxWidth(WIDTH);
     	
     	boolean reduced = VaadinRequest.getCurrent().getHeader("user-agent").contains("Mobile");
     	
         configureGrid(reduced);
         configureDatePollForm();
         
+        VerticalLayout content = new VerticalLayout(getToolbar(reduced), grid);
+        content.setMaxWidth(MAX_CONTENT_WIDTH);
         add(
-        	getToolbar(reduced),
-        	grid
-//        	getContent()
+        		content,
+        		datePollForm
         );
-        setJustifyContentMode(JustifyContentMode.CENTER);
-        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-        
         updateList();
     }
 
