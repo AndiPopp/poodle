@@ -1,5 +1,7 @@
 package de.andipopp.poodle.data.service;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.SortedSet;
@@ -47,6 +49,15 @@ public class PollService {
     	return repository.findAllByOrderByCreateDateDesc();
     }
     
+    public List<AbstractPoll> findAllNewest(String titleFilter) { //TODO probably faster when done correctly in the backend
+    	List<AbstractPoll> list = findAllNewest();
+    	List<AbstractPoll> result = new LinkedList<AbstractPoll>();
+    	for(AbstractPoll poll : list) {
+    		if (poll.getTitle().toLowerCase().contains(titleFilter.toLowerCase())) result.add(poll);
+    	}
+    	return result;
+    }
+    
     public List<AbstractPoll> findByOwner(User owner) {
     	return repository.findByOwner(owner);
     }
@@ -55,6 +66,8 @@ public class PollService {
     	return repository.findByOwnerOrderByCreateDateDesc(owner);
     }
 
+
+    
     public int count() {
         return (int) repository.count();
     }
