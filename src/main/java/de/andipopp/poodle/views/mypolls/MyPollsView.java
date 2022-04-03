@@ -31,7 +31,7 @@ public class MyPollsView extends VerticalLayout {
 	User user;
 	
 	PollService pollService;
-	 
+
 	Grid<AbstractPoll> grid = new Grid<AbstractPoll>(AbstractPoll.class);
 	
 	TextField filterText = new TextField();
