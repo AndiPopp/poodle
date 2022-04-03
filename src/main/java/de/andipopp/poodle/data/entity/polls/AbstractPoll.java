@@ -1,9 +1,11 @@
 package de.andipopp.poodle.data.entity.polls;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
@@ -30,6 +32,16 @@ public abstract class AbstractPoll<O extends AbstractOption<?>> extends Abstract
 	 * ========== */
 	
 	/**
+	 * The maximum retention from the current time until the poll is deleted in days
+	 */
+	private static int MAX_RETENTION_DAYS = 500; //TODO load from config
+	
+	/**
+	 * The default retention from the current time until the poll is deleted in days
+	 */
+	private static int DEFUALT_RETENTION_DAYS = 180; //TODO load from config
+	
+	/**
 	 * The poll's title
 	 */
 	@NotNull
@@ -52,7 +64,14 @@ public abstract class AbstractPoll<O extends AbstractOption<?>> extends Abstract
 	 * The date this poll was created
 	 */
 	@NotNull
-	private Date createDate;
+	private Instant createDate;
+	
+	/**
+	 * The date by which this poll is to be deleted
+	 * @return
+	 */
+	@NotNull
+	private Instant deletyByDate;
 	
 	@NotNull
 	@OneToMany(cascade = CascadeType.PERSIST, targetEntity=AbstractOption.class)
@@ -77,7 +96,8 @@ public abstract class AbstractPoll<O extends AbstractOption<?>> extends Abstract
 	 */
 	public AbstractPoll() {
 		this.options = new ArrayList<O>();
-		this.createDate = new Date();
+		this.createDate = Instant.now();
+		this.deletyByDate = this.createDate.plusSeconds(DEFUALT_RETENTION_DAYS*24*60*60);
 	}
 	
 	/**
@@ -129,16 +149,42 @@ public abstract class AbstractPoll<O extends AbstractOption<?>> extends Abstract
 	 * Getter for {@link #createDate}
 	 * @return the {@link #createDate}
 	 */
-	public Date getCreateDate() {
+	public Instant getCreateDate() {
 		return createDate;
+	}
+	
+	public LocalDateTime getLocalCreateDate() {
+		return LocalDateTime.ofInstant(createDate, TimeZone.getDefault().toZoneId()); //TODO adjust to user's time zone (from VaadinRequest?)
 	}
 
 	/**
 	 * Setter for {@link #createDate}
 	 * @param createDate the {@link #createDate} to set
 	 */
-	public void setCreateDate(Date createDate) {
+	public void setCreateDate(Instant createDate) {
 		this.createDate = createDate;
+	}
+	
+	/**
+	 * Getter for {@link #deletyByDate}
+	 * @return the {@link #deletyByDate}
+	 */
+	public Instant getDeletyByDate() {
+		return deletyByDate;
+	}
+
+	/**
+	 * Setter for {@link #deletyByDate}.
+	 * Respects the {@link #MAX_RETENTION_DAYS}
+	 * @param deletyByDate the {@link #deletyByDate} to set
+	 */
+	public void setDeletyByDate(Instant deletyByDate) {
+		Instant max = Instant.now().plusSeconds(MAX_RETENTION_DAYS*24*60*60);
+		if (deletyByDate.compareTo(max) > 0) {
+			this.deletyByDate = max;
+		}else {
+			this.deletyByDate = deletyByDate;
+		}
 	}
 
 	/**

@@ -1,11 +1,14 @@
 package de.andipopp.poodle.views.mypolls;
 
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+
 import javax.annotation.security.PermitAll;
 
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.renderer.LocalDateRenderer;
+import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinRequest;
@@ -65,11 +68,16 @@ public class MyPollsView extends VerticalLayout {
 		grid.addClassName("polls-grid");
 		grid.setSizeFull();
 		grid.setColumns("title");
-		grid.addColumn("createDate");
+//		grid.addColumn("createDate");
 //		grid.addColumn(new LocalDateRenderer<>(
-//		        AbstractPoll::getCreateDate,
+//		        AbstractPoll::getLocalCreateDate,
 //		        "dd/MM/yyyy"))
-//		    .setHeader("Estimated delivery date");
+//		    .setHeader("Creation Date");
+		grid.addColumn(new LocalDateTimeRenderer<>(
+				AbstractPoll::getLocalCreateDate,
+		        DateTimeFormatter.ofLocalizedDateTime(
+		                FormatStyle.MEDIUM)))
+		    .setHeader("Creation Date").setComparator(AbstractPoll::getCreateDate);
 		grid.addColumns("numberOfOptions", "closed");
 		
 	}
