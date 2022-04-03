@@ -25,7 +25,7 @@ import de.andipopp.poodle.data.entity.AbstractEntity;
 import de.andipopp.poodle.data.entity.User;
 
 @Entity
-public abstract class AbstractPoll<O extends AbstractOption<?>> extends AbstractEntity {
+public abstract class AbstractPoll<O extends AbstractOption<? extends AbstractPoll<O>>> extends AbstractEntity {
 	
 	/* ==========
 	 * = Fields =

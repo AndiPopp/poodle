@@ -16,7 +16,7 @@ import de.andipopp.poodle.data.entity.AbstractEntity;
  * @author Andi Popp
  */
 @Entity
-public abstract class AbstractOption<P extends AbstractPoll<?>> extends AbstractEntity implements Comparable<DateOption> {
+public abstract class AbstractOption<P extends AbstractPoll<? extends AbstractOption<P>>> extends AbstractEntity implements Comparable<DateOption> {
 	
 	@ManyToOne(targetEntity=AbstractPoll.class)
 	private P parent;
