@@ -5,6 +5,8 @@ import java.time.format.FormatStyle;
 
 import javax.annotation.security.PermitAll;
 
+import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -31,9 +33,11 @@ public class MyPollsView extends VerticalLayout {
 	
 	PollService pollService;
 	
-	
 	Grid<AbstractPoll> grid = new Grid<AbstractPoll>(AbstractPoll.class);
+	
 	TextField filterText = new TextField();
+	
+	ComboBox<String> stateCombobox = new ComboBox<String>("State");
 	
     public MyPollsView(UserService userService, PollService pollService) {
     	String userName = VaadinRequest.getCurrent().getUserPrincipal().getName();
