@@ -71,7 +71,7 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	 * @return
 	 */
 	@NotNull
-	private Instant deletyByDate;
+	private LocalDate deleteDate;
 	
 	@NotNull
 	@OneToMany(cascade = CascadeType.ALL, targetEntity=AbstractOption.class)
@@ -102,7 +102,7 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	public AbstractPoll() {
 		this.options = new ArrayList<O>();
 		this.createDate = Instant.now();
-		this.deletyByDate = this.createDate.plusSeconds(DEFUALT_RETENTION_DAYS*24*60*60);
+		this.deleteDate = LocalDate.now(); //LocalDate.ofInstant(createDate.plusSeconds(DEFUALT_RETENTION_DAYS*24*60*60), ZoneId.systemDefault());
 		this.votes = new ArrayList<>();
 	}
 	
@@ -112,8 +112,13 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	 */
 	public AbstractPoll(String title, String description) {
 		this();
-		this.title = title;
-		this.description = description;
+		setTitle(title);
+		setDescription(description);
+	}
+	
+	public AbstractPoll(User owner) {
+		this();
+		setOwner(owner);
 	}
 	
 	/* ================================
@@ -172,25 +177,26 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	}
 	
 	/**
-	 * Getter for {@link #deletyByDate}
-	 * @return the {@link #deletyByDate}
+	 * Getter for {@link #deleteDate}
+	 * @return the {@link #deleteDate}
 	 */
-	public Instant getDeletyByDate() {
-		return deletyByDate;
+	public LocalDate getDeleteDate() {
+		return deleteDate;
 	}
 
 	/**
-	 * Setter for {@link #deletyByDate}.
+	 * Setter for {@link #deleteDate}.
 	 * Respects the {@link #MAX_RETENTION_DAYS}
-	 * @param deletyByDate the {@link #deletyByDate} to set
+	 * @param deletyByDate the {@link #deleteDate} to set
 	 */
-	public void setDeletyByDate(Instant deletyByDate) {
-		Instant max = Instant.now().plusSeconds(MAX_RETENTION_DAYS*24*60*60);
-		if (deletyByDate.compareTo(max) > 0) {
-			this.deletyByDate = max;
-		}else {
-			this.deletyByDate = deletyByDate;
-		}
+	public void setDeleteDate(LocalDate deletyByDate) {
+		this.deleteDate = deletyByDate;
+//		Instant max = Instant.now().plusSeconds(MAX_RETENTION_DAYS*24*60*60);
+//		if (deletyByDate.compareTo(max) > 0) {
+//			this.deletyByDate = max;
+//		}else {
+//			this.deletyByDate = deletyByDate;
+//		}
 	}
 
 	/**

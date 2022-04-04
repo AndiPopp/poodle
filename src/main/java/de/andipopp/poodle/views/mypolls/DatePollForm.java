@@ -1,7 +1,10 @@
 package de.andipopp.poodle.views.mypolls;
 
 import java.text.DecimalFormat;
-import java.util.TimeZone;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
@@ -41,9 +44,9 @@ public class DatePollForm extends FormLayout {
 	
 	TextField location = new TextField("Location");
 	
-	ComboBox<TimeZone> timeZone = new ComboBox<TimeZone>("Time Zone");
+	ComboBox<ZoneId> timeZone = new ComboBox<ZoneId>("Time Zone");
 	
-	DatePicker deleteByDate = new DatePicker("Delete by");
+	DatePicker deleteDate = new DatePicker("Delete by");
 	
 	Button save = new Button("Save");
 	
@@ -56,14 +59,14 @@ public class DatePollForm extends FormLayout {
 	 */
 	public DatePollForm() {
 		addClassName("datepoll-form");
-		timeZone.setItems(TimeUtils.getSupportedTimeZonesByOffset(false));
+		timeZone.setItems(TimeUtils.getSupportedZoneIdsInAlphabeticalOrder());
 		DecimalFormat fmt = new DecimalFormat("#0");
 		fmt.setPositivePrefix("+");
-		timeZone.setItemLabelGenerator(z -> "(UTC"+fmt.format(z.getRawOffset()/60/60/1000)+") "+z.getID());
+		timeZone.setItemLabelGenerator(z -> z.getDisplayName(TextStyle.NARROW, Locale.US) + " (UTC" + z.getRules().getOffset(Instant.now())+")");
 		
 		binder.bindInstanceFields(this);
 		
-		add(title, description, location, timeZone, deleteByDate, createButtonLayout());
+		add(title, description, location, timeZone, deleteDate, createButtonLayout());
 		this.setWidthFull();
 	}
 	
@@ -93,6 +96,8 @@ public class DatePollForm extends FormLayout {
 	public void setPoll(DatePoll poll) {
 		this.poll = poll;
 		binder.readBean(poll);
+//		if (poll!=null) System.out.println(poll.getDeletyByDate());
+//		if (poll!=null) deleteDate.setValue(poll.getDeletyByDate());
 	}
 	
 	// Events

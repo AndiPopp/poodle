@@ -116,7 +116,7 @@ public class MyPollsView extends HorizontalLayout {
 	}
 	
 	private void addDatePoll() {
-		editPoll(new DatePoll());
+		editPoll(new DatePoll(user));
 	}
 
 	private void configureDatePollForm() {

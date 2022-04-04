@@ -1,7 +1,7 @@
 package de.andipopp.poodle.data.entity.polls;
 
+import java.time.ZoneId;
 import java.util.Iterator;
-import java.util.TimeZone;
 
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
@@ -10,6 +10,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 
 import de.andipopp.poodle.PoodleApplication;
+import de.andipopp.poodle.data.entity.User;
 
 @Entity
 public class DatePoll extends AbstractPoll<DatePoll, DateOption> {
@@ -18,7 +19,7 @@ public class DatePoll extends AbstractPoll<DatePoll, DateOption> {
 	 * The polls time zone
 	 */
 	@NotNull
-	private TimeZone timeZone;
+	private ZoneId timeZone;
 	
 	/**
 	 * An optional location
@@ -29,8 +30,7 @@ public class DatePoll extends AbstractPoll<DatePoll, DateOption> {
 	 * Construct new poll with random RUID
 	 */
 	public DatePoll() {
-		this.setTitle("Choose a title...");
-		this.timeZone = TimeZone.getDefault();
+		initEmpty();
 	}
 
 	/**
@@ -39,17 +39,29 @@ public class DatePoll extends AbstractPoll<DatePoll, DateOption> {
 	 * @param timeZone
 	 * @param location
 	 */
-	public DatePoll(@NotNull String title, String description, @NotNull TimeZone timeZone, String location) {
+	public DatePoll(@NotNull String title, String description, @NotNull ZoneId timeZone, String location) {
 		super(title, description);
 		this.timeZone = timeZone;
 		this.location = location;
 	}
 
 	/**
+	 * @param owner
+	 */
+	public DatePoll(User owner) {
+		super(owner);
+		initEmpty();
+	}
+
+	private void initEmpty() {
+		this.timeZone = ZoneId.systemDefault();
+	}
+	
+	/**
 	 * Getter for {@link #timeZone}
 	 * @return the {@link #timeZone}
 	 */
-	public TimeZone getTimeZone() {
+	public ZoneId getTimeZone() {
 		return timeZone;
 	}
 
@@ -57,7 +69,7 @@ public class DatePoll extends AbstractPoll<DatePoll, DateOption> {
 	 * Setter for {@link #timeZone}
 	 * @param timeZone the {@link #timeZone} to set
 	 */
-	public void setTimeZone(TimeZone timeZone) {
+	public void setTimeZone(ZoneId timeZone) {
 		this.timeZone = timeZone;
 	}
 	
@@ -98,7 +110,7 @@ public class DatePoll extends AbstractPoll<DatePoll, DateOption> {
 		//add location
 		if (getLocation() != null) result += "\r\nLocation: "  + getLocation();
 		//add time zone
-		if (timeZone != null) result += "\r\nTimeZome: " + timeZone.getID();
+		if (timeZone != null) result += "\r\nTimeZome: " + timeZone;
 		
 		return result;
 	}

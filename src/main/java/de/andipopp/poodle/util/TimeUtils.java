@@ -1,6 +1,9 @@
 package de.andipopp.poodle.util;
 
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TimeZone;
 import java.util.TreeSet;
@@ -24,5 +27,16 @@ public class TimeUtils {
 			if (includeEtcs || !id.startsWith("Etc")) set.add(TimeZone.getTimeZone(id));
 		}
 		return set;
+	}
+	
+	public static List<ZoneId> getSupportedZoneIdsInAlphabeticalOrder() {
+		SortedSet<String> ids = new TreeSet<String>();
+		ids.addAll(ZoneId.getAvailableZoneIds());
+		
+		List<ZoneId> zoneIds = new ArrayList<>(ids.size());
+		for(String id : ids) {
+			zoneIds.add(ZoneId.of(id));
+		}
+		return zoneIds;
 	}
 }
