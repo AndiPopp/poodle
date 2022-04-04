@@ -19,3 +19,4 @@ drivers/
 error-screenshots/
 webpack.generated.js
 /bin/
+/misc/

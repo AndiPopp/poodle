@@ -123,24 +123,6 @@ public class DateOption extends AbstractOption<DatePoll> {
 	public void setLocation(String location) {
 		this.location = location;
 	}
-
-	@Override
-	public int compareTo(DateOption arg0) {
-		//first check if UUID are the same
-		if (this.getId().equals(arg0.getId())) return 0;
-		
-		//compare start date first
-		int result = this.start.compareTo(arg0.start);
-		if (result != 0) return result;
-		//if equal, sort by end date
-		result = this.end.compareTo(arg0.end);
-		if (result != 0) return result;
-		//if still equal, sort by location
-		result = this.location.compareTo(arg0.location);
-		if (result != 0) return result;
-		//else sort by RUID
-		return this.getId().compareTo(arg0.getId());
-	}
 	
 	/**
 	 * Construct a VEvent from this date option
