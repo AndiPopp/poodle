@@ -1,15 +1,27 @@
 package de.andipopp.poodle.data.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import de.andipopp.poodle.data.Role;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import de.andipopp.poodle.data.Role;
+import de.andipopp.poodle.data.entity.polls.AbstractOption;
+import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 
 @Entity
 @Table(name = "application_user")
@@ -25,6 +37,10 @@ public class User extends AbstractEntity {
     @Lob
     private String profilePictureUrl;
 
+    @OneToMany(cascade = CascadeType.ALL, targetEntity=AbstractPoll.class)
+	@LazyCollection(LazyCollectionOption.FALSE)
+    List<AbstractPoll<?>> polls = new ArrayList<>();
+    
     public String getUsername() {
         return username;
     }

@@ -3,8 +3,12 @@
  */
 package de.andipopp.poodle.data.entity.polls;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
@@ -20,6 +24,9 @@ public abstract class AbstractOption<P extends AbstractPoll<? extends AbstractOp
 	
 	@ManyToOne(targetEntity=AbstractPoll.class)
 	private P parent;
+	
+	@OneToMany(cascade = CascadeType.ALL, targetEntity=Answer.class)
+	private List<Answer<? extends AbstractOption<P>>> answers;
 	
 	/**
 	 * An optional human readable title
@@ -80,6 +87,22 @@ public abstract class AbstractOption<P extends AbstractPoll<? extends AbstractOp
 	 */
 	public void setParent(P parent) {
 		this.parent = parent;
+	}
+
+	/**
+	 * Getter for {@link #answers}
+	 * @return the {@link #answers}
+	 */
+	public List<Answer<? extends AbstractOption<P>>> getAnswers() {
+		return answers;
+	}
+
+	/**
+	 * Setter for {@link #answers}
+	 * @param answers the {@link #answers} to set
+	 */
+	public void setAnswers(List<Answer<? extends AbstractOption<P>>> answers) {
+		this.answers = answers;
 	}
 
 	

@@ -1,9 +1,11 @@
 package de.andipopp.poodle.data.entity.polls;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -41,11 +43,11 @@ public class Vote<O extends AbstractOption<? extends AbstractPoll<O>>> extends A
 	@NotNull
 	@OneToMany(cascade = CascadeType.ALL, targetEntity=Answer.class)
 	@LazyCollection(LazyCollectionOption.FALSE)
-	Set<Answer<O>> answers; //TODO this should probably be a map, so every option gets max one answer, but I have no idea how to configure this in JPA/Hibernate
+	List<Answer<O>> answers; //TODO this should probably be a map, so every option gets max one answer, but I have no idea how to configure this in JPA/Hibernate
 	
 	@NotNull
-	@ManyToOne(cascade = CascadeType.PERSIST, targetEntity=AbstractPoll.class)
-	private AbstractPoll<O> parent;
+	@ManyToOne(targetEntity=AbstractPoll.class)
+	private AbstractPoll<O> parent; 
 	
 	/**
 	 * An optional user who owns this vote.
@@ -66,7 +68,7 @@ public class Vote<O extends AbstractOption<? extends AbstractPoll<O>>> extends A
 	 * Construct a new Vote with an empty hash set for {@link #answers}
 	 */
 	public Vote() {
-		this.answers = new HashSet<>();
+		this.answers = new ArrayList<>();
 		this.displayName = "";
 	}
 	
@@ -114,7 +116,7 @@ public class Vote<O extends AbstractOption<? extends AbstractPoll<O>>> extends A
 	 * Getter for {@link #answers}
 	 * @return the {@link #answers}
 	 */
-	public Set<Answer<O>> getAnswers() {
+	public List<Answer<O>> getAnswers() {
 		return answers;
 	}
 
@@ -122,7 +124,7 @@ public class Vote<O extends AbstractOption<? extends AbstractPoll<O>>> extends A
 	 * Setter for {@link #answers}
 	 * @param answers the {@link #answers} to set
 	 */
-	public void setAnswers(Set<Answer<O>> answers) {
+	public void setAnswers(List<Answer<O>> answers) {
 		this.answers = answers;
 	}
 	

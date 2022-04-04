@@ -75,7 +75,7 @@ public abstract class AbstractPoll<O extends AbstractOption<? extends AbstractPo
 	private Instant deletyByDate;
 	
 	@NotNull
-	@OneToMany(cascade = CascadeType.PERSIST, targetEntity=AbstractOption.class)
+	@OneToMany(cascade = CascadeType.ALL, targetEntity=AbstractOption.class)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<O> options;
 	
@@ -84,12 +84,12 @@ public abstract class AbstractPoll<O extends AbstractOption<? extends AbstractPo
 	 * If this field is not null, this indicates that the poll is closed.
 	 */
 	@Nullable
-	@OneToMany(cascade = CascadeType.MERGE, targetEntity=AbstractOption.class)
+	@OneToMany(cascade = CascadeType.ALL, targetEntity=AbstractOption.class)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<O> winners;
 	
 	@NotNull
-	@OneToMany(cascade = CascadeType.PERSIST, targetEntity=Vote.class)
+	@OneToMany(cascade = CascadeType.ALL, targetEntity=Vote.class)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<Vote<O>> votes;
 	
