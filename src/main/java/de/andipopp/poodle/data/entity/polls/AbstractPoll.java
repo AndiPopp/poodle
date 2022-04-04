@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -87,6 +88,11 @@ public abstract class AbstractPoll<O extends AbstractOption<? extends AbstractPo
 	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<O> winners;
 	
+	@NotNull
+	@OneToMany(cascade = CascadeType.PERSIST, targetEntity=Vote.class)
+	@LazyCollection(LazyCollectionOption.FALSE)
+	private List<Vote<O>> votes;
+	
 	/* ================
 	 * = Constructors =
 	 * ================ */
@@ -98,6 +104,7 @@ public abstract class AbstractPoll<O extends AbstractOption<? extends AbstractPo
 		this.options = new ArrayList<O>();
 		this.createDate = Instant.now();
 		this.deletyByDate = this.createDate.plusSeconds(DEFUALT_RETENTION_DAYS*24*60*60);
+		this.votes = new ArrayList<>();
 	}
 	
 	/**
@@ -228,7 +235,7 @@ public abstract class AbstractPoll<O extends AbstractOption<? extends AbstractPo
 	
 	/**
 	 * Remove a given option from the set of options
-	 * @param option the options to remove
+	 * @param option the option to remove
 	 * @return true if the option was in the poll and has been removed, false otherwise
 	 */
 	public boolean removeOption(O option) {
@@ -289,9 +296,76 @@ public abstract class AbstractPoll<O extends AbstractOption<? extends AbstractPo
 		if (winners == null) return null;
 		return winners.iterator();
 	}
+
+	/**
+	 * Getter for {@link #votes}
+	 * @return the {@link #votes}
+	 */
+	public List<Vote<O>> getVotes() {
+		return votes;
+	}
+
+	/**
+	 * Setter for {@link #votes}
+	 * @param votes the {@link #votes} to set
+	 */
+	protected void setVotes(List<Vote<O>> votes) {
+		this.votes = votes;
+	}
+	
+	/**
+	 * Create a new empty vote for this poll and add it to its votes 
+	 * @return a new empty vote for this poll's option 
+	 */
+	public Vote<O> addEmptyVote(){
+		return new Vote<>(this);
+	}
+	
+	/**
+	 * Add a vote to {@link #votes}
+	 * @param vote the vote to add
+	 */
+	public void addVote(Vote<O> vote) {
+		votes.add(vote);
+	}
+	/**
+	 * Remove a specific vote from {@link #votes}
+	 * @param vote the vote to remove
+	 * @return true if the vote was in the poll and has been removed, false otherwise
+	 */
+	public boolean removeVote(Vote<O> vote) {
+		if (votes.contains(vote)) {
+			votes.remove(vote);
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Remove a vote with a given UUID from {@link #votes}
+	 * @param id the UUID of the vote to remove
+	 * @return if the a vote with the given UUID was in {@link #votes} and has been removed
+	 */
+	public boolean removeVote(UUID id) {
+		for(Vote<O> vote : votes) {
+			if (vote.getId().equals(id)) return removeVote(vote);
+		}
+		return false;
+	}
+	
+	/**
+	 * Remove a vote with a given UUID from {@link #votes}
+	 * @param id string representation of the UUID of the vote to remove
+	 * @return if the a vote with the given UUID was in {@link #votes} and has been removed
+	 */
+	public boolean removeVote(String id) {
+		return removeVote(UUID.fromString(id));
+	}
 	
 	/* =================
 	 * = Other Methods =
 	 * ================= */
+	
 	
 }

@@ -84,6 +84,8 @@ public class DataGenerator {
     			new GregorianCalendar(2022, 4-1, 11, 15, 15).getTime(), 
     			new GregorianCalendar(2022, 4-1, 11, 16, 45).getTime()
     		));
+    	poll.addEmptyVote();
+    	logger.info(" Votes added: "+poll.getVotes().size());
     	pollRepository.save(poll);
     	
     	poll = new DatePoll();
