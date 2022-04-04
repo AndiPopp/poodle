@@ -318,7 +318,9 @@ public abstract class AbstractPoll<O extends AbstractOption<? extends AbstractPo
 	 * @return a new empty vote for this poll's option 
 	 */
 	public Vote<O> addEmptyVote(){
-		return new Vote<>(this);
+		Vote<O> vote = new Vote<O>(this);
+		votes.add(vote);
+		return vote;
 	}
 	
 	/**

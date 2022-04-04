@@ -40,10 +40,16 @@ public class Answer<O extends AbstractOption<? extends AbstractPoll<O>>> extends
 	/**
 	 * 
 	 */
+	public Answer() {
+		super();
+	}
+	
+	/**
+	 * 
+	 */
 	public Answer(@NotNull O option) {
 		this.option = option;
 	}
-	
 	
 	/**
 	 * @param option

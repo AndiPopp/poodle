@@ -16,14 +16,22 @@ import de.andipopp.poodle.data.Role;
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.data.entity.polls.DateOption;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
+import de.andipopp.poodle.data.service.OptionRepository;
 import de.andipopp.poodle.data.service.PollRepository;
 import de.andipopp.poodle.data.service.UserRepository;
+import de.andipopp.poodle.data.service.VoteRepository;
 
 @SpringComponent
 public class DataGenerator {
 
     @Bean
-    public CommandLineRunner loadData(PasswordEncoder passwordEncoder, UserRepository userRepository, PollRepository pollRepository) {
+    public CommandLineRunner loadData(
+    		PasswordEncoder passwordEncoder, 
+    		UserRepository userRepository, 
+    		PollRepository pollRepository,
+    		OptionRepository optionRepository,
+    		VoteRepository voteRepository
+    ) {
         return args -> {
             Logger logger = LoggerFactory.getLogger(getClass());
             if (userRepository.count() != 0L) {
@@ -52,13 +60,19 @@ public class DataGenerator {
             userRepository.save(admin);
 
             //polls
-            populatePollRepository(pollRepository, logger, user, admin);
+            populatePollRepository(logger,pollRepository, optionRepository, voteRepository, user, admin);
             
             logger.info("Generated demo data");
         };
     }
     
-    private void populatePollRepository(PollRepository pollRepository, Logger logger, User user, User admin) {
+    private void populatePollRepository(
+    		Logger logger,
+    		PollRepository pollRepository,
+    		OptionRepository optionRepository,
+    		VoteRepository voteRepository,
+    		User user, 
+    		User admin) {
     	DatePoll poll = new DatePoll();
     	poll.setTitle("Master of the Universe get-together");
     	poll.setDescription("He-Man will be there.");
@@ -122,7 +136,9 @@ public class DataGenerator {
     		));
     	pollRepository.save(poll);
     	
-    	logger.info("Created " + pollRepository.count() +" example polls.");
+    	logger.info("Created " + pollRepository.count() + " example polls with " 
+    			+ optionRepository.count() + " options and "
+    			+ voteRepository.count() + " votes.");
     }
 
 }

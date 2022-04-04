@@ -32,7 +32,7 @@ public class WelcomeView extends VerticalLayout {
         add(new H1("Welcome"));
         add(new H2("This place intentionally left empty"));
         add(new Paragraph("It’s a place where you can grow your own UI 🤗"));
-        add(listHttpHeaders());
+//        add(listHttpHeaders());
         
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
