@@ -1,6 +1,5 @@
 package de.andipopp.poodle.data.entity.polls;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TimeZone;
 

@@ -3,7 +3,8 @@
  */
 package de.andipopp.poodle.data.entity.polls;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -27,7 +28,7 @@ public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends Abst
 	private P parent;
 	
 	@OneToMany(cascade = CascadeType.ALL, targetEntity=Answer.class)
-	private List<Answer<P,O>> answers;
+	private Set<Answer<P,O>> answers;
 	
 	/**
 	 * An optional human readable title
@@ -42,7 +43,7 @@ public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends Abst
 	 * Empty constructor
 	 */
 	public AbstractOption() {
-		
+		this.answers = new HashSet<>();
 	}
 
 	/**
@@ -94,7 +95,7 @@ public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends Abst
 	 * Getter for {@link #answers}
 	 * @return the {@link #answers}
 	 */
-	public List<Answer<P,O>> getAnswers() {
+	public Set<Answer<P,O>> getAnswers() {
 		return answers;
 	}
 
@@ -102,7 +103,7 @@ public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends Abst
 	 * Setter for {@link #answers}
 	 * @param answers the {@link #answers} to set
 	 */
-	public void setAnswers(List<Answer<P,O>> answers) {
+	public void setAnswers(Set<Answer<P,O>> answers) {
 		this.answers = answers;
 	}
 
