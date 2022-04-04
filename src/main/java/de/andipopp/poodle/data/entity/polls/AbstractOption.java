@@ -20,13 +20,14 @@ import de.andipopp.poodle.data.entity.AbstractEntity;
  * @author Andi Popp
  */
 @Entity
-public abstract class AbstractOption<P extends AbstractPoll<? extends AbstractOption<P>>> extends AbstractEntity {
-	
+//public abstract class AbstractOption<P extends AbstractPoll<? extends AbstractOption<P>>> extends AbstractEntity {
+public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> extends AbstractEntity {	
+
 	@ManyToOne(targetEntity=AbstractPoll.class)
 	private P parent;
 	
 	@OneToMany(cascade = CascadeType.ALL, targetEntity=Answer.class)
-	private List<Answer<? extends AbstractOption<P>>> answers;
+	private List<Answer<P,O>> answers;
 	
 	/**
 	 * An optional human readable title
@@ -93,7 +94,7 @@ public abstract class AbstractOption<P extends AbstractPoll<? extends AbstractOp
 	 * Getter for {@link #answers}
 	 * @return the {@link #answers}
 	 */
-	public List<Answer<? extends AbstractOption<P>>> getAnswers() {
+	public List<Answer<P,O>> getAnswers() {
 		return answers;
 	}
 
@@ -101,7 +102,7 @@ public abstract class AbstractOption<P extends AbstractPoll<? extends AbstractOp
 	 * Setter for {@link #answers}
 	 * @param answers the {@link #answers} to set
 	 */
-	public void setAnswers(List<Answer<? extends AbstractOption<P>>> answers) {
+	public void setAnswers(List<Answer<P,O>> answers) {
 		this.answers = answers;
 	}
 

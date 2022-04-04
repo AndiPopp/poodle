@@ -176,7 +176,7 @@ public class MyPollsView extends HorizontalLayout {
 		if (!reduced) editCol.setFlexGrow(0);
 	}
 
-	private void editPoll(AbstractPoll<?> poll) {
+	private void editPoll(AbstractPoll<?,?> poll) {
 //		System.out.println("Editing "+poll.getTitle());
 		if (poll instanceof DatePoll) {
 			DatePoll datePoll = (DatePoll) poll;

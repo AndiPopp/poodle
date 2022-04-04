@@ -23,11 +23,11 @@ public class PollService {
         this.repository = repository;
     }
 
-    public Optional<AbstractPoll<?>> get(UUID id) {
+    public Optional<AbstractPoll<?,?>> get(UUID id) {
         return repository.findById(id);
     }
 
-    public AbstractPoll<?> update(AbstractPoll<?> entity) {
+    public AbstractPoll<?,?> update(AbstractPoll<?,?> entity) {
         return repository.save(entity);
     }
 
@@ -35,11 +35,11 @@ public class PollService {
         repository.deleteById(id);
     }
 
-    public Page<AbstractPoll<?>> list(Pageable pageable) {
+    public Page<AbstractPoll<?,?>> list(Pageable pageable) {
         return repository.findAll(pageable);
     }
     
-    public List<AbstractPoll<?>> findAll() {
+    public List<AbstractPoll<?,?>> findAll() {
     	return repository.findAll();
     }
     

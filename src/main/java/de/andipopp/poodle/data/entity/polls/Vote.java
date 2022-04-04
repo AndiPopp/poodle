@@ -31,7 +31,7 @@ import de.andipopp.poodle.data.entity.User;
  *
  */
 @Entity
-public class Vote<O extends AbstractOption<? extends AbstractPoll<O>>> extends AbstractEntity {
+public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> extends AbstractEntity {
 
 	/* ==========
 	 * = Fields =
@@ -43,11 +43,11 @@ public class Vote<O extends AbstractOption<? extends AbstractPoll<O>>> extends A
 	@NotNull
 	@OneToMany(cascade = CascadeType.ALL, targetEntity=Answer.class)
 	@LazyCollection(LazyCollectionOption.FALSE)
-	List<Answer<O>> answers; //TODO this should probably be a map, so every option gets max one answer, but I have no idea how to configure this in JPA/Hibernate
+	List<Answer<P,O>> answers; //TODO this should probably be a map, so every option gets max one answer, but I have no idea how to configure this in JPA/Hibernate
 	
 	@NotNull
 	@ManyToOne(targetEntity=AbstractPoll.class)
-	private AbstractPoll<O> parent; 
+	private AbstractPoll<P,O> parent; 
 	
 	/**
 	 * An optional user who owns this vote.
@@ -78,12 +78,12 @@ public class Vote<O extends AbstractOption<? extends AbstractPoll<O>>> extends A
 	 * @param owner the vote's owner
 	 * @param defaultAnswer the default answer to all options
 	 */
-	public Vote(@NotNull AbstractPoll<O> parent, User owner, AnswerType defaultAnswer) {
+	public Vote(@NotNull AbstractPoll<P,O> parent, User owner, AnswerType defaultAnswer) {
 		this();
 		this.parent = parent;
 		this.owner = owner;
 		for(Iterator<O> it = parent.getOptionIterator(); it.hasNext();) {
-			answers.add(new Answer<O>(it.next(), defaultAnswer));
+			answers.add(new Answer<P,O>(it.next(), defaultAnswer));
 		}
 	}
 	
@@ -91,7 +91,7 @@ public class Vote<O extends AbstractOption<? extends AbstractPoll<O>>> extends A
 	 * Create a new empty vote for a given poll
 	 * @param parent the parent poll
 	 */
-	public Vote(@NotNull AbstractPoll<O> parent) {
+	public Vote(@NotNull AbstractPoll<P,O> parent) {
 		this(parent, null, AnswerType.NONE);
 	}
 	
@@ -100,7 +100,7 @@ public class Vote<O extends AbstractOption<? extends AbstractPoll<O>>> extends A
 	 * @param parent the parent poll
 	 * @param owner the vote's owner
 	 */
-	public Vote(@NotNull AbstractPoll<O> parent, User owner) {
+	public Vote(@NotNull AbstractPoll<P,O> parent, User owner) {
 		this(parent, owner, AnswerType.NONE);
 	}
 	
@@ -116,7 +116,7 @@ public class Vote<O extends AbstractOption<? extends AbstractPoll<O>>> extends A
 	 * Getter for {@link #answers}
 	 * @return the {@link #answers}
 	 */
-	public List<Answer<O>> getAnswers() {
+	public List<Answer<P,O>> getAnswers() {
 		return answers;
 	}
 
@@ -124,7 +124,7 @@ public class Vote<O extends AbstractOption<? extends AbstractPoll<O>>> extends A
 	 * Setter for {@link #answers}
 	 * @param answers the {@link #answers} to set
 	 */
-	public void setAnswers(List<Answer<O>> answers) {
+	public void setAnswers(List<Answer<P,O>> answers) {
 		this.answers = answers;
 	}
 	
@@ -135,10 +135,10 @@ public class Vote<O extends AbstractOption<? extends AbstractPoll<O>>> extends A
 	 */
 	public void addAnswer(O option, AnswerType answerType) {
 		//TODO this loop can be removed once I figure out how to replace 'answers' by a map
-		for(Answer<O> answer : answers) {
+		for(Answer<P,O> answer : answers) {
 			if (answer.getOption().equals(option)) answers.remove(answer);
 		}
-		answers.add(new Answer<O>(option, answerType));
+		answers.add(new Answer<P,O>(option, answerType));
 	}
 	
 	/**
@@ -146,8 +146,8 @@ public class Vote<O extends AbstractOption<? extends AbstractPoll<O>>> extends A
 	 * @param option the option
 	 * @return an {@link Optional} with the answer if it is present, an empty {@link Optional} otherwise
 	 */
-	public Optional<Answer<O>> getAnswer(O option) {
-		for(Answer<O> answer : answers) {
+	public Optional<Answer<P,O>> getAnswer(O option) {
+		for(Answer<P,O> answer : answers) {
 			if (answer.getOption().equals(option)) return Optional.of(answer);
 		}
 		return Optional.empty();
@@ -159,9 +159,9 @@ public class Vote<O extends AbstractOption<? extends AbstractPoll<O>>> extends A
 	 * Get the {@link #answers} as a map
 	 * @return the {@link #answers} as a map
 	 */
-	public Map<O, Answer<O>> getAnswerMap() {
-		Map<O, Answer<O>> map = new HashMap<>();
-		for(Answer<O> answer : answers) {
+	public Map<O, Answer<P,O>> getAnswerMap() {
+		Map<O, Answer<P,O>> map = new HashMap<>();
+		for(Answer<P,O> answer : answers) {
 			map.put(answer.getOption(), answer);
 		}
 		return map;
@@ -172,9 +172,9 @@ public class Vote<O extends AbstractOption<? extends AbstractPoll<O>>> extends A
 	 * @param comp the comparator to sort the map
 	 * @return the {@link #answers} as a map sorted 
 	 */
-	public SortedMap<O, Answer<O>> getSortedAnswerMap(Comparator<O> comp) {
-		SortedMap<O, Answer<O>> map = new TreeMap<>(comp);
-		for(Answer<O> answer : answers) {
+	public SortedMap<O, Answer<P,O>> getSortedAnswerMap(Comparator<O> comp) {
+		SortedMap<O, Answer<P,O>> map = new TreeMap<>(comp);
+		for(Answer<P,O> answer : answers) {
 			map.put(answer.getOption(), answer);
 		}
 		return map;
@@ -184,7 +184,7 @@ public class Vote<O extends AbstractOption<? extends AbstractPoll<O>>> extends A
 	 * Getter for {@link #parent}
 	 * @return the {@link #parent}
 	 */
-	public AbstractPoll<?> getParent() {
+	public AbstractPoll<P,O> getParent() {
 		return parent;
 	}
 	
@@ -192,7 +192,7 @@ public class Vote<O extends AbstractOption<? extends AbstractPoll<O>>> extends A
 	 * Setter for {@link #parent}
 	 * @param parent the {@link #parent} to set
 	 */
-	public void setParent(AbstractPoll<O> parent) {
+	public void setParent(AbstractPoll<P,O> parent) {
 		this.parent = parent;
 	}
 

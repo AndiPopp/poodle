@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import de.andipopp.poodle.data.entity.polls.Vote;
 
-public interface VoteRepository extends JpaRepository<Vote<?>, UUID>{
+public interface VoteRepository extends JpaRepository<Vote<?,?>, UUID>{
 
 
 }

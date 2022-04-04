@@ -27,7 +27,7 @@ public class ViewPollView extends VerticalLayout {
 		super();
 		this.pollService = pollService;
 		
-		for(AbstractPoll<?> poll : pollService.findAll()) {
+		for(AbstractPoll<?,?> poll : pollService.findAll()) {
 			add(new Paragraph(poll.toString()));
 		}
 	}

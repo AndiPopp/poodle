@@ -13,7 +13,7 @@ import biweekly.component.VEvent;
  *
  */
 @Entity
-public class DateOption extends AbstractOption<DatePoll> {
+public class DateOption extends AbstractOption<DatePoll, DateOption> {
 
 	/**
 	 * The start date for this option

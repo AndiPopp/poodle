@@ -13,13 +13,13 @@ public class GotoPollAnchor extends Anchor{
 
 	private static final long serialVersionUID = 1L;
 	
-	AbstractPoll<?> poll;
+	AbstractPoll<?,?> poll;
 
 	/**
 	 * Construct a new follow
 	 * @param poll
 	 */
-	public GotoPollAnchor(AbstractPoll<?> poll) {
+	public GotoPollAnchor(AbstractPoll<?,?> poll) {
 		this.poll = poll;
 		this.setText(poll.getTitle());
 		RouterLink link = new RouterLink("Test", PollView.class);

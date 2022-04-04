@@ -39,7 +39,7 @@ public class User extends AbstractEntity {
 
     @OneToMany(cascade = CascadeType.ALL, targetEntity=AbstractPoll.class)
 	@LazyCollection(LazyCollectionOption.FALSE)
-    List<AbstractPoll<?>> polls = new ArrayList<>();
+    List<AbstractPoll<?,?>> polls = new ArrayList<>();
     
     public String getUsername() {
         return username;

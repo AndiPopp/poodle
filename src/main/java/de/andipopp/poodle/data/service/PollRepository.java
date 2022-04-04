@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 
-public interface PollRepository extends JpaRepository<AbstractPoll<?>, UUID>{
+public interface PollRepository extends JpaRepository<AbstractPoll<?,?>, UUID>{
 
 	List<AbstractPoll> findByOwner(User owner);
 	

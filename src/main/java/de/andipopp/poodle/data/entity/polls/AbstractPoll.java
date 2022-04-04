@@ -26,8 +26,8 @@ import de.andipopp.poodle.data.entity.AbstractEntity;
 import de.andipopp.poodle.data.entity.User;
 
 @Entity
-public abstract class AbstractPoll<O extends AbstractOption<? extends AbstractPoll<O>>> extends AbstractEntity {
-	
+//public abstract class AbstractPoll<O extends AbstractOption<? extends AbstractPoll<O>>> extends AbstractEntity {
+public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> extends AbstractEntity {
 	/* ==========
 	 * = Fields =
 	 * ========== */
@@ -91,7 +91,7 @@ public abstract class AbstractPoll<O extends AbstractOption<? extends AbstractPo
 	@NotNull
 	@OneToMany(cascade = CascadeType.ALL, targetEntity=Vote.class)
 	@LazyCollection(LazyCollectionOption.FALSE)
-	private List<Vote<O>> votes;
+	private List<Vote<P,O>> votes;
 	
 	/* ================
 	 * = Constructors =
@@ -301,7 +301,7 @@ public abstract class AbstractPoll<O extends AbstractOption<? extends AbstractPo
 	 * Getter for {@link #votes}
 	 * @return the {@link #votes}
 	 */
-	public List<Vote<O>> getVotes() {
+	public List<Vote<P,O>> getVotes() {
 		return votes;
 	}
 
@@ -309,7 +309,7 @@ public abstract class AbstractPoll<O extends AbstractOption<? extends AbstractPo
 	 * Setter for {@link #votes}
 	 * @param votes the {@link #votes} to set
 	 */
-	protected void setVotes(List<Vote<O>> votes) {
+	protected void setVotes(List<Vote<P,O>> votes) {
 		this.votes = votes;
 	}
 	
@@ -317,8 +317,8 @@ public abstract class AbstractPoll<O extends AbstractOption<? extends AbstractPo
 	 * Create a new empty vote for this poll and add it to its votes 
 	 * @return a new empty vote for this poll's option 
 	 */
-	public Vote<O> addEmptyVote(){
-		Vote<O> vote = new Vote<O>(this);
+	public Vote<P,O> addEmptyVote(){
+		Vote<P,O> vote = new Vote<P,O>(this);
 		votes.add(vote);
 		return vote;
 	}
@@ -327,7 +327,7 @@ public abstract class AbstractPoll<O extends AbstractOption<? extends AbstractPo
 	 * Add a vote to {@link #votes}
 	 * @param vote the vote to add
 	 */
-	public void addVote(Vote<O> vote) {
+	public void addVote(Vote<P,O> vote) {
 		votes.add(vote);
 	}
 	/**
@@ -335,7 +335,7 @@ public abstract class AbstractPoll<O extends AbstractOption<? extends AbstractPo
 	 * @param vote the vote to remove
 	 * @return true if the vote was in the poll and has been removed, false otherwise
 	 */
-	public boolean removeVote(Vote<O> vote) {
+	public boolean removeVote(Vote<P,O> vote) {
 		if (votes.contains(vote)) {
 			votes.remove(vote);
 			return true;
@@ -350,7 +350,7 @@ public abstract class AbstractPoll<O extends AbstractOption<? extends AbstractPo
 	 * @return if the a vote with the given UUID was in {@link #votes} and has been removed
 	 */
 	public boolean removeVote(UUID id) {
-		for(Vote<O> vote : votes) {
+		for(Vote<P,O> vote : votes) {
 			if (vote.getId().equals(id)) return removeVote(vote);
 		}
 		return false;

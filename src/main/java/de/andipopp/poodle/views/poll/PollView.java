@@ -33,7 +33,7 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 	
 	private PollService pollService;
 
-	private AbstractPoll<?> poll;
+	private AbstractPoll<?,?> poll;
 	
 	private VerticalLayout content;
 	
@@ -74,7 +74,7 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 				String pollIdBase64url = queryParameters.getParameters().get(ID_PARAMETER_NAME).get(0);
 //				System.out.println("Trying to load poll " + pollIdBase64url + " / " + UUIDUtils.base64urlToUuid(pollIdBase64url));
 				UUID pollId = UUIDUtils.base64urlToUuid(pollIdBase64url);
-				Optional<AbstractPoll<?>> opt = pollService.get(pollId);
+				Optional<AbstractPoll<?,?>> opt = pollService.get(pollId);
 				if (!opt.isEmpty()) {
 					loadPoll(opt.get());
 				}else {
@@ -86,7 +86,7 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 		}
 	}
 	
-	private void loadPoll(AbstractPoll<?> poll) {
+	private void loadPoll(AbstractPoll<?,?> poll) {
 		this.poll = poll;
 		this.content.removeAll();
 		this.content.add("Loading poll "+UUIDUtils.uuidToBase64url(poll.getId()));

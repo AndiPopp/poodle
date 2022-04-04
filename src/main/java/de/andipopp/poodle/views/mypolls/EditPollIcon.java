@@ -8,12 +8,12 @@ import de.andipopp.poodle.views.MainLayout;
 
 public class EditPollIcon extends Span {
 
-	private AbstractPoll<?> poll;
+	private AbstractPoll<?,?> poll;
 
 	/**
 	 * @param poll
 	 */
-	public EditPollIcon(AbstractPoll<?> poll) {
+	public EditPollIcon(AbstractPoll<?,?> poll) {
 		this.poll = poll;
 		this.setClassName("edit-poll-icon");
 		this.getStyle().set("cursor", "pointer");
@@ -27,7 +27,7 @@ public class EditPollIcon extends Span {
 	 * Getter for {@link #poll}
 	 * @return the {@link #poll}
 	 */
-	public AbstractPoll<?> getPoll() {
+	public AbstractPoll<?,?> getPoll() {
 		return poll;
 	}
 	

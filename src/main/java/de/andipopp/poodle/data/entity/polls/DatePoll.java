@@ -13,7 +13,7 @@ import org.jsoup.safety.Safelist;
 import de.andipopp.poodle.PoodleApplication;
 
 @Entity
-public class DatePoll extends AbstractPoll<DateOption> {
+public class DatePoll extends AbstractPoll<DatePoll, DateOption> {
 
 	/**
 	 * The polls time zone
