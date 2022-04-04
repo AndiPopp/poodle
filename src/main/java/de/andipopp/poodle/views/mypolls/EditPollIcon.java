@@ -8,7 +8,7 @@ import de.andipopp.poodle.views.MainLayout;
 
 public class EditPollIcon extends Span {
 
-	AbstractPoll<?> poll;
+	private AbstractPoll<?> poll;
 
 	/**
 	 * @param poll
@@ -18,9 +18,17 @@ public class EditPollIcon extends Span {
 		this.setClassName("edit-poll-icon");
 		this.getStyle().set("cursor", "pointer");
 		this.add(new MainLayout.MenuItemInfo.LineAwesomeIcon("la la-edit"));
-		this.addClickListener( e -> {
-			Notification.show("Edit "+poll.getTitle());
-		});
+//		this.addClickListener( e -> {
+//			Notification.show("Edit "+poll.getTitle());
+//		});
+	}
+
+	/**
+	 * Getter for {@link #poll}
+	 * @return the {@link #poll}
+	 */
+	public AbstractPoll<?> getPoll() {
+		return poll;
 	}
 	
 	
