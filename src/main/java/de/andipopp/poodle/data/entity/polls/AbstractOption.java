@@ -11,6 +11,8 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 
@@ -28,6 +30,7 @@ public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends Abst
 	private P parent;
 	
 	@OneToMany(cascade = CascadeType.ALL, targetEntity=Answer.class)
+	@LazyCollection(LazyCollectionOption.FALSE)
 	private Set<Answer<P,O>> answers;
 	
 	/**
@@ -36,7 +39,7 @@ public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends Abst
 	private String title;
 
 	/* ================
-	 * = Constructors =
+	 * = Constructors = 
 	 * ================ */
 
 	/**

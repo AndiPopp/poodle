@@ -22,24 +22,16 @@ import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 
 import de.andipopp.poodle.data.entity.AbstractEntity;
+import de.andipopp.poodle.data.entity.Config;
 import de.andipopp.poodle.data.entity.User;
 
 @Entity
 //public abstract class AbstractPoll<O extends AbstractOption<? extends AbstractPoll<O>>> extends AbstractEntity {
 public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> extends AbstractEntity {
+	
 	/* ==========
 	 * = Fields =
 	 * ========== */
-	
-	/**
-	 * The maximum retention from the current time until the poll is deleted in days
-	 */
-	private static int MAX_RETENTION_DAYS = 500; //TODO load from config
-	
-	/**
-	 * The default retention from the current time until the poll is deleted in days
-	 */
-	private static int DEFUALT_RETENTION_DAYS = 180; //TODO load from config
 	
 	/**
 	 * The poll's title
@@ -102,7 +94,7 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	public AbstractPoll() {
 		this.options = new ArrayList<O>();
 		this.createDate = Instant.now();
-		this.deleteDate = LocalDate.now(); //LocalDate.ofInstant(createDate.plusSeconds(DEFUALT_RETENTION_DAYS*24*60*60), ZoneId.systemDefault());
+		this.deleteDate = LocalDate.now().plusDays(Config.getCurrentConfig().getDefaultPollRententionDays());
 		this.votes = new ArrayList<>();
 	}
 	
@@ -187,16 +179,15 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	/**
 	 * Setter for {@link #deleteDate}.
 	 * Respects the {@link #MAX_RETENTION_DAYS}
-	 * @param deletyByDate the {@link #deleteDate} to set
+	 * @param deleteDate the {@link #deleteDate} to set
 	 */
-	public void setDeleteDate(LocalDate deletyByDate) {
-		this.deleteDate = deletyByDate;
-//		Instant max = Instant.now().plusSeconds(MAX_RETENTION_DAYS*24*60*60);
-//		if (deletyByDate.compareTo(max) > 0) {
-//			this.deletyByDate = max;
-//		}else {
-//			this.deletyByDate = deletyByDate;
-//		}
+	public void setDeleteDate(LocalDate deleteDate) {
+		LocalDate max = LocalDate.now().plusDays(Config.getCurrentConfig().getMaxPollRetentionDays());
+		if (deleteDate.compareTo(max) > 0) {
+			this.deleteDate = max;
+		}else {
+			this.deleteDate = deleteDate;
+		}
 	}
 
 	/**
@@ -216,6 +207,22 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	}
 	
 	/**
+	 * Getter for {@link #options}
+	 * @return the {@link #options}
+	 */
+	public List<O> getOptions() {
+		return options;
+	}
+
+	/**
+	 * Setter for {@link #options}
+	 * @param options the {@link #options} to set
+	 */
+	public void setOptions(List<O> options) {
+		this.options = options;
+	}
+
+	/**
 	 * Get the number of {@link #options}
 	 * @return the number of {@link #options}
 	 */
@@ -229,14 +236,14 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	 */
 	public void addOption(O option) {
 		options.add(option);
-		setParent(option);
+		setOptionParent(option);
 	}
 	
 	/**
 	 * Set this poll as parent for the given option
 	 * @param option the option
 	 */
-	protected abstract void setParent(O option);
+	protected abstract void setOptionParent(O option);
 	
 	/**
 	 * Remove a given option from the set of options
@@ -314,7 +321,7 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	 * Setter for {@link #votes}
 	 * @param votes the {@link #votes} to set
 	 */
-	protected void setVotes(List<Vote<P,O>> votes) {
+	public void setVotes(List<Vote<P,O>> votes) {
 		this.votes = votes;
 	}
 	

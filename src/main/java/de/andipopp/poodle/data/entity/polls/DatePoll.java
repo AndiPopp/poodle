@@ -98,7 +98,7 @@ public class DatePoll extends AbstractPoll<DatePoll, DateOption> {
 	}
 	
 	@Override
-	protected void setParent(DateOption option) {
+	protected void setOptionParent(DateOption option) {
 		option.setParent(this);
 	}
 

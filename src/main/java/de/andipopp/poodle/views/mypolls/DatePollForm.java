@@ -2,6 +2,7 @@ package de.andipopp.poodle.views.mypolls;
 
 import java.text.DecimalFormat;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.TextStyle;
 import java.util.Locale;
@@ -22,6 +23,7 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;
 
+import de.andipopp.poodle.data.entity.Config;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
 import de.andipopp.poodle.util.TimeUtils;
 
@@ -63,6 +65,7 @@ public class DatePollForm extends FormLayout {
 		DecimalFormat fmt = new DecimalFormat("#0");
 		fmt.setPositivePrefix("+");
 		timeZone.setItemLabelGenerator(z -> z.getDisplayName(TextStyle.NARROW, Locale.US) + " (UTC" + z.getRules().getOffset(Instant.now())+")");
+		deleteDate.setMax(LocalDate.now().plusDays(Config.getCurrentConfig().getMaxPollRetentionDays()));
 		
 		binder.bindInstanceFields(this);
 		
