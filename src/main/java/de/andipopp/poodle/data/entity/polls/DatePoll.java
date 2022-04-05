@@ -1,6 +1,5 @@
 package de.andipopp.poodle.data.entity.polls;
 
-import java.time.ZoneId;
 import java.util.Iterator;
 
 import javax.persistence.Entity;
@@ -14,12 +13,6 @@ import de.andipopp.poodle.data.entity.User;
 
 @Entity
 public class DatePoll extends AbstractPoll<DatePoll, DateOption> {
-
-	/**
-	 * The polls time zone
-	 */
-	@NotNull
-	private ZoneId timeZone;
 	
 	/**
 	 * An optional location
@@ -36,12 +29,10 @@ public class DatePoll extends AbstractPoll<DatePoll, DateOption> {
 	/**
 	 * @param title
 	 * @param description
-	 * @param timeZone
 	 * @param location
 	 */
-	public DatePoll(@NotNull String title, String description, @NotNull ZoneId timeZone, String location) {
+	public DatePoll(@NotNull String title, String description, String location) {
 		super(title, description);
-		this.timeZone = timeZone;
 		this.location = location;
 	}
 
@@ -54,23 +45,7 @@ public class DatePoll extends AbstractPoll<DatePoll, DateOption> {
 	}
 
 	private void initEmpty() {
-		this.timeZone = ZoneId.systemDefault();
-	}
-	
-	/**
-	 * Getter for {@link #timeZone}
-	 * @return the {@link #timeZone}
-	 */
-	public ZoneId getTimeZone() {
-		return timeZone;
-	}
-
-	/**
-	 * Setter for {@link #timeZone}
-	 * @param timeZone the {@link #timeZone} to set
-	 */
-	public void setTimeZone(ZoneId timeZone) {
-		this.timeZone = timeZone;
+		
 	}
 	
 	/**
@@ -109,8 +84,6 @@ public class DatePoll extends AbstractPoll<DatePoll, DateOption> {
 		if (getTitle() != null) result += "\r\nTitle: " + getTitle();
 		//add location
 		if (getLocation() != null) result += "\r\nLocation: "  + getLocation();
-		//add time zone
-		if (timeZone != null) result += "\r\nTimeZome: " + timeZone;
 		
 		return result;
 	}
