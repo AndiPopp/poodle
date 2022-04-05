@@ -46,7 +46,7 @@ public class MyPollsView extends HorizontalLayout {
 	
 	PollService pollService;
 
-	Grid<AbstractPoll> grid = new Grid<AbstractPoll>(AbstractPoll.class);
+	Grid<AbstractPoll> grid = new Grid<>(AbstractPoll.class);
 	
 	TextField filterText = new TextField();
 	
