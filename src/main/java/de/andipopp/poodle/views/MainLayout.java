@@ -32,12 +32,15 @@ import java.util.Optional;
  */
 public class MainLayout extends AppLayout {
 
-    /**
+    private static final long serialVersionUID = 1L;
+
+	/**
      * A simple navigation item component, based on ListItem element.
      */
     public static class MenuItemInfo extends ListItem {
 
-        private final Class<? extends Component> view;
+        private static final long serialVersionUID = 1L;
+		private final Class<? extends Component> view;
 
         public MenuItemInfo(String menuTitle, String iconClass, Class<? extends Component> view) {
             this.view = view;
@@ -62,7 +65,9 @@ public class MainLayout extends AppLayout {
          */
         @NpmPackage(value = "line-awesome", version = "1.3.0")
         public static class LineAwesomeIcon extends Span {
-            public LineAwesomeIcon(String lineawesomeClassnames) {
+            private static final long serialVersionUID = 1L;
+
+			public LineAwesomeIcon(String lineawesomeClassnames) {
                 addClassNames("menu-item-icon");
                 if (!lineawesomeClassnames.isEmpty()) {
                     addClassNames(lineawesomeClassnames);

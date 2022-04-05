@@ -77,7 +77,7 @@ public class DataGenerator {
     		User admin) {
     	DatePoll poll = new DatePoll();
     	poll.setTitle("Master of the Universe get-together");
-    	poll.setDescription("He-Man will be there.");
+    	poll.setDescription("He-Man will be there. So <a href=\"https://www.google.com\">google</a> yourself your finest magic sword and feline steed.");
     	poll.setLocation("Castle Greyskull (unless specified otherwise)");
     	poll.setOwner(user);
     	

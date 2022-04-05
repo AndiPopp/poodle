@@ -40,16 +40,16 @@ public class WelcomeView extends VerticalLayout {
         getStyle().set("text-align", "center");
     }
 	
-	private Component listHttpHeaders() {
-		VerticalLayout result = new VerticalLayout();
-		for(Iterator<String> it = VaadinRequest.getCurrent().getHeaderNames().asIterator(); it.hasNext();) {
-			String name = it.next();
-			result.add(new Paragraph(name + ": " + VaadinRequest.getCurrent().getHeader(name)));
-		}
-		Locale locale = VaadinRequest.getCurrent().getLocale();
-		result.add(new Paragraph("Locale: "+getLocale()));
-		result.add(new Paragraph(new GregorianCalendar(locale).getTimeZone().getID()));
-		return result;
-	}
+//	private Component listHttpHeaders() {
+//		VerticalLayout result = new VerticalLayout();
+//		for(Iterator<String> it = VaadinRequest.getCurrent().getHeaderNames().asIterator(); it.hasNext();) {
+//			String name = it.next();
+//			result.add(new Paragraph(name + ": " + VaadinRequest.getCurrent().getHeader(name)));
+//		}
+//		Locale locale = VaadinRequest.getCurrent().getLocale();
+//		result.add(new Paragraph("Locale: "+getLocale()));
+//		result.add(new Paragraph(new GregorianCalendar(locale).getTimeZone().getID()));
+//		return result;
+//	}
 
 }

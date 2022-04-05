@@ -18,6 +18,7 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vaadin.flow.component.avatar.Avatar;
 
 import de.andipopp.poodle.data.Role;
 import de.andipopp.poodle.data.entity.polls.AbstractOption;
@@ -37,6 +38,8 @@ public class User extends AbstractEntity {
     @Lob
     private String profilePictureUrl;
 
+    private Avatar avatar;
+    
     @OneToMany(cascade = CascadeType.ALL, targetEntity=AbstractPoll.class)
 	@LazyCollection(LazyCollectionOption.FALSE)
     List<AbstractPoll<?,?>> polls = new ArrayList<>();
@@ -71,5 +74,36 @@ public class User extends AbstractEntity {
     public void setProfilePictureUrl(String profilePictureUrl) {
         this.profilePictureUrl = profilePictureUrl;
     }
+	/**
+	 * Getter for {@link #avatar}
+	 * @return the {@link #avatar}
+	 */
+	public Avatar getAvatar() {
+		if (avatar == null) avatar = new Avatar(name);
+		return avatar;
+	}
+	/**
+	 * Setter for {@link #avatar}
+	 * @param avatar the {@link #avatar} to set
+	 */
+	public void setAvatar(Avatar avatar) {
+		this.avatar = avatar;
+	}
+	/**
+	 * Getter for {@link #polls}
+	 * @return the {@link #polls}
+	 */
+	public List<AbstractPoll<?, ?>> getPolls() {
+		return polls;
+	}
+	/**
+	 * Setter for {@link #polls}
+	 * @param polls the {@link #polls} to set
+	 */
+	public void setPolls(List<AbstractPoll<?, ?>> polls) {
+		this.polls = polls;
+	}
 
+    
+    
 }
