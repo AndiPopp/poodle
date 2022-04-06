@@ -74,8 +74,13 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 	 */
 	public PollView(UserService userService, PollService pollService) {
 		//remember the current user
-		String userName = VaadinRequest.getCurrent().getUserPrincipal().getName();
-    	this.currentUser = userService.get(userName);
+		if (VaadinRequest.getCurrent().getUserPrincipal()!=null) {
+			String userName = VaadinRequest.getCurrent().getUserPrincipal().getName(); 
+			this.currentUser = userService.get(userName);
+		}else {
+			this.currentUser = null;
+		}
+    	
 		
     	//hookup the poll service 
 		this.pollService = pollService;
