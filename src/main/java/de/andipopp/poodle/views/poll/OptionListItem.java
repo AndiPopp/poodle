@@ -14,7 +14,7 @@ import de.andipopp.poodle.data.entity.polls.AnswerType;
 import de.andipopp.poodle.data.entity.polls.Vote;
 import de.andipopp.poodle.util.VaadinUtils;
 
-public class OptionListBox extends HorizontalLayout {
+public class OptionListItem extends HorizontalLayout {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -28,7 +28,7 @@ public class OptionListBox extends HorizontalLayout {
 	/**
 	 * @param option
 	 */
-	public OptionListBox(AbstractOption<?, ?> option, Vote<?,?> vote) {
+	public OptionListItem(AbstractOption<?, ?> option, Vote<?,?> vote) {
 		this.option = option;
 		this.vote = vote;
 		this.getStyle().set("border", "2px solid rgba(27, 43, 65, 0.69)");

@@ -8,7 +8,7 @@ public class AnswerListToggleButton extends Image{
 
 	private static final long serialVersionUID = 1L;
 
-	OptionListBox parent;
+	OptionListItem parent;
 	
 	Answer<?,?> answer;
 
@@ -16,7 +16,7 @@ public class AnswerListToggleButton extends Image{
 	 * @param parent
 	 * @param answer
 	 */
-	public AnswerListToggleButton(OptionListBox parent, Answer<?, ?> answer) {
+	public AnswerListToggleButton(OptionListItem parent, Answer<?, ?> answer) {
 		this.parent = parent;
 		this.answer = answer;
 		this.setMinHeight("5ex");

@@ -4,14 +4,14 @@ import de.andipopp.poodle.data.entity.polls.AbstractOption;
 import de.andipopp.poodle.data.entity.polls.DateOption;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
 import de.andipopp.poodle.data.entity.polls.Vote;
-import de.andipopp.poodle.views.poll.OptionListBox;
+import de.andipopp.poodle.views.poll.OptionListItem;
 
 /**
  * A box to display a single date option
  * @author Andi Popp
  *
  */
-public class DateOptionListBox extends OptionListBox {
+public class DateOptionListBox extends OptionListItem {
 
 	
 	
