@@ -71,6 +71,16 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	private List<O> options;
 	
 	/**
+	 * Enable "if need by vote"
+	 */
+	private boolean enableIfNeedBe;
+	
+	/**
+	 * Enable abstaining
+	 */
+	private boolean enableAbstain;
+	
+	/**
 	 * Set of winning options.
 	 * If this field is not null, this indicates that the poll is closed.
 	 */
@@ -206,6 +216,54 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 		this.description = Jsoup.clean(description, Safelist.basic());
 	}
 	
+	/**
+	 * Getter for {@link #enableIfNeedBe}
+	 * @return the {@link #enableIfNeedBe}
+	 */
+	public boolean isEnableIfNeedBe() {
+		return enableIfNeedBe;
+	}
+
+	/**
+	 * Setter for {@link #enableIfNeedBe}
+	 * @param enableIfNeedBe the {@link #enableIfNeedBe} to set
+	 */
+	public void setEnableIfNeedBe(boolean enableIfNeedBe) {
+		this.enableIfNeedBe = enableIfNeedBe;
+	}
+
+	/**
+	 * Getter for {@link #enableAbstain}
+	 * @return the {@link #enableAbstain}
+	 */
+	public boolean isEnableAbstain() {
+		return enableAbstain;
+	}
+
+	/**
+	 * Setter for {@link #enableAbstain}
+	 * @param enableAbstain the {@link #enableAbstain} to set
+	 */
+	public void setEnableAbstain(boolean enableAbstain) {
+		this.enableAbstain = enableAbstain;
+	}
+
+	/**
+	 * Getter for {@link #winners}
+	 * @return the {@link #winners}
+	 */
+	public List<O> getWinners() {
+		return winners;
+	}
+
+	/**
+	 * Setter for {@link #winners}
+	 * @param winners the {@link #winners} to set
+	 */
+	public void setWinners(List<O> winners) {
+		this.winners = winners;
+	}
+
 	/**
 	 * Getter for {@link #options}
 	 * @return the {@link #options}
