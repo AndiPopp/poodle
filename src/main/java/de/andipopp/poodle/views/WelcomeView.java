@@ -13,6 +13,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinRequest;
+import com.vaadin.flow.server.WrappedSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 @PageTitle("Welcome to Poodle")
@@ -36,6 +37,9 @@ public class WelcomeView extends VerticalLayout {
         add(new H2("This place intentionally left empty"));
         add(new Paragraph("It’s a place where you can grow your own UI 🤗"));
 //        add(listHttpHeaders());
+        
+        WrappedSession session = VaadinRequest.getCurrent().getWrappedSession();
+        add(new Paragraph(session.getId()));
         
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
