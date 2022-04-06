@@ -33,6 +33,7 @@ import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.data.entity.polls.AbstractOption;
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
+import de.andipopp.poodle.data.entity.polls.Vote;
 import de.andipopp.poodle.data.service.PollService;
 import de.andipopp.poodle.data.service.UserService;
 import de.andipopp.poodle.util.JSoupUtils;
@@ -53,14 +54,16 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 	private PollService pollService;
 
 	private AbstractPoll<?,?> poll;
-	
-	private VerticalLayout content;
 
 	private User currentUser;
+	
+	private Vote<?,?> currentVote;
 	
 	/* =====================
 	 * = Layout Components =
 	 * ===================== */
+	
+	private VerticalLayout content;
 	
 	private HorizontalLayout header = new HorizontalLayout();
 	
@@ -80,7 +83,6 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 		}else {
 			this.currentUser = null;
 		}
-    	
 		
     	//hookup the poll service 
 		this.pollService = pollService;
@@ -117,6 +119,11 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 	private void loadPoll(AbstractPoll<?,?> poll) {
 		//load the poll itself
 		this.poll = poll;
+		//set the current vote
+		this.currentVote = null; //default to null
+		if (currentUser != null) this.currentVote = poll.getVote(currentUser); //returns null if the user has not voted
+		if (this.currentVote == null) this.currentVote = new Vote<>(poll, currentUser);
+		
 		//strip content from all its components (especially the "not found")
 		this.content.removeAll();
 		//add the poll specific content
