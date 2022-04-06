@@ -3,7 +3,7 @@ package de.andipopp.poodle.views.poll;
 
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.Html;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -60,21 +60,47 @@ public class OptionListBox<P extends AbstractPoll<P, O>, O extends AbstractOptio
 				break;
 			}
 		}
-		String result = "", connector = "";
-		if (countYes > 0) {
-			result += "<span style=\"font-weight:bold; -webkit-text-stroke:.5px black; color:" + Answer.YES_COLOR + "\">" + countYes + "</span> in favor"; 
-			connector = ", ";
-		}
+//		String result = "", connector = "";
+//		if (countYes > 0) {
+//			result += "<span style=\"font-weight:bold; -webkit-text-stroke:.5px black; color:" + Answer.YES_COLOR + "\">" + countYes + "</span> in favor"; 
+//			connector = ", ";
+//		}
+//		if (countNeedBe > 0) {
+//			result += connector + "<span style=\"font-weight:bold; -webkit-text-stroke:.5px black; color:" + Answer.IF_NEED_BE_COLOR + "\">" + countNeedBe + "</span> in favor if need be"; 
+//			connector = ", ";
+//		}
+//		if (countNo > 0) {
+//			result += connector + "<span style=\"font-weight:bold; -webkit-text-stroke:.5px black; color:" + Answer.NO_COLOR + "\">" + countNo + "</span>  opposed"; 
+//		}
+//		result += ".";
+//		return new Html("<span>"+result+"</span>");
+		Span result = new Span();
+		result.getStyle().set("font-weight", "weight:bold");
+		result.getStyle().set("-webkit-text-stroke", ".5px black");
+		Span yes = new Span(""+countYes+" ");
+		yes.getStyle().set("color", Answer.YES_COLOR);
+		Image imgYes = new Image("images/VoteIcons-YesSquare.drawio.png", "in favor");
+		imgYes.getStyle().set("width", "1em");
+		imgYes.getStyle().set("height", "1em");
+		imgYes.getStyle().set("vertical-align", "text-bottom");
+		result.add(yes, imgYes);
 		if (countNeedBe > 0) {
-			result += connector + "<span style=\"font-weight:bold; -webkit-text-stroke:.5px black; color:" + Answer.IF_NEED_BE_COLOR + "\">" + countNeedBe + "</span> in favor if need be"; 
-			connector = ", ";
+			Span ifNeedBe = new Span(" / "+countNeedBe+" ");
+			ifNeedBe.getStyle().set("color", Answer.IF_NEED_BE_COLOR);
+			Image imgNeedBe = new Image("images/VoteIcons-IfNeedBeSquare.drawio.png", "in favor if need be");
+			imgNeedBe.getStyle().set("width", "1em");
+			imgNeedBe.getStyle().set("height", "1em");
+			imgNeedBe.getStyle().set("vertical-align", "text-bottom");
+			result.add(ifNeedBe, imgNeedBe);
 		}
-		if (countNo > 0) {
-			result += connector + "<span style=\"font-weight:bold; -webkit-text-stroke:.5px black; color:" + Answer.NO_COLOR + "\">" + countNo + "</span>  opposed"; 
-		}
-		result += ".";
-		
-		return new Html("<span>"+result+"</span>");
+		Span no = new Span(" / "+countNo+" ");
+		no.getStyle().set("color", Answer.NO_COLOR);
+		Image imgNo = new Image("images/VoteIcons-NoSquare.drawio.png", "opposed");
+		imgNo.getStyle().set("width", "1em");
+		imgNo.getStyle().set("height", "1em");
+		imgNo.getStyle().set("vertical-align", "text-bottom");
+		result.add(no, imgNo);
+		return result;
 	}
 	
 	//The version below looks nice and I am not really willing to trash it, yet. But it does take a lot of screen real estate

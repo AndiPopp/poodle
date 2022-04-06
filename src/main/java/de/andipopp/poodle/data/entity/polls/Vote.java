@@ -60,7 +60,7 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 	@Nullable
 	@ManyToOne
 	private User owner;
-
+	
 	/**
 	 * The name displayed alongside this vote.
 	 */
