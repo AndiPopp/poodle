@@ -17,6 +17,7 @@ import de.andipopp.poodle.data.Role;
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.data.entity.polls.DateOption;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
+import de.andipopp.poodle.data.entity.polls.Vote;
 import de.andipopp.poodle.data.service.OptionRepository;
 import de.andipopp.poodle.data.service.PollRepository;
 import de.andipopp.poodle.data.service.UserRepository;
@@ -82,26 +83,32 @@ public class DataGenerator {
     	poll.setOwner(user);
     	
     	poll.addOption(new DateOption(
-				"With Skeletor", 
+				"Option 1", 
 				new GregorianCalendar(2022, 2-1, 28, 9, 30).getTime(), 
 				new GregorianCalendar(2022, 2-1, 28, 11, 0).getTime(), 
 				"Snake Mountain"
 			));
     	poll.addOption(new DateOption(
+    			"Option 2", 
 				new GregorianCalendar(2022, 2-1, 28, 15, 0).getTime(), 
 				new GregorianCalendar(2022, 2-1, 28, 16, 30).getTime(), 
 				"at Man-at-Arm's"
 			));
     	poll.addOption(new DateOption(
+    			"Option 3", 
     			new GregorianCalendar(2022, 4-1, 11, 8, 0).getTime(), 
-    			new GregorianCalendar(2022, 4-1, 11, 10, 0).getTime()
+    			new GregorianCalendar(2022, 4-1, 11, 10, 0).getTime(),
+    			null
     		));
     	poll.addOption(new DateOption(
+    			"Option 4", 
     			new GregorianCalendar(2022, 4-1, 11, 15, 15).getTime(), 
-    			new GregorianCalendar(2022, 4-1, 11, 16, 45).getTime()
+    			new GregorianCalendar(2022, 4-1, 11, 16, 45).getTime(),
+    			null 
     		));
-    	poll.addEmptyVote();
-    	logger.info(" Votes added: "+poll.getVotes().size());
+    	RandomTestData.addRandomVotes(poll, 12);
+    	Vote<?,?> vote = RandomTestData.addRandomVote(poll);
+    	vote.setOwner(user);
     	pollRepository.save(poll);
     	
     	poll = new DatePoll();
@@ -139,8 +146,6 @@ public class DataGenerator {
     		));
     	pollRepository.save(poll);
     	
-//    	voteRepository.deleteAll();
-//    	pollRepository.deleteAll();
     	try {
 			Thread.sleep(100);
 		} catch (InterruptedException e) {

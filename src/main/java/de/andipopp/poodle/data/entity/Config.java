@@ -4,8 +4,6 @@ import java.util.UUID;
 
 import javax.persistence.Entity;
 
-import org.springframework.context.annotation.Lazy;
-
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.data.generator.ConfigLoader;
 
@@ -120,7 +118,6 @@ public class Config extends AbstractEntity {
 	public void setDefaultPollRententionDays(int defaultPollRententionDays) {
 		this.defaultPollRententionDays = defaultPollRententionDays;
 	}
-	
 	
 	
 }

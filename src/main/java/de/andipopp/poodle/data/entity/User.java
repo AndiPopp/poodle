@@ -21,7 +21,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vaadin.flow.component.avatar.Avatar;
 
 import de.andipopp.poodle.data.Role;
-import de.andipopp.poodle.data.entity.polls.AbstractOption;
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 
 @Entity
@@ -79,7 +78,10 @@ public class User extends AbstractEntity {
 	 * @return the {@link #avatar}
 	 */
 	public Avatar getAvatar() {
-		if (avatar == null) avatar = new Avatar(name);
+		if (avatar == null) {
+			avatar = new Avatar(name);
+			if (profilePictureUrl != null && !profilePictureUrl.isEmpty()) avatar.setImage(profilePictureUrl);
+		}
 		return avatar;
 	}
 	/**
@@ -104,6 +106,4 @@ public class User extends AbstractEntity {
 		this.polls = polls;
 	}
 
-    
-    
 }

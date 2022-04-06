@@ -19,12 +19,27 @@ public class Answer<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> 
 	 * = Fields =
 	 * ========== */
 	
+	public static final String YES_COLOR = "#537341";
+	
+	public static final String IF_NEED_BE_COLOR = "#D6B656";
+	
+	public static final String NO_COLOR = "#733432";
+	
+	public static final String NONE_COLOR = "#666666";
+	
 	/**
 	 * The answered option
 	 */
 	@NotNull
 	@ManyToOne(targetEntity=AbstractOption.class)
 	private O option;
+	
+	/**
+	 * The vote this answer belongs to
+	 */
+	@NotNull
+	@ManyToOne(targetEntity=Vote.class)
+	private Vote<P, O> vote;
 	
 	/**
 	 * The type of answer given to the option
@@ -46,16 +61,17 @@ public class Answer<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> 
 	/**
 	 * 
 	 */
-	public Answer(@NotNull O option) {
+	public Answer(@NotNull O option, @NotNull Vote<P,O> vote) {
 		setOption(option);
+		setVote(vote);
 	}
 	
 	/**
 	 * @param option
 	 * @param value
 	 */
-	public Answer(@NotNull O option, AnswerType value) {
-		this(option);
+	public Answer(@NotNull O option, @NotNull Vote<P,O> vote, AnswerType value) {
+		this(option, vote);
 		this.value = value;
 	}
 	
@@ -81,6 +97,24 @@ public class Answer<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> 
 		this.option = option;
 		option.getAnswers().add(this);
 	}
+	
+	
+
+	/**
+	 * Getter for {@link #vote}
+	 * @return the {@link #vote}
+	 */
+	public Vote<P, O> getVote() {
+		return vote;
+	}
+
+	/**
+	 * Setter for {@link #vote}
+	 * @param vote the {@link #vote} to set
+	 */
+	public void setVote(Vote<P, O> vote) {
+		this.vote = vote;
+	}
 
 	/**
 	 * Getter for {@link #value}
@@ -97,5 +131,5 @@ public class Answer<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> 
 	public void setValue(AnswerType value) {
 		this.value = value;
 	}
-		
+	
 }

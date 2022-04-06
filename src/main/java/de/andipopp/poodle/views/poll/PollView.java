@@ -26,11 +26,15 @@ import com.vaadin.flow.router.Location;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
+import de.andipopp.poodle.data.entity.User;
+import de.andipopp.poodle.data.entity.polls.AbstractOption;
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
 import de.andipopp.poodle.data.service.PollService;
+import de.andipopp.poodle.data.service.UserService;
 import de.andipopp.poodle.util.JSoupUtils;
 import de.andipopp.poodle.util.NotAUuidException;
 import de.andipopp.poodle.util.UUIDUtils;
@@ -51,6 +55,8 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 	private AbstractPoll<?,?> poll;
 	
 	private VerticalLayout content;
+
+	private User currentUser;
 	
 	/* =====================
 	 * = Layout Components =
@@ -66,10 +72,16 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 	/**
 	 * @param pollService
 	 */
-	public PollView(PollService pollService) {
-		super();
+	public PollView(UserService userService, PollService pollService) {
+		//remember the current user
+		String userName = VaadinRequest.getCurrent().getUserPrincipal().getName();
+    	this.currentUser = userService.get(userName);
+		
+    	//hookup the poll service 
 		this.pollService = pollService;
 		this.setDefaultHorizontalComponentAlignment(Alignment.START);
+		
+		//add a not found as default
 		this.content = new VerticalLayout();
 		this.content.setPadding(false);
 		this.content.add(notFound());
@@ -105,6 +117,9 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 		//add the poll specific content
 		this.content.add(metaInfBlock());
 //		this.content.getStyle().set("border", "2px dotted DarkOrange") ; //for debug purposes
+		for(AbstractOption<?,?> option : poll.getOptions()) {
+			this.add(new OptionListBox<>(option));
+		}
 	}
 
 	/* ===============
@@ -142,7 +157,7 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 		header.setDefaultVerticalComponentAlignment(Alignment.CENTER);
 		Avatar ownerAvatar = poll.getOwner().getAvatar();
 		ownerAvatar.addThemeVariants(AvatarVariant.LUMO_XLARGE);
-//		ownerAvatar.getStyle().set("border", "2px dotted Red") ; //for debug purposes
+		ownerAvatar.getStyle().set("border", "3px solid black") ;
 		this.content.add(ownerAvatar);
 		H3 title = new H3(poll.getTitle());
 		title.getStyle().set("display", "inline");
@@ -151,6 +166,13 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 //		title.getStyle().set("border", "2px dotted Red") ; //for debug purposes
 		header.add(ownerAvatar, title);
 //		header.getStyle().set("border", "2px dotted Red") ; //for debug purposes
+		
+		if (poll.getOwner().equals(currentUser)) {
+			Icon editIcon = new Icon(VaadinIcon.EDIT);
+			editIcon.setSize("200px"); //TODO does not work 
+			header.add(new Icon(VaadinIcon.EDIT));
+		}
+		
 		return header;
 	}
 	

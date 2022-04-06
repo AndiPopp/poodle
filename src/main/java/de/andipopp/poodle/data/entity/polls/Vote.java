@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -19,6 +20,8 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+
+import com.vaadin.flow.component.avatar.Avatar;
 
 import de.andipopp.poodle.data.entity.AbstractEntity;
 import de.andipopp.poodle.data.entity.User;
@@ -34,6 +37,8 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 	/* ==========
 	 * = Fields =
 	 * ========== */
+	
+	Random rng = new Random();
 	
 	/**
 	 * The list of answers for this vote
@@ -81,7 +86,7 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 		this.parent = parent;
 		this.owner = owner;
 		for(Iterator<O> it = parent.getOptionIterator(); it.hasNext();) {
-			answers.add(new Answer<P,O>(it.next(), defaultAnswer));
+			answers.add(new Answer<P,O>(it.next(), this, defaultAnswer));
 		}
 	}
 	
@@ -102,9 +107,6 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 		this(parent, owner, AnswerType.NONE);
 	}
 	
-	
-
-
 
 	/* =====================
 	 * = Getters & Setters =
@@ -136,7 +138,7 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 		for(Answer<P,O> answer : answers) {
 			if (answer.getOption().equals(option)) answers.remove(answer);
 		}
-		answers.add(new Answer<P,O>(option, answerType));
+		answers.add(new Answer<P,O>(option, this, answerType));
 	}
 	
 	/**
@@ -226,6 +228,11 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 		this.displayName = displayName;
 	}
 	
-	
-	
+	public Avatar getAvatar() {
+		if (owner != null) return owner.getAvatar();
+		Avatar avatar = new Avatar();
+		avatar.setColorIndex(rng.nextInt(6));
+		if (displayName != null & !displayName.isEmpty()) avatar.setName(displayName);
+		return avatar;
+	}	
 }
