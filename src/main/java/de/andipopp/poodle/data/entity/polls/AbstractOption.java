@@ -16,7 +16,10 @@ import org.hibernate.annotations.LazyCollectionOption;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 
+import com.vaadin.flow.component.charts.model.PlotOptionsLine;
+
 import de.andipopp.poodle.data.entity.AbstractEntity;
+import de.andipopp.poodle.views.poll.OptionListItem;
 
 /**
  * An abstract representation of an option in a poll
@@ -110,6 +113,13 @@ public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends Abst
 		this.answers = answers;
 	}
 
+	/* ========================
+	 * = UI auxiliary mehtods =
+	 * ======================== */
+	
+	public OptionListItem toOptionsListItem() {
+		return new OptionListItem(this);
+	}
 	
 	
 }

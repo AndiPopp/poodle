@@ -1,25 +1,30 @@
 package de.andipopp.poodle.views.poll;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.HtmlComponent;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.server.VaadinRequest;
-import com.vaadin.flow.spring.scopes.VaadinUIScope;
 
 import de.andipopp.poodle.data.entity.polls.AbstractOption;
 import de.andipopp.poodle.data.entity.polls.Answer;
-import de.andipopp.poodle.data.entity.polls.AnswerType;
 import de.andipopp.poodle.data.entity.polls.Vote;
-import de.andipopp.poodle.util.VaadinUtils;
 
 public class OptionListItem extends HorizontalLayout {
 
 	private static final long serialVersionUID = 1L;
 	
-	AbstractOption<?,?> option;
+	private AbstractOption<?,?> option;
 	
+	/**
+	 * Getter for {@link #option}
+	 * @return the {@link #option}
+	 */
+	protected AbstractOption<?, ?> getOption() {
+		return option;
+	}
+
 	//Currently modified vote
 	Vote<?, ?> vote;
 	
@@ -28,9 +33,8 @@ public class OptionListItem extends HorizontalLayout {
 	/**
 	 * @param option
 	 */
-	public OptionListItem(AbstractOption<?, ?> option, Vote<?,?> vote) {
+	public OptionListItem(AbstractOption<?, ?> option) {
 		this.option = option;
-		this.vote = vote;
 		this.getStyle().set("border", "2px solid rgba(27, 43, 65, 0.69)");
 		this.getStyle().set("background", "rgba(25, 59, 103, 0.05)");
 		this.setPadding(true);
@@ -39,6 +43,16 @@ public class OptionListItem extends HorizontalLayout {
 		Component center = center();
 		if (left != null) this.add(left);
 		if (center != null) this.add(center);
+	}
+	
+	
+	public OptionListItem(AbstractOption<?, ?> option, Vote<?,?> vote) {
+		this(option);
+		setVote(vote);
+	}
+	
+	public void setVote(Vote<?,?> vote) {
+		this.vote = vote;
 		toggleButton = new AnswerListToggleButton(this, findAnswer());
 		this.add(toggleButton);
 	}
@@ -64,10 +78,14 @@ public class OptionListItem extends HorizontalLayout {
 	}
 	
 	protected Component label() {
-		Span label = new Span(option.getTitle());
+		Span label = new Span(labelText());
 		label.getStyle().set("font-weight", "bold"); 
 //		label.getStyle().set("border", "2px dotted DarkOrange"); //for debug purposes
 		return label;
+	}
+	
+	protected String labelText() {
+		return option.getTitle();
 	}
 	
 	protected Component voteSummary() {

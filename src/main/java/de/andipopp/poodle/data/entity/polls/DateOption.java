@@ -1,11 +1,16 @@
 package de.andipopp.poodle.data.entity.polls;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
 import biweekly.component.VEvent;
+import de.andipopp.poodle.views.poll.OptionListItem;
+import de.andipopp.poodle.views.poll.date.DateOptionListItem;
 
 /**
  * An option in a {@link DatePoll}
@@ -123,6 +128,38 @@ public class DateOption extends AbstractOption<DatePoll, DateOption> {
 	public void setLocation(String location) {
 		this.location = location;
 	}
+	
+	/* ========================
+	 * = UI auxiliary mehtods =
+	 * ======================== */
+	
+	@Override
+	public DateOptionListItem toOptionsListItem() {
+		return new DateOptionListItem(this);
+	}
+	
+	/* ===============
+	 * = Conversions =
+	 * =============== */
+	
+	private static DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+	
+	private static DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("dd");
+	
+	private static DateTimeFormatter weekdayFormatter = DateTimeFormatter.ofPattern("E");
+	
+	public ZonedDateTime getZonedStart(ZoneId zoneId) {
+		return ZonedDateTime.ofInstant(start.toInstant(), zoneId);
+	}
+	
+	public ZonedDateTime getZonedEnd(ZoneId zoneId) {
+		return ZonedDateTime.ofInstant(end.toInstant(), zoneId);
+	}
+	
+	public String getZonedTimeStartEnd(ZoneId zoneId) {
+		return timeFormatter.format(getZonedStart(zoneId)) + " - " + timeFormatter.format(getZonedEnd(zoneId));
+	}
+	
 	
 	/**
 	 * Construct a VEvent from this date option
