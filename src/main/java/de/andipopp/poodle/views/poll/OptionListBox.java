@@ -60,20 +60,7 @@ public class OptionListBox<P extends AbstractPoll<P, O>, O extends AbstractOptio
 				break;
 			}
 		}
-//		String result = "", connector = "";
-//		if (countYes > 0) {
-//			result += "<span style=\"font-weight:bold; -webkit-text-stroke:.5px black; color:" + Answer.YES_COLOR + "\">" + countYes + "</span> in favor"; 
-//			connector = ", ";
-//		}
-//		if (countNeedBe > 0) {
-//			result += connector + "<span style=\"font-weight:bold; -webkit-text-stroke:.5px black; color:" + Answer.IF_NEED_BE_COLOR + "\">" + countNeedBe + "</span> in favor if need be"; 
-//			connector = ", ";
-//		}
-//		if (countNo > 0) {
-//			result += connector + "<span style=\"font-weight:bold; -webkit-text-stroke:.5px black; color:" + Answer.NO_COLOR + "\">" + countNo + "</span>  opposed"; 
-//		}
-//		result += ".";
-//		return new Html("<span>"+result+"</span>");
+
 		Span result = new Span();
 		result.getStyle().set("font-weight", "weight:bold");
 		result.getStyle().set("-webkit-text-stroke", ".5px black");
@@ -102,40 +89,4 @@ public class OptionListBox<P extends AbstractPoll<P, O>, O extends AbstractOptio
 		result.add(no, imgNo);
 		return result;
 	}
-	
-	//The version below looks nice and I am not really willing to trash it, yet. But it does take a lot of screen real estate
-	
-//	protected Component voteSummary() {
-//		AvatarGroup yes = new AvatarGroup();
-//		yes.setMaxItemsVisible(MAX_AVATARS);
-//		AvatarGroup maybe = new AvatarGroup();
-//		maybe.setMaxItemsVisible(MAX_AVATARS);
-//		for(Answer<P, O> answer : option.getAnswers()) {
-//			AvatarGroupItem item = VaadinUtils.avatarToGroupItem(answer.getVote().getAvatar());
-//			if (answer.getValue() == AnswerType.YES) yes.add(item);
-//			if (answer.getValue() == AnswerType.IF_NEED_BE) maybe.add(item);
-//		}
-//		yes.addThemeVariants(AvatarGroupVariant.LUMO_XSMALL);
-//		maybe.addThemeVariants(AvatarGroupVariant.LUMO_XSMALL);
-//		Label yesLabel = new Label(""+yes.getItems().size());
-//		yesLabel.getStyle().set("color", Answer.YES_COLOR);
-//		yesLabel.getStyle().set("font-size", "xx-large");
-//		yesLabel.getStyle().set("font-weight", "bold");
-//		yesLabel.getStyle().set("-webkit-text-stroke", "1px black");
-//		HorizontalLayout container = new HorizontalLayout(yesLabel, new Html("<span>&nbsp;</span>"), yes);
-//		if (!maybe.getItems().isEmpty()) {
-//			Label maybeLabel = new Label("  +"+maybe.getItems().size());
-//			maybeLabel.getStyle().set("color", Answer.IF_NEED_BE_COLOR);
-//			maybeLabel.getStyle().set("font-size", "xx-large");
-//			maybeLabel.getStyle().set("font-weight", "bold");
-//			maybeLabel.getStyle().set("-webkit-text-stroke", "1px black");
-//			container.add(new Html("<span>&nbsp;&nbsp;</span>"), maybeLabel, new Html("<span>&nbsp;</span>"), maybe);
-//		}
-//		container.setDefaultVerticalComponentAlignment(Alignment.CENTER);
-//		container.setSpacing(false); //we space ourselves
-//		container.getStyle().set("border", "2px dotted DarkOrange"); //for debug purposes
-//		return container;
-//	}
-	
-	
 }
