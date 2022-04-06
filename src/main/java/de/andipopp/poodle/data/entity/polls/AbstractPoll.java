@@ -376,6 +376,18 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	}
 
 	/**
+	 * Search a vote by this user in {@link #votes} and return it
+	 * @param user the user whose vote to search
+	 * @return the vote by this user, null if the user has not yet voted
+	 */
+	public Vote<P,O> getVote(User user) {
+		for(Vote<P,O> vote : votes) {
+			if (vote.getOwner() != null && vote.getOwner().equals(user)) return vote;
+		}
+		return null;
+	}
+	
+	/**
 	 * Setter for {@link #votes}
 	 * @param votes the {@link #votes} to set
 	 */

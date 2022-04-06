@@ -20,6 +20,8 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Location;
@@ -39,6 +41,7 @@ import de.andipopp.poodle.data.service.UserService;
 import de.andipopp.poodle.util.JSoupUtils;
 import de.andipopp.poodle.util.NotAUuidException;
 import de.andipopp.poodle.util.UUIDUtils;
+import de.andipopp.poodle.util.VaadinUtils;
 import de.andipopp.poodle.views.MainLayout;
 
 
@@ -65,6 +68,8 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 	
 	private VerticalLayout content;
 	
+	private VerticalLayout pollContent;
+	
 	private HorizontalLayout header = new HorizontalLayout();
 	
 	private H6 subtitle = new H6();
@@ -88,11 +93,13 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 		this.pollService = pollService;
 		this.setDefaultHorizontalComponentAlignment(Alignment.START);
 		
-		//add a not found as default
+		//we use content as an intermediary, so we remove padding from this
+		this.setPadding(false);
+		//add a not found as default content
 		this.content = new VerticalLayout();
-		this.content.setPadding(false);
 		this.content.add(notFound());
 	    this.add(content);
+//	    this.content.getStyle().set("border", "2px dotted FireBrick"); //for debug purposes
 	}
 	
 	
@@ -124,20 +131,33 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 		if (currentUser != null) this.currentVote = poll.getVote(currentUser); //returns null if the user has not voted
 		if (this.currentVote == null) this.currentVote = new Vote<>(poll, currentUser);
 		
+
+		//add the poll specific content
+		this.pollContent = new VerticalLayout();
+		this.pollContent.setPadding(false);
+		this.pollContent.add(metaInfBlock());
+		
+		VerticalLayout answerBlocks = new VerticalLayout();
+		answerBlocks.setPadding(false);
+		for(AbstractOption<?,?> option : poll.getOptions()) {
+			answerBlocks.add(new OptionListBox(option, currentVote));
+		}
+		this.pollContent.add(answerBlocks);
+		
 		//strip content from all its components (especially the "not found")
 		this.content.removeAll();
-		//add the poll specific content
-		this.content.add(metaInfBlock());
-//		this.content.getStyle().set("border", "2px dotted DarkOrange") ; //for debug purposes
-		for(AbstractOption<?,?> option : poll.getOptions()) {
-			this.add(new OptionListBox<>(option));
-		}
+		HorizontalLayout pollContentWrapper = new HorizontalLayout(pollContent);
+		pollContentWrapper.setPadding(false);
+		pollContentWrapper.setMinWidth("50%");
+		
+		VerticalLayout horizontalAlignmentWrapper = new VerticalLayout();
+		horizontalAlignmentWrapper.setSizeFull();
+		horizontalAlignmentWrapper.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+		horizontalAlignmentWrapper.add(pollContentWrapper);
+		horizontalAlignmentWrapper.setPadding(false);
+		this.content.add(horizontalAlignmentWrapper);
 	}
 
-	/* ===============
-	 * = Sub-Layouts =
-	 * =============== */
-	
 	private static VerticalLayout notFound() {
 		VerticalLayout notFound = new VerticalLayout();
 		notFound.setSpacing(false);
@@ -152,16 +172,23 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 	    notFound.setJustifyContentMode(JustifyContentMode.CENTER);
 	    notFound.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 	    notFound.getStyle().set("text-align", "center");
+	    
 	    return notFound;
 	}
 	
-	private VerticalLayout metaInfBlock() {
+	/* ===============
+	 * = Sub-Layouts =
+	 * =============== */
+	
+	private Component metaInfBlock() {
 		VerticalLayout metaInfBlock = new VerticalLayout();
 		metaInfBlock.setPadding(false);
+		metaInfBlock.setDefaultHorizontalComponentAlignment(Alignment.START);
 		metaInfBlock.add(configureHeader());
 		metaInfBlock.add(configureSubtitle());
 		metaInfBlock.add(configureDescription());
-		return metaInfBlock;
+//		metaInfBlock.getStyle().set("border", "2px dotted Red"); //for debug purposes
+		return metaInfBlock; //new HorizontalLayout(metaInfBlock);
 	}
 	
 	private Component configureHeader() {

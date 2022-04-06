@@ -106,6 +106,24 @@ public class DataGenerator {
     			new GregorianCalendar(2022, 4-1, 11, 16, 45).getTime(),
     			null 
     		));
+    	poll.addOption(new DateOption(
+    			"Option 5", 
+    			new GregorianCalendar(2022, 5-1, 12, 15, 15).getTime(), 
+    			new GregorianCalendar(2022, 5-1, 12, 16, 45).getTime(),
+    			null 
+    		));
+    	poll.addOption(new DateOption(
+    			"Option 6", 
+    			new GregorianCalendar(2022, 5-1, 13, 15, 15).getTime(), 
+    			new GregorianCalendar(2022, 5-1, 13, 16, 45).getTime(),
+    			null 
+    		));
+    	poll.addOption(new DateOption(
+    			"Option 7", 
+    			new GregorianCalendar(2022, 5-1, 16, 15, 15).getTime(), 
+    			new GregorianCalendar(2022, 5-1, 16, 16, 45).getTime(),
+    			null 
+    		));
     	RandomTestData.addRandomVotes(poll, 12);
     	Vote<?,?> vote = RandomTestData.addRandomVote(poll);
     	vote.setOwner(user);

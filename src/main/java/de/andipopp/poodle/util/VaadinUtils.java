@@ -2,6 +2,7 @@ package de.andipopp.poodle.util;
 
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.avatar.AvatarGroup.AvatarGroupItem;
+import com.vaadin.flow.server.VaadinRequest;
 
 public class VaadinUtils {
 	
@@ -17,5 +18,9 @@ public class VaadinUtils {
 		if (avatar.getImage() != null && !avatar.getImage().isEmpty()) item.setImage(avatar.getImage());
 		else if(avatar.getImageResource() != null) item.setImageResource(avatar.getImageResource());
 		return item;
+	}
+	
+	public static boolean checkRequestForMobileBrowser(VaadinRequest request) {
+		return request.getHeader("user-agent").contains("Mobile");
 	}
 }

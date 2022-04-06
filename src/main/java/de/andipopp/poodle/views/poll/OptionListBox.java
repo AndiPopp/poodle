@@ -1,39 +1,66 @@
 package de.andipopp.poodle.views.poll;
 
-
-
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.server.VaadinRequest;
+import com.vaadin.flow.spring.scopes.VaadinUIScope;
 
 import de.andipopp.poodle.data.entity.polls.AbstractOption;
-import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.data.entity.polls.Answer;
+import de.andipopp.poodle.data.entity.polls.AnswerType;
+import de.andipopp.poodle.data.entity.polls.Vote;
+import de.andipopp.poodle.util.VaadinUtils;
 
-public class OptionListBox<P extends AbstractPoll<P, O>, O extends AbstractOption<P, O>> extends VerticalLayout {
+public class OptionListBox extends HorizontalLayout {
 
 	private static final long serialVersionUID = 1L;
 	
-	AbstractOption<P,O> option;
+	AbstractOption<?,?> option;
 	
-	//Currently modified answer
-	Answer<P, O> answer;
-
-	HorizontalLayout content;
+	//Currently modified vote
+	Vote<?, ?> vote;
+	
+	AnswerListToggleButton toggleButton;
 	
 	/**
 	 * @param option
 	 */
-	public OptionListBox(AbstractOption<P, O> option) {
+	public OptionListBox(AbstractOption<?, ?> option, Vote<?,?> vote) {
 		this.option = option;
-		this.content = new HorizontalLayout();
-		this.content.add(label());
+		this.vote = vote;
 		this.getStyle().set("border", "2px solid rgba(27, 43, 65, 0.69)");
 		this.getStyle().set("background", "rgba(25, 59, 103, 0.05)");
-		this.setSpacing(false);
-		this.add(content, voteSummary());
+		this.setPadding(true);
+		this.setWidthFull();
+		Component left = left();
+		Component center = center();
+		if (left != null) this.add(left);
+		if (center != null) this.add(center);
+		toggleButton = new AnswerListToggleButton(this, findAnswer());
+		this.add(toggleButton);
+	}
+	
+	protected Answer<?,?> findAnswer() {
+		vote.fillInMissingAnswers();
+		for(Answer<?,?> answer : vote.getAnswers()) {
+			if (answer.getOption().equals(option)) return answer;
+		}
+		return null;
+	}
+	
+	protected Component left() {
+		return null;
+	}
+	
+	protected Component center() {
+		VerticalLayout center = new VerticalLayout(label(), voteSummary());
+		center.setSpacing(false);
+		center.setPadding(false);
+		center.getStyle().set("border", "2px dotted DarkOrange"); //for debug purposes
+		return center;
 	}
 	
 	protected Component label() {
@@ -45,7 +72,7 @@ public class OptionListBox<P extends AbstractPoll<P, O>, O extends AbstractOptio
 	
 	protected Component voteSummary() {
 		int countYes = 0, countNeedBe = 0, countNo = 0;
-		for(Answer<P, O> answer : option.getAnswers()) {
+		for(Answer<?, ?> answer : option.getAnswers()) {
 			switch (answer.getValue()){
 			case YES:
 				countYes++;

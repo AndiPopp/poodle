@@ -9,7 +9,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
@@ -133,12 +135,14 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 	 * @param option the option to answer
 	 * @param answerType the type of answer
 	 */
-	public void addAnswer(O option, AnswerType answerType) {
+	public Answer<P,O> addAnswer(O option, AnswerType answerType) {
 		//TODO this loop can be removed once I figure out how to replace 'answers' by a map
 		for(Answer<P,O> answer : answers) {
 			if (answer.getOption().equals(option)) answers.remove(answer);
 		}
-		answers.add(new Answer<P,O>(option, this, answerType));
+		Answer<P,O> answer = new Answer<P,O>(option, this, answerType);
+		answers.add(answer);
+		return answer;
 	}
 	
 	/**
@@ -186,6 +190,19 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 	 */
 	public AbstractPoll<P,O> getParent() {
 		return parent;
+	}
+	
+	public void fillInMissingAnswers() {
+		SortedSet<O> sortedOptions = new TreeSet<>((o1, o2) -> o1.getId().compareTo(o2.getId()));
+		sortedOptions.addAll(parent.getOptions());
+		for(Answer<P,O> answer : answers) {
+			if (sortedOptions.contains(answer.getOption())) {
+				if (!sortedOptions.remove(answer.getOption())) throw new RuntimeException("Fatal Error: Failed to remove answer in fillInMissingAnswers!");
+			}
+		}
+		for(O option : sortedOptions) {
+			addAnswer(option, AnswerType.NONE);
+		}
 	}
 	
 	/**
