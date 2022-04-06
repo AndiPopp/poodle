@@ -25,7 +25,10 @@ public class WelcomeView extends VerticalLayout {
 	public WelcomeView() {
         setSpacing(false);
 
-        Image img = new Image("images/empty-plant.png", "placeholder plant");
+//        Image img = new Image("images/empty-plant.png", "placeholder plant");
+        Image img = new Image();
+        img.setAlt("Placeholder Plant");
+        img.setSrc("images/empty-plant.png");
         img.setWidth("200px");
         add(img);
 
