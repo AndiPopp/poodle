@@ -19,10 +19,8 @@ public class AnswerListToggleButton extends Image{
 	public AnswerListToggleButton(OptionListItem parent, Answer<?, ?> answer) {
 		this.parent = parent;
 		this.answer = answer;
-		this.setMinHeight("5ex");
-		this.setMaxHeight("7ex");
-//		this.getStyle().set("width", "5ex");
-//		this.getStyle().set("height", "5ex");
+		this.setMinHeight("3ex");
+		this.setMaxHeight("5ex");
 		loadImage();
 	}
 	
