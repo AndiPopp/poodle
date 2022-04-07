@@ -1,15 +1,16 @@
 package de.andipopp.poodle.data.entity.polls;
 
+import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Locale;
 
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
 import biweekly.component.VEvent;
-import de.andipopp.poodle.views.poll.OptionListItem;
 import de.andipopp.poodle.views.poll.date.DateOptionListItem;
 
 /**
@@ -146,7 +147,7 @@ public class DateOption extends AbstractOption<DatePoll, DateOption> {
 	
 	private static DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("dd");
 	
-	private static DateTimeFormatter weekdayFormatter = DateTimeFormatter.ofPattern("E");
+	private static String weekdayFormat = ("E");
 	
 	public ZonedDateTime getZonedStart(ZoneId zoneId) {
 		return ZonedDateTime.ofInstant(start.toInstant(), zoneId);
@@ -160,6 +161,29 @@ public class DateOption extends AbstractOption<DatePoll, DateOption> {
 		return timeFormatter.format(getZonedStart(zoneId)) + " - " + timeFormatter.format(getZonedEnd(zoneId));
 	}
 	
+	public String getZonedStartDay(ZoneId zoneId) {
+		return dayFormatter.format(getZonedStart(zoneId));
+	}
+	
+	public String getZonedStartWeekday(ZoneId zoneId, Locale locale) {
+		if (locale == null) locale = Locale.getDefault();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(weekdayFormat, locale);
+		return formatter.format(getZonedStart(zoneId));
+	}
+	
+	public long getZonedDayJumps(ZoneId zoneId) {
+		//a duration object to calculate the full 24h days between the dates
+		Duration duration = Duration.between(start.toInstant(), end.toInstant());
+		//an auxiliary day if there is a non-full date jump in the zone
+		int aux = 0;
+		ZonedDateTime zonedStart = getZonedStart(zoneId);
+		ZonedDateTime zonedEnd = getZonedEnd(zoneId);
+		int startDayMinute = zonedStart.getHour()*60 + zonedStart.getMinute();
+		int endDayMinute = zonedEnd.getHour()*60 + zonedEnd.getMinute();
+		if (startDayMinute > endDayMinute) aux = 1;
+		return aux + duration.toDays();
+
+	}
 	
 	/**
 	 * Construct a VEvent from this date option

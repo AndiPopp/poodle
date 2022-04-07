@@ -103,13 +103,13 @@ public class DataGenerator {
     	poll.addOption(new DateOption(
     			"Option 4", 
     			new GregorianCalendar(2022, 4-1, 11, 15, 15).getTime(), 
-    			new GregorianCalendar(2022, 4-1, 11, 16, 45).getTime(),
+    			new GregorianCalendar(2022, 4-1, 12, 16, 45).getTime(),
     			null 
     		));
     	poll.addOption(new DateOption(
     			"Option 5", 
     			new GregorianCalendar(2022, 5-1, 12, 15, 15).getTime(), 
-    			new GregorianCalendar(2022, 5-1, 12, 16, 45).getTime(),
+    			new GregorianCalendar(2022, 5-1, 13, 10, 45).getTime(),
     			null 
     		));
     	poll.addOption(new DateOption(

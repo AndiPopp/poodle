@@ -2,11 +2,13 @@ package de.andipopp.poodle.views.poll.date;
 
 import java.time.ZoneId;
 
-import com.vaadin.flow.component.HtmlComponent;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import de.andipopp.poodle.data.entity.polls.AbstractOption;
 import de.andipopp.poodle.data.entity.polls.DateOption;
-import de.andipopp.poodle.data.entity.polls.DatePoll;
 import de.andipopp.poodle.data.entity.polls.Vote;
 import de.andipopp.poodle.views.poll.OptionListItem;
 
@@ -22,6 +24,8 @@ public class DateOptionListItem extends OptionListItem {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	ZoneId zoneId = ZoneId.systemDefault(); //TODO replace with selectable zone id
+	
 	/**
 	 * @param option
 	 * @param vote
@@ -48,8 +52,7 @@ public class DateOptionListItem extends OptionListItem {
 	
 	@Override
 	protected String labelText() {
-		//TODO take zone id from UI
-		String result = getOption().getZonedTimeStartEnd(ZoneId.systemDefault());
+		String result = getOption().getZonedTimeStartEnd(zoneId);
 		String connector = " (";
 		if (getOption().getTitle() != null && !getOption().getTitle().isEmpty()) {
 			result += connector + getOption().getTitle();
@@ -62,6 +65,40 @@ public class DateOptionListItem extends OptionListItem {
 		if (connector.equals(" / ")) result += ")";
 		return result;
 	}
+
+	@Override
+	protected Component left() {
+		VerticalLayout left = new VerticalLayout();
+		left.setSpacing(false);
+		left.setPadding(false);
+//		left.getStyle().set("border", "2px dotted Red"); //for debug purposes
+		Span monthDay = new Span(""+getOption().getZonedStartDay(zoneId));
+		monthDay.getStyle().set("font-weight", "bold");
+		monthDay.getStyle().set("font-size", "x-large");
+		monthDay.getStyle().set("margin-bottom", "0px");
+		monthDay.getStyle().set("margin-top", "0px");
+//		monthDay.getStyle().set("border", "2px dotted Green"); //for debug purposes
+		Span dayJumpMarker = null;
+		long dayJumps = getOption().getZonedDayJumps(zoneId);
+		if(dayJumps > 0) {
+			dayJumpMarker = new Span("(+" + dayJumps +")");
+			dayJumpMarker.getStyle().set("margin-bottom", "1ex");
+		}
+		Span bottom = new Span(getOption().getZonedStartWeekday(zoneId, null));
+//		bottom.getStyle().set("border", "2px dotted Green"); //for debug purposes
+		HorizontalLayout topWrapper = new HorizontalLayout(monthDay);
+		if (dayJumpMarker != null) topWrapper.add(dayJumpMarker);
+		topWrapper.setPadding(false);
+		topWrapper.setSpacing(false);
+		topWrapper.setDefaultVerticalComponentAlignment(Alignment.END);
+		left.add(topWrapper, bottom);
+		
+		HorizontalLayout leftWrapper = new HorizontalLayout(left);
+		leftWrapper.setDefaultVerticalComponentAlignment(Alignment.CENTER);
+		leftWrapper.setPadding(false);
+		return leftWrapper;
+	}
+	
 	
 
 	

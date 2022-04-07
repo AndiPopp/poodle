@@ -1,7 +1,6 @@
 package de.andipopp.poodle.views.poll;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HtmlComponent;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -38,23 +37,29 @@ public class OptionListItem extends HorizontalLayout {
 		this.getStyle().set("border", "2px solid rgba(27, 43, 65, 0.69)");
 		this.getStyle().set("background", "rgba(25, 59, 103, 0.05)");
 		this.setPadding(true);
+		this.setDefaultVerticalComponentAlignment(Alignment.CENTER);
 		this.setWidthFull();
+		
+	}
+
+
+	public OptionListItem(AbstractOption<?, ?> option, Vote<?,?> vote) {
+		this(option);
+		loadVote(vote);
+	}
+	
+	public void build() {
+		this.removeAll();
 		Component left = left();
 		Component center = center();
 		if (left != null) this.add(left);
 		if (center != null) this.add(center);
-	}
-	
-	
-	public OptionListItem(AbstractOption<?, ?> option, Vote<?,?> vote) {
-		this(option);
-		setVote(vote);
-	}
-	
-	public void setVote(Vote<?,?> vote) {
-		this.vote = vote;
 		toggleButton = new AnswerListToggleButton(this, findAnswer());
 		this.add(toggleButton);
+	}
+	
+	public void loadVote(Vote<?,?> vote) {
+		this.vote = vote;
 	}
 	
 	protected Answer<?,?> findAnswer() {
@@ -73,13 +78,13 @@ public class OptionListItem extends HorizontalLayout {
 		VerticalLayout center = new VerticalLayout(label(), voteSummary());
 		center.setSpacing(false);
 		center.setPadding(false);
-		center.getStyle().set("border", "2px dotted DarkOrange"); //for debug purposes
+//		center.getStyle().set("border", "2px dotted DarkOrange"); //for debug purposes
 		return center;
 	}
 	
 	protected Component label() {
 		Span label = new Span(labelText());
-		label.getStyle().set("font-weight", "bold"); 
+		label.getStyle().set("font-weight", "normal"); 
 //		label.getStyle().set("border", "2px dotted DarkOrange"); //for debug purposes
 		return label;
 	}

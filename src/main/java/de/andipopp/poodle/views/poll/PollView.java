@@ -140,10 +140,12 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 		
 		VerticalLayout answerBlocks = new VerticalLayout();
 		answerBlocks.setPadding(false);
+		answerBlocks.setSpacing(false);
 		for(AbstractOption<?,?> option : poll.getOptions()) {
 //			answerBlocks.add(new OptionListItem(option, currentVote));
 			OptionListItem item = option.toOptionsListItem();
-			item.setVote(currentVote);
+			item.loadVote(currentVote);
+			item.build();
 			answerBlocks.add(item);
 		}
 		this.pollContent.add(answerBlocks);
