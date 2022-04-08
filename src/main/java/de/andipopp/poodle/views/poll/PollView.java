@@ -23,6 +23,7 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Location;
@@ -119,7 +120,6 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 		if (queryParameters.getParameters().containsKey(ID_PARAMETER_NAME)) {
 			try {
 				String pollIdBase64url = queryParameters.getParameters().get(ID_PARAMETER_NAME).get(0);
-//				System.out.println("Trying to load poll " + pollIdBase64url + " / " + UUIDUtils.base64urlToUuid(pollIdBase64url));
 				UUID pollId = UUIDUtils.base64urlToUuid(pollIdBase64url);
 				Optional<AbstractPoll<?,?>> opt = pollService.get(pollId);
 				if (!opt.isEmpty()) {
@@ -140,12 +140,13 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 		this.pollContent = new VerticalLayout();
 		this.pollContent.setPadding(false);
 		this.pollContent.add(metaInfBlock());
+		this.pollContent.setSpacing(false);
+//		this.pollContent.getStyle().set("border", "2px dotted FireBrick"); //for debug purposes
 		
 		if (poll instanceof DatePoll) {
 			listView = new DateOptionListView((DatePoll) poll, currentUser); //TODO read default from user settings
 			this.pollContent.add(listView);
 		}
-		
 		
 		//strip content from all its components (especially the "not found")
 		this.content.removeAll();
@@ -306,8 +307,6 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
     private class ViewToggleButton extends Button {
     	
     	private static final long serialVersionUID = 1L;
-    	
-		
 		
 		Icon table = new Icon(VaadinIcon.TABLE);
 		
@@ -325,11 +324,9 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 			switch (state) {
 			case list:
 				setIcon(table);
-//				setText("Table View");
 				break;
 			case table:
 				setIcon(list);
-//				setText("Liste View");
 				break;
 			default:
 				break;

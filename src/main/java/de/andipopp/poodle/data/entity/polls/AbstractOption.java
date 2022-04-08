@@ -16,8 +16,6 @@ import org.hibernate.annotations.LazyCollectionOption;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 
-import com.vaadin.flow.component.charts.model.PlotOptionsLine;
-
 import de.andipopp.poodle.data.entity.AbstractEntity;
 import de.andipopp.poodle.views.poll.OptionListItem;
 

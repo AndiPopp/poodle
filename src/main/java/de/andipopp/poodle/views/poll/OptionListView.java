@@ -6,9 +6,13 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import com.vaadin.flow.component.HasValue;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.textfield.TextField;
 
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.data.entity.polls.AbstractOption;
@@ -34,6 +38,15 @@ public abstract class OptionListView<P extends AbstractPoll<P, O>, O extends Abs
 	private User user;
 	
 	/**
+	 * A new vote to store
+	 */
+	Vote<P,O> newVote;
+	
+	Button saveButton = new Button("Save Vote");
+	
+	TextField displayNameInput = new TextField();
+	
+	/**
 	 * @param poll
 	 */
 	public OptionListView(P poll, User user) {
@@ -46,7 +59,7 @@ public abstract class OptionListView<P extends AbstractPoll<P, O>, O extends Abs
 		//build vote selector
 		voteSelector = new Select<>();
 		List<Vote<P,O>> votes = new LinkedList<>();
-		Vote<P,O> newVote = new Vote<>(poll);
+		newVote = new Vote<>(poll);
 		votes.add(newVote); //add the default new vote
 		
 		SortedSet<Vote<P,O>> sortedVotes = new TreeSet<>((v1, v2) -> v1.getDisplayName().compareTo(v2.getDisplayName()));
@@ -64,6 +77,7 @@ public abstract class OptionListView<P extends AbstractPoll<P, O>, O extends Abs
 		voteSelector.addValueChangeListener(e -> loadVote(e.getValue()));
 		
 		this.header = new HorizontalLayout();
+		this.header.getStyle().set("margin-bottom", "1ex");
 		header.add(voteSelector);
 		this.add(header); 
 		
@@ -123,6 +137,7 @@ public abstract class OptionListView<P extends AbstractPoll<P, O>, O extends Abs
 	public void loadVote(Vote<P,O> vote) {
 		this.currentVote = vote;
 		buildList();
+		buildFooter();
 	}
 	
 	protected void clearList() {
@@ -142,7 +157,35 @@ public abstract class OptionListView<P extends AbstractPoll<P, O>, O extends Abs
 				item.build();
 				this.add(item);
 			}
-			
 		}
+	}
+	
+	protected void buildFooter() {
+		displayNameInput.setValue("");
+		if (voteSelector.getValue().getOwner() != null) {
+			displayNameInput.setValue(voteSelector.getValue().getOwner().getName());
+			displayNameInput.setEnabled(false);
+		}else if(voteSelector.getValue().equals(newVote)){
+			if (user != null) {
+				displayNameInput.setValue(user.getName());
+				displayNameInput.setEnabled(false);
+			}
+		}else if(voteSelector.getValue().getAnonymousName() != null) {
+			displayNameInput.setValue(voteSelector.getValue().getAnonymousName());
+			displayNameInput.setEnabled(true);
+		}else {
+			displayNameInput.setValue(""); 
+			displayNameInput.setEnabled(true);
+		}
+		
+		HorizontalLayout saveBar = new HorizontalLayout(displayNameInput, saveButton);
+		saveBar.setWidthFull();
+//		saveBar.getStyle().set("border", "2px dotted FireBrick"); //for debug purposes
+		saveBar.getStyle().set("margin-top", "1ex"); 
+		saveBar.setDefaultVerticalComponentAlignment(Alignment.END);
+		saveBar.setJustifyContentMode(JustifyContentMode.END);
+		this.add(saveBar);
+		
+		
 	}
 }
