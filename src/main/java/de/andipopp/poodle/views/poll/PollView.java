@@ -33,16 +33,16 @@ import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 import de.andipopp.poodle.data.entity.User;
-import de.andipopp.poodle.data.entity.polls.AbstractOption;
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
-import de.andipopp.poodle.data.entity.polls.Vote;
 import de.andipopp.poodle.data.service.PollService;
 import de.andipopp.poodle.data.service.UserService;
+import de.andipopp.poodle.data.service.VoteService;
 import de.andipopp.poodle.util.JSoupUtils;
 import de.andipopp.poodle.util.NotAUuidException;
 import de.andipopp.poodle.util.UUIDUtils;
 import de.andipopp.poodle.views.MainLayout;
+import de.andipopp.poodle.views.poll.date.DateOptionListView;
 
 
 @PageTitle("Poodle Poll")
@@ -55,12 +55,12 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 	public static final String ID_PARAMETER_NAME = "pollId";
 	
 	private PollService pollService;
+	
+	private VoteService voteService;
 
 	private AbstractPoll<?,?> poll;
 
 	private User currentUser;
-	
-	private Vote<?,?> currentVote;
 	
 	/* =====================
 	 * = Layout Components =
@@ -81,11 +81,12 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 	
 	ViewToggleButton viewToggleButton = new ViewToggleButton();
 	
+	OptionListView<?, ?> listView;
 	
 	/**
 	 * @param pollService
 	 */
-	public PollView(UserService userService, PollService pollService) {
+	public PollView(UserService userService, PollService pollService, VoteService voteService) {
 		//remember the current user
 		if (VaadinRequest.getCurrent().getUserPrincipal()!=null) {
 			String userName = VaadinRequest.getCurrent().getUserPrincipal().getName(); 
@@ -94,8 +95,10 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 			this.currentUser = null;
 		}
 		
-    	//hookup the poll service 
+    	//hook up the poll and vote service 
 		this.pollService = pollService;
+		this.voteService = voteService;
+		
 		this.setDefaultHorizontalComponentAlignment(Alignment.START);
 		
 		//we use content as an intermediary, so we remove padding from this
@@ -131,28 +134,18 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 	private void loadPoll(AbstractPoll<?,?> poll) {
 		//load the poll itself
 		this.poll = poll;
-		//set the current vote
-		this.currentVote = null; //default to null
-		if (currentUser != null) this.currentVote = poll.getVote(currentUser); //returns null if the user has not voted
-		if (this.currentVote == null) this.currentVote = new Vote<>(poll, currentUser);
-		
+		//set the current vote	
 
 		//add the poll specific content
 		this.pollContent = new VerticalLayout();
 		this.pollContent.setPadding(false);
 		this.pollContent.add(metaInfBlock());
 		
-		VerticalLayout answerBlocks = new VerticalLayout();
-		answerBlocks.setPadding(false);
-		answerBlocks.setSpacing(false);
-		for(AbstractOption<?,?> option : poll.getOptions()) {
-//			answerBlocks.add(new OptionListItem(option, currentVote));
-			OptionListItem item = option.toOptionsListItem();
-			item.loadVote(currentVote);
-			item.build();
-			answerBlocks.add(item);
+		if (poll instanceof DatePoll) {
+			listView = new DateOptionListView((DatePoll) poll, currentUser); //TODO read default from user settings
+			this.pollContent.add(listView);
 		}
-		this.pollContent.add(answerBlocks);
+		
 		
 		//strip content from all its components (especially the "not found")
 		this.content.removeAll();

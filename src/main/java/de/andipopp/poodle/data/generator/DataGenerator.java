@@ -141,7 +141,7 @@ public class DataGenerator {
     			new GregorianCalendar(2022, 11-1, 23, 19, 10).getTime(), 
     			new GregorianCalendar(2022, 11-1, 23, 20, 40).getTime()
     		));
-    	poll.addEmptyVote();
+    	RandomTestData.addRandomVote(poll);
     	pollRepository.save(poll);
     	
     	poll = new DatePoll();

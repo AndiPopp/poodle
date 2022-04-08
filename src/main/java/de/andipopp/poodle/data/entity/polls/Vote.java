@@ -40,6 +40,8 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 	 * = Fields =
 	 * ========== */
 	
+	public static final String NEW_VOTE_LABEL = "- new vote -";
+	
 	Random rng = new Random();
 	
 	/**
@@ -66,15 +68,13 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 	/**
 	 * The name displayed alongside this vote.
 	 */
-	@NotNull
-	private String displayName;
+	private String anonymousName;
 	
 	/**
 	 * Construct a new Vote with an empty hash set for {@link #answers}
 	 */
 	public Vote() {
 		this.answers = new ArrayList<>();
-		this.displayName = "";
 	}
 	
 	/**
@@ -228,28 +228,34 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 	public void setOwner(User owner) {
 		this.owner = owner;
 	}
-
+	
 	/**
-	 * Getter for {@link #displayName}
-	 * @return the {@link #displayName}
+	 * Getter for {@link #anonymousName}
+	 * @return the {@link #anonymousName}
 	 */
-	public String getDisplayName() {
-		return displayName;
+	public String getAnonymousName() {
+		return anonymousName;
 	}
 
 	/**
-	 * Setter for {@link #displayName}
-	 * @param displayName the {@link #displayName} to set
+	 * Setter for {@link #anonymousName}
+	 * @param anonymousName the {@link #anonymousName} to set
 	 */
-	public void setDisplayName(String displayName) {
-		this.displayName = displayName;
+	public void setAnonymousName(String anonymousName) {
+		this.anonymousName = anonymousName;
+	}
+
+	public String getDisplayName() {
+		if (owner != null) return owner.getName();
+		if (anonymousName != null) return anonymousName;
+		return NEW_VOTE_LABEL;
 	}
 	
 	public Avatar getAvatar() {
 		if (owner != null) return owner.getAvatar();
 		Avatar avatar = new Avatar();
 		avatar.setColorIndex(rng.nextInt(6));
-		if (displayName != null & !displayName.isEmpty()) avatar.setName(displayName);
+		if (anonymousName != null & !anonymousName.isEmpty()) avatar.setName(anonymousName);
 		return avatar;
 	}	
 }

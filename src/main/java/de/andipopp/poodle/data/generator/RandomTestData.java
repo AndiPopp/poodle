@@ -27,7 +27,7 @@ public class RandomTestData {
 			int i = rng.nextInt(AnswerType.values().length);
 			answer.setValue(AnswerType.values()[i]);
 		}
-		vote.setDisplayName(randomName());
+		vote.setAnonymousName(randomName());
 		return vote;
 	}
 	

@@ -4,6 +4,7 @@ import java.time.ZoneId;
 
 import com.vaadin.flow.component.select.Select;
 
+import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.data.entity.polls.DateOption;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
 import de.andipopp.poodle.util.VaadinUtils;
@@ -21,14 +22,9 @@ public class DateOptionListView extends OptionListView<DatePoll, DateOption> {
 	 * @param poll
 	 * @param zoneId
 	 */
-	public DateOptionListView(DatePoll poll, ZoneId zoneId) {
-		super(poll);
-		if (zoneId == null) this.zoneId = VaadinUtils.guessTimeZoneFromVaadinRequest();
-		else this.zoneId = zoneId;
-		
-		
-	}
-	
-	
+	public DateOptionListView(DatePoll poll, User user) {
+		super(poll, user);
+		this.zoneId = VaadinUtils.guessTimeZoneFromVaadinRequest(); //TODO load from user settings
+	}	
 	
 }
