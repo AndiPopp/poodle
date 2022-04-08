@@ -17,7 +17,7 @@ public class EditPollIcon extends Span {
 		this.poll = poll;
 		this.setClassName("edit-poll-icon");
 		this.getStyle().set("cursor", "pointer");
-		this.add(new MainLayout.MenuItemInfo.LineAwesomeIcon("la la-edit"));
+		this.add(new MainLayout.MenuItemInfo.LineAwesomeMenuIcon("la la-edit"));
 //		this.addClickListener( e -> {
 //			Notification.show("Edit "+poll.getTitle());
 //		});

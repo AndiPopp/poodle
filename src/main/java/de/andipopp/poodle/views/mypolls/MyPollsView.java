@@ -106,7 +106,7 @@ public class MyPollsView extends HorizontalLayout {
 		
 		newIcon = new Span();
 		newIcon.getStyle().set("cursor", "pointer");
-		newIcon.add(new MainLayout.MenuItemInfo.LineAwesomeIcon("las la-plus-circle"));
+		newIcon.add(new MainLayout.MenuItemInfo.LineAwesomeMenuIcon("las la-plus-circle"));
 		newIcon.getElement().setProperty("title", "New Poll");
 		newIcon.addClickListener(e -> addDatePoll());
 		

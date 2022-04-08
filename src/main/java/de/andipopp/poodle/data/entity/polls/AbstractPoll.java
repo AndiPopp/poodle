@@ -21,6 +21,8 @@ import org.hibernate.annotations.LazyCollectionOption;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 
+import com.vaadin.flow.component.Component;
+
 import de.andipopp.poodle.data.entity.AbstractEntity;
 import de.andipopp.poodle.data.entity.Config;
 import de.andipopp.poodle.data.entity.User;
@@ -446,6 +448,12 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	public boolean removeVote(String id) {
 		return removeVote(UUID.fromString(id));
 	}
+	
+	/* ========================
+	 * = UI auxiliary methods =
+	 * ======================== */
+	
+//	public abstract Component buildListView();
 	
 	/* =================
 	 * = Other Methods =

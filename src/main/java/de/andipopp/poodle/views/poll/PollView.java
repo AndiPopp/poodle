@@ -11,17 +11,18 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.avatar.AvatarVariant;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.H6;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
-import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Location;
@@ -41,7 +42,6 @@ import de.andipopp.poodle.data.service.UserService;
 import de.andipopp.poodle.util.JSoupUtils;
 import de.andipopp.poodle.util.NotAUuidException;
 import de.andipopp.poodle.util.UUIDUtils;
-import de.andipopp.poodle.util.VaadinUtils;
 import de.andipopp.poodle.views.MainLayout;
 
 
@@ -75,8 +75,12 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 	
 	private H6 subtitle = new H6();
 	
-	private VerticalLayout description = new VerticalLayout();
+	private VerticalLayout info = new VerticalLayout();
 
+	ViewToggleState state = ViewToggleState.list;
+	
+	ViewToggleButton viewToggleButton = new ViewToggleButton();
+	
 	
 	/**
 	 * @param pollService
@@ -192,7 +196,7 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 		metaInfBlock.setDefaultHorizontalComponentAlignment(Alignment.START);
 		metaInfBlock.add(configureHeader());
 		metaInfBlock.add(configureSubtitle());
-		metaInfBlock.add(configureDescription());
+		metaInfBlock.add(configureInfo());
 //		metaInfBlock.getStyle().set("border", "2px dotted Red"); //for debug purposes
 		return metaInfBlock; //new HorizontalLayout(metaInfBlock);
 	}
@@ -214,7 +218,7 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 		
 		if (poll.getOwner().equals(currentUser)) {
 			Icon editIcon = new Icon(VaadinIcon.EDIT);
-			editIcon.setSize("200px"); //TODO does not work 
+			editIcon.setSize("var(var(--lumo-size-xl)"); //TODO does not work 
 			header.add(new Icon(VaadinIcon.EDIT));
 		}
 		
@@ -229,21 +233,118 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 		text +=  " and retained until "+poll.getDeleteDate();
 		subtitle.setText(text);
 		subtitle.getStyle().set("margin-top", "0ex");
-//		subtitle.getStyle().set("border", "2px dotted Red") ; //for debug purposes
+//		subtitle.getStyle()
 		return subtitle;
 	}
 	
-	private Component configureDescription() {
-		description.removeAll();
-		if (poll.getDescription() != null && !poll.getDescription().isBlank()) description.add(new Html("<p>" + Jsoup.clean(poll.getDescription(), JSoupUtils.BASIC) + "</p>"));
+	private Component configureInfo() {
+		info.removeAll();
+		HorizontalLayout lastElement = null;
+		if (poll.getDescription() != null && !poll.getDescription().isBlank()) {
+			HorizontalLayout description = new HorizontalInfoContainer(true);
+			description.add(new Html("<p>" + Jsoup.clean(poll.getDescription(), JSoupUtils.BASIC) + "</p>"));
+			description.setJustifyContentMode(JustifyContentMode.BETWEEN);
+			info.add(description);
+			lastElement = description;
+		}
 		if (poll instanceof DatePoll) {
 			DatePoll datePoll = (DatePoll) poll;
-			if (datePoll.getLocation() != null && !datePoll.getLocation().isBlank()) 
-				description.add(new HorizontalLayout(new Icon(VaadinIcon.MAP_MARKER), new Html("<span>"+Jsoup.clean(datePoll.getLocation(), JSoupUtils.BASIC)+"</span>")));
+			if (datePoll.getLocation() != null && !datePoll.getLocation().isBlank()) {
+				HorizontalLayout location = new HorizontalInfoContainer(true);
+				location.add(new HorizontalInfoContainer(false, new Icon(VaadinIcon.MAP_MARKER), new Html("<span>"+Jsoup.clean(datePoll.getLocation(), JSoupUtils.BASIC)+"</span>")));
+				location.setJustifyContentMode(JustifyContentMode.BETWEEN);
+				info.add(location);
+				lastElement = location;
+			}	
 		}
-		description.setSpacing(false);
-		description.setPadding(false);
-		return description;
+		lastElement.add(viewToggleButton);
+		info.setSpacing(false);
+		info.setPadding(false);
+//		info.getStyle().set("border", "2px dotted Green") ; //for debug purposes
+		return info;
 	}
 	
+	private static class HorizontalInfoContainer extends HorizontalLayout {
+
+		private static final long serialVersionUID = 1L;
+
+		/**
+		 * 
+		 */
+		public HorizontalInfoContainer(boolean fullWidth) {
+			super();
+			setAttributes(fullWidth);
+		}
+		
+		/**
+		 * @param children
+		 */
+		public HorizontalInfoContainer(boolean fullWidth, Component... children) {
+			super(children);
+			setAttributes(fullWidth);
+		}
+
+		private void setAttributes(boolean fullWidth) {
+			this.setPadding(false);
+			if (fullWidth) this.setWidthFull();
+			this.setDefaultVerticalComponentAlignment(Alignment.CENTER);
+//			this.getStyle().set("border", "2px dotted DarkOrange") ; //for debug purposes
+		}
+		
+	}
+	
+	
+    @NpmPackage(value = "line-awesome", version = "1.3.0")
+    public static class LineAwesomeIcon extends Span {
+        private static final long serialVersionUID = 1L;
+
+		public LineAwesomeIcon(String lineawesomeClassnames) {
+            if (!lineawesomeClassnames.isEmpty()) {
+                addClassNames(lineawesomeClassnames);
+                this.getStyle().set("font-size", "x-large");
+            }
+        }
+    }
+    
+    private enum ViewToggleState {
+		list, table
+	}
+    
+    private class ViewToggleButton extends Button {
+    	
+    	private static final long serialVersionUID = 1L;
+    	
+		
+		
+		Icon table = new Icon(VaadinIcon.TABLE);
+		
+		Icon list = new Icon(VaadinIcon.LINES_LIST);
+		
+		/**
+		 * @param state
+		 */
+		ViewToggleButton() {
+			this.setMinWidth("1em");
+			setLabel();
+		}
+		
+		private void setLabel() {
+			switch (state) {
+			case list:
+				setIcon(table);
+//				setText("Table View");
+				break;
+			case table:
+				setIcon(list);
+//				setText("Liste View");
+				break;
+			default:
+				break;
+			
+			}
+		}
+    	
+    	
+    	
+    }
 }

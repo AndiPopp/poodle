@@ -8,8 +8,12 @@ import javax.validation.constraints.NotNull;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+
 import de.andipopp.poodle.PoodleApplication;
 import de.andipopp.poodle.data.entity.User;
+import de.andipopp.poodle.views.poll.OptionListItem;
 
 @Entity
 public class DatePoll extends AbstractPoll<DatePoll, DateOption> {
@@ -113,4 +117,9 @@ public class DatePoll extends AbstractPoll<DatePoll, DateOption> {
 		//return result
 		return result;
 	}
+
+	/* ========================
+	 * = UI auxiliary methods =
+	 * ======================== */
+	
 }

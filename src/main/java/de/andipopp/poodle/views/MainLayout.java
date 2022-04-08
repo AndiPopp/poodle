@@ -51,7 +51,7 @@ public class MainLayout extends AppLayout {
             Span text = new Span(menuTitle);
             text.addClassNames("menu-item-text");
 
-            link.add(new LineAwesomeIcon(iconClass), text);
+            link.add(new LineAwesomeMenuIcon(iconClass), text);
             add(link);
         }
 
@@ -64,10 +64,10 @@ public class MainLayout extends AppLayout {
          * https://icons8.com/line-awesome
          */
         @NpmPackage(value = "line-awesome", version = "1.3.0")
-        public static class LineAwesomeIcon extends Span {
+        public static class LineAwesomeMenuIcon extends Span {
             private static final long serialVersionUID = 1L;
 
-			public LineAwesomeIcon(String lineawesomeClassnames) {
+			public LineAwesomeMenuIcon(String lineawesomeClassnames) {
                 addClassNames("menu-item-icon");
                 if (!lineawesomeClassnames.isEmpty()) {
                     addClassNames(lineawesomeClassnames);
