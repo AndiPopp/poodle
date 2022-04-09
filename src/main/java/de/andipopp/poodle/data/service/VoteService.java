@@ -3,6 +3,8 @@ package de.andipopp.poodle.data.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import de.andipopp.poodle.data.entity.polls.Vote;
+
 @Service
 public class VoteService {
 
@@ -17,4 +19,7 @@ public class VoteService {
         return (int) repository.count();
     }
 
+    public Vote<?,?> update(Vote<?,?> vote) {
+    	return repository.save(vote);
+    }
 }

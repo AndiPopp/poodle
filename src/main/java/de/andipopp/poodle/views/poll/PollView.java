@@ -23,7 +23,6 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Location;
@@ -144,7 +143,7 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 //		this.pollContent.getStyle().set("border", "2px dotted FireBrick"); //for debug purposes
 		
 		if (poll instanceof DatePoll) {
-			listView = new DateOptionListView((DatePoll) poll, currentUser); //TODO read default from user settings
+			listView = new DateOptionListView((DatePoll) poll, currentUser, voteService); 
 			this.pollContent.add(listView);
 		}
 		

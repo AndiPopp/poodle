@@ -10,6 +10,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.data.entity.polls.DateOption;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
+import de.andipopp.poodle.data.service.VoteService;
 import de.andipopp.poodle.util.TimeUtils;
 import de.andipopp.poodle.util.VaadinUtils;
 import de.andipopp.poodle.views.poll.OptionListView;
@@ -26,8 +27,8 @@ public class DateOptionListView extends OptionListView<DatePoll, DateOption> {
 	 * @param poll
 	 * @param zoneId
 	 */
-	public DateOptionListView(DatePoll poll, User user) {
-		super(poll, user);
+	public DateOptionListView(DatePoll poll, User user, VoteService voteService) {
+		super(poll, user, voteService);
 		
 		if (user != null && user.getTimeZone() != null) {
 			this.zoneId = user.getTimeZone();
