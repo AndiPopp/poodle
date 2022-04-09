@@ -1,5 +1,6 @@
 package de.andipopp.poodle.data.entity;
 
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -39,7 +40,10 @@ public class User extends AbstractEntity {
 
     private Avatar avatar;
     
-    @OneToMany(cascade = CascadeType.ALL, targetEntity=AbstractPoll.class)
+    private ZoneId timeZone;
+    
+
+	@OneToMany(cascade = CascadeType.ALL, targetEntity=AbstractPoll.class)
 	@LazyCollection(LazyCollectionOption.FALSE)
     List<AbstractPoll<?,?>> polls = new ArrayList<>();
     
@@ -106,4 +110,18 @@ public class User extends AbstractEntity {
 		this.polls = polls;
 	}
 
+    /**
+	 * Getter for {@link #timeZone}
+	 * @return the {@link #timeZone}
+	 */
+	public ZoneId getTimeZone() {
+		return timeZone;
+	}
+	/**
+	 * Setter for {@link #timeZone}
+	 * @param timeZone the {@link #timeZone} to set
+	 */
+	public void setTimeZone(ZoneId timeZone) {
+		this.timeZone = timeZone;
+	}
 }

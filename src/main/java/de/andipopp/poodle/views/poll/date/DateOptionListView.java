@@ -28,7 +28,12 @@ public class DateOptionListView extends OptionListView<DatePoll, DateOption> {
 	 */
 	public DateOptionListView(DatePoll poll, User user) {
 		super(poll, user);
-		this.zoneId = VaadinUtils.guessTimeZoneFromVaadinRequest(); //TODO load from user settings
+		
+		if (user != null && user.getTimeZone() != null) {
+			this.zoneId = user.getTimeZone();
+		} else {
+			this.zoneId = VaadinUtils.guessTimeZoneFromVaadinRequest(); 
+		}
 		zoneIdSelector = new ComboBox<>();
 		zoneIdSelector.setItems(TimeUtils.getSupportedZoneIdsInAlphabeticalOrder());
 		zoneIdSelector.setValue(zoneId);
