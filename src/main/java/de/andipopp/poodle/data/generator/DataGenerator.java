@@ -124,9 +124,13 @@ public class DataGenerator {
     			new GregorianCalendar(2022, 5-1, 16, 16, 45).getTime(),
     			null 
     		));
-    	RandomTestData.addRandomVotes(poll, 12);
-    	Vote<?,?> vote = RandomTestData.addRandomVote(poll);
+    	NameGenerator.addRandomVotes(poll, 12);
+    	Vote<?,?> vote = NameGenerator.addRandomVote(poll);
     	vote.setOwner(user);
+    	vote.setDisplayName(user.getName());
+    	vote = NameGenerator.addRandomVote(poll);
+    	vote.setOwner(admin);
+    	vote.setDisplayName(admin.getName());
     	pollRepository.save(poll);
     	
     	poll = new DatePoll();
@@ -141,7 +145,7 @@ public class DataGenerator {
     			new GregorianCalendar(2022, 11-1, 23, 19, 10).getTime(), 
     			new GregorianCalendar(2022, 11-1, 23, 20, 40).getTime()
     		));
-    	RandomTestData.addRandomVote(poll);
+    	NameGenerator.addRandomVote(poll);
     	pollRepository.save(poll);
     	
     	poll = new DatePoll();

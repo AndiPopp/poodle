@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -16,8 +18,10 @@ import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.data.entity.polls.AbstractOption;
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.data.entity.polls.Vote;
+import de.andipopp.poodle.data.generator.NameGenerator;
 import de.andipopp.poodle.data.service.PollService;
 import de.andipopp.poodle.data.service.VoteService;
+import de.andipopp.poodle.util.InvalidException;
 
 public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOption<P, O>> extends VerticalLayout {
 
@@ -42,7 +46,7 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 	Vote<P,O> newVote;
 	
 	private Select<Vote<P,O>> voteSelector;
-
+	
 	protected HorizontalLayout header;
 	
 	Button saveButton = new Button("Save Vote");
@@ -72,16 +76,22 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 		this.add(header); 
 	
 		//configure
-		configureVoteSelector();
+		Vote<P,O> usersVote = configureVoteSelector();
 	
+		//select the most likely vote, which triggers the set and build event
+		if (usersVote == null) voteSelector.setValue(newVote);
+		else voteSelector.setValue(usersVote);
+		
 		//hookup listener for save button
+		saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+		saveButton.addClickShortcut(Key.ENTER);
 		saveButton.addClickListener(e -> saveVote());
 	}
 
 
 	private boolean configureVoteSelectorMode = false;
 
-	private void configureVoteSelector() {
+	private Vote<P,O> configureVoteSelector() {
 		configureVoteSelectorMode = true;
 		List<Vote<P,O>> votes = new LinkedList<>();
 		if (newVote == null) {
@@ -91,7 +101,7 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 		
 		ArrayList<Vote<P,O>> sortedVotes = new ArrayList<>();
 		sortedVotes.addAll(poll.getVotes());
-		sortedVotes.sort((v1, v2) -> v1.getDisplayName().compareTo(v2.getDisplayName()));
+		sortedVotes.sort((v1, v2) -> v1.getListLabel().compareTo(v2.getListLabel()));
 		
 		//add the other votes to the selector and use the loop to find the user's vote if present
 		Vote<P,O> usersVote = null;
@@ -101,7 +111,11 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 		}
 //		System.out.println("Loaded "+(sortedVotes.size()+1)+" votes");
 		voteSelector.setItems(votes);
-		voteSelector.setItemLabelGenerator(Vote::getDisplayName);
+		voteSelector.setItemLabelGenerator(v -> {
+			if (v.getOwner() == null) return v.getListLabel();
+			if (v.getOwner().equals(user)) return v.getListLabel()+" ★";
+			return v.getListLabel()+" ☆";
+		});
 		voteSelector.setLabel("Select vote");
 		voteSelector.addValueChangeListener(e -> {
 			if (!configureVoteSelectorMode) loadVote(e.getValue());
@@ -109,40 +123,48 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 		voteSelector.setMaxWidth("10em");
 		
 		configureVoteSelectorMode = false;
-		
-		//select the most likely vote, which triggers the set and build event
-		if (usersVote == null) voteSelector.setValue(newVote);
-		else voteSelector.setValue(usersVote);
+		return usersVote;
 	}
 
 
-	
+	/**
+	 * Save the current vote
+	 */
 	private void saveVote() {
 		
-		if (displayNameInput.getValue() == null || displayNameInput.getValue().isEmpty()) {
-			Notification notification = Notification.show("Enter a name!", 2000, Notification.Position.BOTTOM_CENTER);
+		//Validate inputs
+		displayNameInput.setValue(displayNameInput.getValue().strip());
+		try {
+			currentVote.validateAllAndSetDisplayName(displayNameInput.getValue());
+		} catch (InvalidException e) {
+			Notification notification = Notification.show(e.getMessage(), 4000, Notification.Position.BOTTOM_CENTER);
 			notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
 			return;
 		}
 		
-		currentVote.setAnonymousName(displayNameInput.getValue());
-		
+		//write the results to backend
 		boolean result = false;
+		String message = "Unexpected result while saving vote. Refresh to see if it worked.";
 		if (currentVote.equals(newVote)) {
 			this.poll.addVote(newVote);
 			newVote.setOwner(user);
 			newVote = null;
 			result = pollService.update(poll) != null;
-		} else {
+		} else if(currentVote.getOwner() == null || currentVote.getOwner().equals(user)) {
 			result = voteService.update(currentVote) != null;
+		} else {
+			message = "You don't have permission to edit this vote.";
+			result = false;
 		}
 		
 		if (result) {
 			Notification notification = Notification.show("Vote saved", 2000, Notification.Position.BOTTOM_CENTER);
 			notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+			Vote<P,O> currentAux = currentVote;
 			configureVoteSelector();
+			voteSelector.setValue(currentAux);
 		}else {
-			Notification notification = Notification.show("Unexpected result while saving vote. Refresh to see if it worked.");
+			Notification notification = Notification.show(message);
 			notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
 		}
 		
@@ -226,32 +248,62 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 		}
 	}
 	
+	/**
+	 * Builds the footer.
+	 * Assumes a vote has been selected!
+	 */
 	protected void buildFooter() {
-		displayNameInput.setValue("");
-		if (voteSelector.getValue().getOwner() != null) {
-			displayNameInput.setValue(voteSelector.getValue().getOwner().getName());
-			displayNameInput.setEnabled(false);
-		}else if(voteSelector.getValue().equals(newVote)){
-			if (user != null) {
-				displayNameInput.setValue(user.getName());
-				displayNameInput.setEnabled(false);
-			}
-		}else if(voteSelector.getValue().getAnonymousName() != null) {
-			displayNameInput.setValue(voteSelector.getValue().getAnonymousName());
-			displayNameInput.setEnabled(true);
-		}else {
-			displayNameInput.setValue(""); 
-			displayNameInput.setEnabled(true);
+		if (poll.getWinners() == null || poll.getWinners().isEmpty()) buildSaveBar();
+	}
+	
+	protected void buildSaveBar() {
+		
+		saveButton.setEnabled(true);
+		if (currentVote.getOwner() != null) {
+			saveButton.setEnabled(false);
+			if (user.equals(currentVote.getOwner()) || user.equals(poll.getOwner())) saveButton.setEnabled(true);
 		}
 		
+		configureDisplayNameInput();
+		saveButton.setMinWidth("5em");
 		HorizontalLayout saveBar = new HorizontalLayout(displayNameInput, saveButton);
 		saveBar.setWidthFull();
 //		saveBar.getStyle().set("border", "2px dotted FireBrick"); //for debug purposes
 		saveBar.getStyle().set("margin-top", "1ex"); 
-		saveBar.setDefaultVerticalComponentAlignment(Alignment.END);
+		saveBar.setDefaultVerticalComponentAlignment(Alignment.CENTER);
 		saveBar.setJustifyContentMode(JustifyContentMode.END);
 		this.add(saveBar);
-		
-		
 	}
+
+	private void configureDisplayNameInput() {
+		displayNameInput.setValue("");
+		displayNameInput.setPlaceholder("Enter name");
+		
+		if (voteSelector.getValue().getDisplayName() != null) {
+			displayNameInput.setValue(voteSelector.getValue().getDisplayName());
+		}else if (voteSelector.getValue().getOwner() != null) {
+			displayNameInput.setValue(voteSelector.getValue().getOwner().getName());
+		}else if(voteSelector.getValue().equals(newVote)){
+			if (user != null) {
+				displayNameInput.setValue(user.getName());
+			}
+		}
+		
+		try {
+			if (!displayNameInput.getValue().isEmpty()) voteSelector.getValue().validateDisplayName(displayNameInput.getValue());
+		} catch (InvalidException e) {
+			displayNameInput.setValue(displayNameInput.getValue()+" "+NameGenerator.randomNumberLabel(3));
+		}
+		
+	
+	}
+	
+//	private boolean displayNameExists(String name) {
+//		name = name.strip();
+//		for(Iterator<Vote<P,O>> it = voteSelector.getListDataView().getItems().iterator(); it.hasNext();) {
+//			if (it.next().getDisplayName().equals(name)) return true;
+//		}
+//		return false;
+//	}
+
 }

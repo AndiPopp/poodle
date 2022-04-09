@@ -14,12 +14,12 @@ public class UUIDUtils {
 	/**
 	 * The Base64url encoder
 	 */
-	private static Base64.Encoder enc = Base64.getUrlEncoder();
+	public static final Base64.Encoder enc = Base64.getUrlEncoder();
 	
 	/**
 	 * The Base64url decoder
 	 */
-	private static Base64.Decoder dec = Base64.getUrlDecoder();
+	public static final Base64.Decoder dec = Base64.getUrlDecoder();
 	
 	/**
 	 * Translate a UUID into a byte array 

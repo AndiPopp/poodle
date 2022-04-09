@@ -20,6 +20,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
+import org.aspectj.apache.bcel.generic.SwitchBuilder;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -27,6 +28,7 @@ import com.vaadin.flow.component.avatar.Avatar;
 
 import de.andipopp.poodle.data.entity.AbstractEntity;
 import de.andipopp.poodle.data.entity.User;
+import de.andipopp.poodle.util.InvalidException;
 
 /**
  * A vote consists of a set of {@link AnswerType}s to a specific poll's options.
@@ -68,7 +70,7 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 	/**
 	 * The name displayed alongside this vote.
 	 */
-	private String anonymousName;
+	private String displayName;
 	
 	/**
 	 * Construct a new Vote with an empty hash set for {@link #answers}
@@ -230,24 +232,69 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 	}
 	
 	/**
-	 * Getter for {@link #anonymousName}
-	 * @return the {@link #anonymousName}
+	 * Getter for {@link #displayName}
+	 * @return the {@link #displayName}
 	 */
-	public String getAnonymousName() {
-		return anonymousName;
+	public String getDisplayName() {
+		return displayName;
 	}
 
 	/**
-	 * Setter for {@link #anonymousName}
-	 * @param anonymousName the {@link #anonymousName} to set
+	 * Setter for {@link #displayName}
+	 * @param displayName the {@link #displayName} to set
 	 */
-	public void setAnonymousName(String anonymousName) {
-		this.anonymousName = anonymousName;
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
 	}
 
-	public String getDisplayName() {
+	public void validateDisplayName(String displayName) throws InvalidException{
+		//Check if all the inputs are complete
+		if (displayName == null) throw new InvalidException("The display name may not be null");
+		if (displayName.isEmpty()) throw new InvalidException("The display name may not be empty");
+		if (displayName.equals(NEW_VOTE_LABEL)) throw new InvalidException("This display name is not allowed");
+		for(Vote<P,O> vote : parent.getVotes()) {
+			if (vote.getDisplayName().equals(displayName) && !vote.equals(this)) 
+				throw new InvalidException("The display name is already in use");
+		}
+	}
+	
+	public void validateAndSetDisplayName(String displayName) throws InvalidException {
+		validateDisplayName(displayName);
+		setDisplayName(displayName);
+	}
+	
+	public void validateAnswers() throws InvalidException {
+		for(Answer<P, O> answer : answers) {
+			switch (answer.getValue()) {
+			case IF_NEED_BE:
+				if (!parent.isEnableIfNeedBe()) throw new InvalidException("This poll does not allow 'if need be' answers.");
+				break;
+			case NO:
+				break;
+			case NONE:
+				if (!parent.isEnableAbstain()) throw new InvalidException("This poll does not allow abstaining from options.");
+				break;
+			case YES:
+				break;
+			default:
+				break;
+			}
+		}
+	}
+	
+	public void validateAll() throws InvalidException {
+		validateAnswers();
+		validateDisplayName(displayName);
+	}
+	
+	public void validateAllAndSetDisplayName(String displayName) throws InvalidException {
+		validateAnswers();
+		validateAndSetDisplayName(displayName);
+	}
+	
+	public String getListLabel() {
+		if (displayName != null) return displayName;
 		if (owner != null) return owner.getName();
-		if (anonymousName != null) return anonymousName;
 		return NEW_VOTE_LABEL;
 	}
 	
@@ -255,7 +302,7 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 		if (owner != null) return owner.getAvatar();
 		Avatar avatar = new Avatar();
 		avatar.setColorIndex(rng.nextInt(6));
-		if (anonymousName != null & !anonymousName.isEmpty()) avatar.setName(anonymousName);
+		if (displayName != null & !displayName.isEmpty()) avatar.setName(displayName);
 		return avatar;
 	}	
 }
