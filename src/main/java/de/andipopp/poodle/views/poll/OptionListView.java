@@ -72,8 +72,11 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 		voteSelector.setItemLabelGenerator(Vote::getDisplayName);
 		voteSelector.setLabel("Select vote");
 		voteSelector.addValueChangeListener(e -> loadVote(e.getValue()));
+		voteSelector.setMaxWidth("10em");
 		
 		this.header = new HorizontalLayout();
+//		this.header.getStyle().set("border", "2px dotted AntiqueWhite"); //for debug purposes
+		this.header.setWidthFull();
 		this.header.getStyle().set("margin-bottom", "1ex");
 		header.add(voteSelector);
 		this.add(header); 

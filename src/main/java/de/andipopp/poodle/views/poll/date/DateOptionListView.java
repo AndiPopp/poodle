@@ -6,7 +6,6 @@ import java.time.format.TextStyle;
 import java.util.Locale;
 
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.select.Select;
 
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.data.entity.polls.DateOption;
@@ -38,7 +37,7 @@ public class DateOptionListView extends OptionListView<DatePoll, DateOption> {
 			zoneId = zoneIdSelector.getValue();
 			buildAll();
 		});
-		zoneIdSelector.setWidthFull();
+		zoneIdSelector.setMaxWidth("50%");
 		zoneIdSelector.setItemLabelGenerator(z -> z.getDisplayName(TextStyle.NARROW, Locale.US) + " " + z.getRules().getOffset(Instant.now()));
 		
 		header.add(zoneIdSelector);
