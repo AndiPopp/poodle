@@ -95,6 +95,12 @@ public class DataGenerator {
 				"at Man-at-Arms's"
 			));
     	poll.addOption(new DateOption(
+    			"Option 7", 
+    			new GregorianCalendar(2022, 5-1, 31, 22, 15).getTime(), 
+    			new GregorianCalendar(2022, 5-1, 31, 23, 45).getTime(),
+    			null 
+    		));
+    	poll.addOption(new DateOption(
     			"Option 3", 
     			new GregorianCalendar(2022, 4-1, 11, 8, 0).getTime(), 
     			new GregorianCalendar(2022, 4-1, 11, 10, 0).getTime(),
@@ -118,12 +124,7 @@ public class DataGenerator {
     			new GregorianCalendar(2022, 5-1, 13, 16, 45).getTime(),
     			null 
     		));
-    	poll.addOption(new DateOption(
-    			"Option 7", 
-    			new GregorianCalendar(2022, 5-1, 16, 15, 15).getTime(), 
-    			new GregorianCalendar(2022, 5-1, 16, 16, 45).getTime(),
-    			null 
-    		));
+    	
     	NameGenerator.addRandomVotes(poll, 12);
     	Vote<?,?> vote = NameGenerator.addRandomVote(poll);
     	vote.setOwner(user);

@@ -2,8 +2,6 @@ package de.andipopp.poodle.data.generator;
 
 import java.util.Random;
 
-import org.springframework.util.Base64Utils;
-
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.data.entity.polls.Answer;
 import de.andipopp.poodle.data.entity.polls.AnswerType;
