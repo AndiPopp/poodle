@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.UUID;
@@ -13,6 +14,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -24,6 +26,7 @@ import org.jsoup.safety.Safelist;
 import de.andipopp.poodle.data.entity.AbstractEntity;
 import de.andipopp.poodle.data.entity.Config;
 import de.andipopp.poodle.data.entity.User;
+import de.andipopp.poodle.util.InvalidException;
 
 @Entity
 //public abstract class AbstractPoll<O extends AbstractOption<? extends AbstractPoll<O>>> extends AbstractEntity {
@@ -249,22 +252,6 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	}
 
 	/**
-	 * Getter for {@link #winners}
-	 * @return the {@link #winners}
-	 */
-	public List<O> getWinners() {
-		return winners;
-	}
-
-	/**
-	 * Setter for {@link #winners}
-	 * @param winners the {@link #winners} to set
-	 */
-	public void setWinners(List<O> winners) {
-		this.winners = winners;
-	}
-
-	/**
 	 * Getter for {@link #options}
 	 * @return the {@link #options}
 	 */
@@ -357,6 +344,41 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 		return winners != null && !winners.isEmpty();
 	}
 	
+	/**
+	 * Getter for {@link #winners}
+	 * @return the {@link #winners}
+	 */
+	public List<O> getWinners() {
+		return winners;
+	}
+
+	/**
+	 * Setter for {@link #winners}
+	 * @param winners the {@link #winners} to set
+	 */
+	public void setWinners(List<O> winners) {
+		this.winners = winners;
+	}
+	
+	public void addWinner(O winner) throws InvalidException {
+		if (getOptions() != null) throw new InvalidException("This poll has no options");
+		if (!options.contains(winner)) throw new InvalidException("The winner is not an option of this poll");
+		
+		if(winners == null) winners = new LinkedList<>();
+		winners.add(winner);
+	}
+	
+	public boolean removeWinner(O winner) {
+		if(winners == null || !winners.contains(winner)) return false;
+		winners.remove(winner);
+		return true;
+	}
+	
+	public boolean clearWinners() {
+		if (winners == null) return false;
+		winners.clear();
+		return true;
+	}
 	
 	/**
 	 * Get the iterator for {@link #winners}
@@ -457,5 +479,21 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	 * = Other Methods =
 	 * ================= */
 	
+	@Transient
+	private List<O> sorted;
 	
+	public List<O> getOptionsByPositiveAnswers() {
+		if (options == null) return null;
+		if (sorted == null) {
+			sorted = new ArrayList<>(options.size());
+			sorted.addAll(options);
+			sorted.sort(OptionComparatorByPositiveVotes.GET);
+		}
+		return sorted;
+	}
+	
+	public void clearSortedOptionsByPositiveAnswers() {;
+		sorted = null;
+	}
+
 }

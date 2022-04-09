@@ -8,3 +8,15 @@
     display: none;
   }
 }
+
+.optionListBox {
+	border: 2px solid #1b2b41B0;
+	background:  rgba(25, 59, 103, 0.05);
+}
+
+.optionListBox.potentialWinner {
+	background-image: url('images/VoteIcons-CornerMarker.drawio.png');
+	background-repeat: no-repeat;
+	background-position: top right;
+	background-size: 5ex auto;
+}

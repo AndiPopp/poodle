@@ -4,6 +4,7 @@
 package de.andipopp.poodle.data.entity.polls;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -59,9 +60,9 @@ public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends Abst
 		this.title = title;
 	}
 	
-	/* ======================
-	 * = Getters and Setter =
-	 * ====================== */
+	/* ==============================
+	 * = Getters, Setters & Similar =
+	 * ============================== */
 	
 	/**
 	 * Getter for {@link #title}
@@ -110,14 +111,37 @@ public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends Abst
 	public void setAnswers(Set<Answer<P,O>> answers) {
 		this.answers = answers;
 	}
+	
+	/**
+	 * Counts the answers of a specific type for this option
+	 * @param type the answer type to count
+	 * @return the count of answers of the given type
+	 */
+	public int countAnswers(AnswerType type) {
+		int count = 0;
+		for(Answer<P,O> answer : answers) {
+			if (answer.getValue() == type) count++;
+		}
+		return count;
+	}
 
 	/* ========================
-	 * = UI auxiliary mehtods =
+	 * = UI auxiliary methods =
 	 * ======================== */
 	
 	public OptionListItem toOptionsListItem() {
 		return new OptionListItem(this);
 	}
 	
+	/* ========================
+	 * = Other methods =
+	 * ======================== */
+	
+	public boolean isPotentialWinnerByPositiveVotes() {
+		List<O> aux = parent.getOptionsByPositiveAnswers();
+		if (aux == null) return false; //TODO Maybe an exception?
+		O best = aux.get(0);
+		return OptionComparatorByPositiveVotes.GET.compare(this, best) <= 0;
+	}
 	
 }

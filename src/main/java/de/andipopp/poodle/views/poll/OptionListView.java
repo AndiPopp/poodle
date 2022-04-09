@@ -160,6 +160,7 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 		if (result) {
 			Notification notification = Notification.show("Vote saved", 2000, Notification.Position.BOTTOM_CENTER);
 			notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+			poll.clearSortedOptionsByPositiveAnswers();
 			Vote<P,O> currentAux = currentVote;
 			configureVoteSelector();
 			voteSelector.setValue(currentAux);

@@ -35,8 +35,11 @@ public class OptionListItem extends HorizontalLayout {
 	 */
 	public OptionListItem(AbstractOption<?, ?> option) {
 		this.option = option;
-		this.getStyle().set("border", "2px solid rgba(27, 43, 65, 0.69)");
-		this.getStyle().set("background", "rgba(25, 59, 103, 0.05)");
+//		this.getStyle().set("border", "2px solid rgba(27, 43, 65, 0.69)");
+//		this.getStyle().set("background", "rgba(25, 59, 103, 0.05)");
+//		this.getStyle().set("background-image", "url('https://openclipart.org/image/400px/279328'");
+		this.addClassName("optionListBox");
+		if (option.isPotentialWinnerByPositiveVotes()) this.addClassName("potentialWinner");
 		this.setPadding(true);
 		this.setDefaultVerticalComponentAlignment(Alignment.CENTER);
 		this.setWidthFull();

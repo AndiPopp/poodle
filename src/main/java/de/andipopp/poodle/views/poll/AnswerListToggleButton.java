@@ -3,7 +3,6 @@ package de.andipopp.poodle.views.poll;
 import com.vaadin.flow.component.html.Image;
 
 import de.andipopp.poodle.data.entity.polls.Answer;
-import de.andipopp.poodle.data.entity.polls.AnswerType;
 
 public class AnswerListToggleButton extends Image{
 
