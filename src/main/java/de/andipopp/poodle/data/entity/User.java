@@ -23,6 +23,7 @@ import com.vaadin.flow.component.avatar.Avatar;
 
 import de.andipopp.poodle.data.Role;
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
+import de.andipopp.poodle.data.entity.polls.Vote;
 
 @Entity
 @Table(name = "application_user")
@@ -43,10 +44,15 @@ public class User extends AbstractEntity {
     private ZoneId timeZone;
     
 
-	@OneToMany(cascade = CascadeType.ALL, targetEntity=AbstractPoll.class)
+	@OneToMany(cascade = CascadeType.ALL, targetEntity=AbstractPoll.class, orphanRemoval = true)
 	@LazyCollection(LazyCollectionOption.FALSE)
     List<AbstractPoll<?,?>> polls = new ArrayList<>();
     
+	@OneToMany(cascade = CascadeType.ALL, targetEntity=AbstractPoll.class, orphanRemoval = true)
+	@LazyCollection(LazyCollectionOption.FALSE)
+    List<Vote<?,?>> votes = new ArrayList<>();
+    
+	
     public String getUsername() {
         return username;
     }
@@ -110,6 +116,16 @@ public class User extends AbstractEntity {
 		this.polls = polls;
 	}
 
+	public void removePoll(AbstractPoll<?,?> poll) {
+		poll.setOwner(null);
+		polls.remove(poll);
+	}
+	
+	public void addPoll(AbstractPoll<?,?> poll) {
+		polls.add(poll);
+		poll.setOwner(this);
+	}
+	
     /**
 	 * Getter for {@link #timeZone}
 	 * @return the {@link #timeZone}

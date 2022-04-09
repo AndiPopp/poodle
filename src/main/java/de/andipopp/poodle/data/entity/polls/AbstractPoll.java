@@ -69,7 +69,7 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	private LocalDate deleteDate;
 	
 	@NotNull
-	@OneToMany(cascade = CascadeType.ALL, targetEntity=AbstractOption.class)
+	@OneToMany(cascade = CascadeType.ALL, targetEntity=AbstractOption.class, orphanRemoval = true)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<O> options;
 	
@@ -93,7 +93,7 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	private List<O> winners;
 	
 	@NotNull
-	@OneToMany(cascade = CascadeType.ALL, targetEntity=Vote.class)
+	@OneToMany(cascade = CascadeType.ALL, targetEntity=Vote.class, orphanRemoval = true)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<Vote<P,O>> votes;
 	
@@ -442,6 +442,7 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	public boolean removeVote(Vote<P,O> vote) {
 		if (votes.contains(vote)) {
 			votes.remove(vote);
+			vote.setParent(null);
 			return true;
 		}else {
 			return false;

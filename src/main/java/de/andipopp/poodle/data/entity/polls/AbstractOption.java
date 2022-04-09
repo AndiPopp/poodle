@@ -31,7 +31,7 @@ public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends Abst
 	@ManyToOne(targetEntity=AbstractPoll.class)
 	private P parent;
 	
-	@OneToMany(cascade = CascadeType.ALL, targetEntity=Answer.class)
+	@OneToMany(cascade = CascadeType.ALL, targetEntity=Answer.class, orphanRemoval = true)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	private Set<Answer<P,O>> answers;
 	

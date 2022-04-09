@@ -49,7 +49,7 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 	 * The list of answers for this vote
 	 */
 	@NotNull
-	@OneToMany(cascade = CascadeType.ALL, targetEntity=Answer.class)
+	@OneToMany(cascade = CascadeType.ALL, targetEntity=Answer.class, orphanRemoval = true)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	List<Answer<P,O>> answers; //TODO this should probably be a map, so every option gets max one answer, but I have no idea how to configure this in JPA/Hibernate
 	
@@ -193,19 +193,6 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 		return parent;
 	}
 	
-	public void fillInMissingAnswers() {
-		SortedSet<O> sortedOptions = new TreeSet<>((o1, o2) -> o1.getId().compareTo(o2.getId()));
-		sortedOptions.addAll(parent.getOptions());
-		for(Answer<P,O> answer : answers) {
-			if (sortedOptions.contains(answer.getOption())) {
-				if (!sortedOptions.remove(answer.getOption())) throw new RuntimeException("Fatal Error: Failed to remove answer in fillInMissingAnswers!");
-			}
-		}
-		for(O option : sortedOptions) {
-			addAnswer(option, AnswerType.NONE);
-		}
-	}
-	
 	/**
 	 * Setter for {@link #parent}
 	 * @param parent the {@link #parent} to set
@@ -304,4 +291,17 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 		if (displayName != null & !displayName.isEmpty()) avatar.setName(displayName);
 		return avatar;
 	}	
+	
+	public void fillInMissingAnswers() {
+		SortedSet<O> sortedOptions = new TreeSet<>((o1, o2) -> o1.getId().compareTo(o2.getId()));
+		sortedOptions.addAll(parent.getOptions());
+		for(Answer<P,O> answer : answers) {
+			if (sortedOptions.contains(answer.getOption())) {
+				if (!sortedOptions.remove(answer.getOption())) throw new RuntimeException("Fatal Error: Failed to remove answer in fillInMissingAnswers!");
+			}
+		}
+		for(O option : sortedOptions) {
+			addAnswer(option, AnswerType.NONE);
+		}
+	}
 }
