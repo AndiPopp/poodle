@@ -218,4 +218,5 @@ public class DateOption extends AbstractOption<DatePoll, DateOption> {
 		//close with end line
 		return result + "\r\n" + "EndOfDateOption";
 	}
+	
 }

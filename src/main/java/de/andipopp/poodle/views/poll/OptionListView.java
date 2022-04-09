@@ -5,12 +5,9 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
-import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 
@@ -19,18 +16,18 @@ import de.andipopp.poodle.data.entity.polls.AbstractOption;
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.data.entity.polls.Vote;
 
-public abstract class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOption<P, O>> extends VerticalLayout {
+public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOption<P, O>> extends VerticalLayout {
 
 	private static final long serialVersionUID = 1L;
 
 	
-	private P poll;
+	protected P poll;
 	
-	private Vote<P,O> currentVote;
+	protected Vote<P,O> currentVote;
 	
 	private Select<Vote<P,O>> voteSelector;
 
-	private HorizontalLayout header;
+	protected HorizontalLayout header;
 	
 	/**
 	 * The user using this view, if null we have an anonymous vote
@@ -136,6 +133,10 @@ public abstract class OptionListView<P extends AbstractPoll<P, O>, O extends Abs
 	
 	public void loadVote(Vote<P,O> vote) {
 		this.currentVote = vote;
+		buildAll();
+	}
+	
+	protected void buildAll() {
 		buildList();
 		buildFooter();
 	}
@@ -151,7 +152,7 @@ public abstract class OptionListView<P extends AbstractPoll<P, O>, O extends Abs
 		
 		//if we have a currrent vote, build the list
 		if (currentVote != null) {
-			for(AbstractOption<?,?> option : poll.getOptions()) {
+			for(AbstractOption<P,O> option : poll.getOptions()) {
 				OptionListItem item = option.toOptionsListItem();
 				item.loadVote(currentVote);
 				item.build();

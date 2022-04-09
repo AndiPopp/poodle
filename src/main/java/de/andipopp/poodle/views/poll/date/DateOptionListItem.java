@@ -24,7 +24,7 @@ public class DateOptionListItem extends OptionListItem {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	ZoneId zoneId = ZoneId.systemDefault(); //TODO replace with selectable zone id
+	ZoneId zoneId = ZoneId.systemDefault();
 	
 	/**
 	 * @param option
@@ -50,6 +50,22 @@ public class DateOptionListItem extends OptionListItem {
 		return (DateOption) super.getOption();
 	}
 	
+	/**
+	 * Getter for {@link #zoneId}
+	 * @return the {@link #zoneId}
+	 */
+	protected ZoneId getZoneId() {
+		return zoneId;
+	}
+
+	/**
+	 * Setter for {@link #zoneId}
+	 * @param zoneId the {@link #zoneId} to set
+	 */
+	protected void setZoneId(ZoneId zoneId) {
+		this.zoneId = zoneId;
+	}
+
 	@Override
 	protected String labelText() {
 		String result = getOption().getZonedTimeStartEnd(zoneId);
@@ -98,8 +114,5 @@ public class DateOptionListItem extends OptionListItem {
 		leftWrapper.setPadding(false);
 		return leftWrapper;
 	}
-	
-	
-
 	
 }
