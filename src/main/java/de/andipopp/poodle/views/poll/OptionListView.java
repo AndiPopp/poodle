@@ -1,15 +1,10 @@
 package de.andipopp.poodle.views.poll;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.cookieconsent.CookieConsent.Position;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -21,12 +16,15 @@ import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.data.entity.polls.AbstractOption;
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.data.entity.polls.Vote;
+import de.andipopp.poodle.data.service.PollService;
 import de.andipopp.poodle.data.service.VoteService;
 
 public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOption<P, O>> extends VerticalLayout {
 
 	private static final long serialVersionUID = 1L;
 
+	protected PollService pollService;
+	
 	protected VoteService voteService;
 	
 	protected P poll;
@@ -54,36 +52,37 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 	/**
 	 * @param poll
 	 */
-	public OptionListView(P poll, User user, VoteService voteService) {
+	public OptionListView(P poll, User user, VoteService voteService, PollService pollService) {
 		//Set fields
 		this.poll = poll;
 		this.user = user;
 		this.voteService = voteService;
+		this.pollService = pollService;
 		//configure layout
 		this.setPadding(false);
 		this.setSpacing(false);
+		
 		//build vote selector
 		voteSelector = new Select<>();
-		Vote<P, O> usersVote = configureVoteSelector(poll, user);
-		
 		this.header = new HorizontalLayout();
 //		this.header.getStyle().set("border", "2px dotted AntiqueWhite"); //for debug purposes
 		this.header.setWidthFull();
 		this.header.getStyle().set("margin-bottom", "1ex");
 		header.add(voteSelector);
 		this.add(header); 
-		
+	
+		//configure
+		configureVoteSelector();
+	
 		//hookup listener for save button
 		saveButton.addClickListener(e -> saveVote());
-		
-		//select the most likely vote, which triggers the set and build event
-		if (usersVote == null) voteSelector.setValue(newVote);
-		else voteSelector.setValue(usersVote);
 	}
 
 
+	private boolean configureVoteSelectorMode = false;
 
-	private Vote<P, O> configureVoteSelector(P poll, User user) {
+	private void configureVoteSelector() {
+		configureVoteSelectorMode = true;
 		List<Vote<P,O>> votes = new LinkedList<>();
 		if (newVote == null) {
 			newVote = new Vote<P,O>(this.poll);
@@ -100,13 +99,20 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 			votes.add(vote);
 			if (vote.getOwner() != null && vote.getOwner().equals(user)) usersVote = vote;
 		}
-		System.out.println("Loaded "+(sortedVotes.size()+1)+" votes");
+//		System.out.println("Loaded "+(sortedVotes.size()+1)+" votes");
 		voteSelector.setItems(votes);
 		voteSelector.setItemLabelGenerator(Vote::getDisplayName);
 		voteSelector.setLabel("Select vote");
-		voteSelector.addValueChangeListener(e -> loadVote(e.getValue()));
+		voteSelector.addValueChangeListener(e -> {
+			if (!configureVoteSelectorMode) loadVote(e.getValue());
+		});
 		voteSelector.setMaxWidth("10em");
-		return usersVote;
+		
+		configureVoteSelectorMode = false;
+		
+		//select the most likely vote, which triggers the set and build event
+		if (usersVote == null) voteSelector.setValue(newVote);
+		else voteSelector.setValue(usersVote);
 	}
 
 
@@ -121,11 +127,20 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 		
 		currentVote.setAnonymousName(displayNameInput.getValue());
 		
-		if (voteService.update(currentVote) != null) {
+		boolean result = false;
+		if (currentVote.equals(newVote)) {
+			this.poll.addVote(newVote);
+			newVote.setOwner(user);
+			newVote = null;
+			result = pollService.update(poll) != null;
+		} else {
+			result = voteService.update(currentVote) != null;
+		}
+		
+		if (result) {
 			Notification notification = Notification.show("Vote saved", 2000, Notification.Position.BOTTOM_CENTER);
 			notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-			//if we stored a new vote, set the newVote field to null
-			if (currentVote.equals(newVote)) newVote = null; 
+			configureVoteSelector();
 		}else {
 			Notification notification = Notification.show("Unexpected result while saving vote. Refresh to see if it worked.");
 			notification.addThemeVariants(NotificationVariant.LUMO_ERROR);

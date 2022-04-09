@@ -143,7 +143,7 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 //		this.pollContent.getStyle().set("border", "2px dotted FireBrick"); //for debug purposes
 		
 		if (poll instanceof DatePoll) {
-			listView = new DateOptionListView((DatePoll) poll, currentUser, voteService); 
+			listView = new DateOptionListView((DatePoll) poll, currentUser, voteService, pollService); 
 			this.pollContent.add(listView);
 		}
 		
