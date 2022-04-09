@@ -10,6 +10,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import de.andipopp.poodle.data.entity.polls.AbstractOption;
 import de.andipopp.poodle.data.entity.polls.DateOption;
 import de.andipopp.poodle.data.entity.polls.Vote;
+import de.andipopp.poodle.util.JSoupUtils;
 import de.andipopp.poodle.views.poll.OptionListItem;
 
 /**
@@ -71,11 +72,11 @@ public class DateOptionListItem extends OptionListItem {
 		String result = getOption().getZonedTimeStartEnd(zoneId);
 		String connector = " (";
 		if (getOption().getTitle() != null && !getOption().getTitle().isEmpty()) {
-			result += connector + getOption().getTitle();
+			result += connector + JSoupUtils.cleanNone(getOption().getTitle());
 			connector = " / ";
 		}
 		if (getOption().getLocation() != null && !getOption().getLocation().isEmpty()) {
-			result += connector + "@" + getOption().getLocation(); //TODO replace with proper location icon
+			result += connector + "<i class=\"las la-map-marker\"></i>" + JSoupUtils.cleanBasic(getOption().getLocation());
 			connector = " / ";
 		}
 		if (connector.equals(" / ")) result += ")";

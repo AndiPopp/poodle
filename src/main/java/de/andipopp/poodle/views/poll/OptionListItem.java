@@ -1,6 +1,7 @@
 package de.andipopp.poodle.views.poll;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -9,6 +10,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import de.andipopp.poodle.data.entity.polls.AbstractOption;
 import de.andipopp.poodle.data.entity.polls.Answer;
 import de.andipopp.poodle.data.entity.polls.Vote;
+import de.andipopp.poodle.util.JSoupUtils;
 
 public class OptionListItem extends HorizontalLayout {
 
@@ -83,9 +85,7 @@ public class OptionListItem extends HorizontalLayout {
 	}
 	
 	protected Component label() {
-		Span label = new Span(labelText());
-		label.getStyle().set("font-weight", "normal"); 
-//		label.getStyle().set("border", "2px dotted DarkOrange"); //for debug purposes
+		Html label = new Html("<span>"+labelText()+"</span>");
 		return label;
 	}
 	
