@@ -2,10 +2,14 @@ package de.andipopp.poodle.views.poll.date;
 
 import java.time.Instant;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.html.H4;
 
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.data.entity.polls.DateOption;
@@ -50,17 +54,38 @@ public class DateOptionListView extends OptionListView<DatePoll, DateOption> {
 		header.add(zoneIdSelector);
 	}
 
+	private final static DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMM Y");
+	
 	@Override
 	protected void buildList() {
+		getPoll().sortOptions();
+		
 		//start clean with only header
 		this.clearList();
 		this.add(header);
 		
-		//if we have a currrent vote, build the list
+		//remember the month;
+		ZonedDateTime lastStart = null;
+		
+		//if we have a current vote, build the list
 		if (currentVote != null) {
+			if (zoneId == null) zoneId = ZoneId.systemDefault(); //this should normally be handled by the zone selector
+			
 			for(DateOption option : poll.getOptions()) {
+				//check if we have a new month
+				ZonedDateTime currentStart = option.getZonedStart(zoneId);
+				if (lastStart == null 
+						|| lastStart.getYear() != currentStart.getYear() 
+						|| !lastStart.getMonth().equals(currentStart.getMonth())) {
+					Component monthSeparator = new H4(monthFormatter.format(currentStart));
+					this.add(monthSeparator);
+				}
+				lastStart = currentStart;
+				
+				//Construct the list item
 				DateOptionListItem item = option.toOptionsListItem();
-				if (zoneId != null) item.setZoneId(zoneId);
+				item.setZoneId(zoneId);
+				
 				item.loadVote(currentVote);
 				item.build();
 				this.add(item);
