@@ -3,6 +3,7 @@ package de.andipopp.poodle.views.poll;
 import com.vaadin.flow.component.html.Image;
 
 import de.andipopp.poodle.data.entity.polls.Answer;
+import de.andipopp.poodle.data.entity.polls.AnswerType;
 
 public class AnswerListToggleButton extends Image{
 
@@ -21,6 +22,14 @@ public class AnswerListToggleButton extends Image{
 		this.answer = answer;
 		this.setMinHeight("3ex");
 		this.setMaxHeight("5ex");
+		this.addClickListener(e -> toggleAnswerValue());
+		loadImage();
+	}
+	
+	private void toggleAnswerValue() {
+		this.answer.setValue(answer.getValue().nextAnswer(
+				parent.getOption().getParent().isEnableAbstain(), 
+				parent.getOption().getParent().isEnableIfNeedBe()));
 		loadImage();
 	}
 	

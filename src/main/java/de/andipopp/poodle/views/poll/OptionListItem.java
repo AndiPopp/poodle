@@ -10,7 +10,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import de.andipopp.poodle.data.entity.polls.AbstractOption;
 import de.andipopp.poodle.data.entity.polls.Answer;
 import de.andipopp.poodle.data.entity.polls.Vote;
-import de.andipopp.poodle.util.JSoupUtils;
 
 public class OptionListItem extends HorizontalLayout {
 

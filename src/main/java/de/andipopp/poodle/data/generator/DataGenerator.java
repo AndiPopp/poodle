@@ -81,7 +81,7 @@ public class DataGenerator {
     	poll.setDescription("He-Man will be there. So <a href=\"https://www.google.com\">google</a> yourself your finest magic sword and feline steed.");
     	poll.setLocation("Castle Greyskull (unless specified otherwise)");
     	poll.setOwner(user);
-    	
+    	poll.setEnableIfNeedBe(true);
     	poll.addOption(new DateOption(
 				"Option 1", 
 				new GregorianCalendar(2022, 2-1, 28, 9, 30).getTime(), 
@@ -92,7 +92,7 @@ public class DataGenerator {
     			"Option 2", 
 				new GregorianCalendar(2022, 2-1, 28, 15, 0).getTime(), 
 				new GregorianCalendar(2022, 2-1, 28, 16, 30).getTime(), 
-				"at Man-at-Arm's"
+				"at Man-at-Arms's"
 			));
     	poll.addOption(new DateOption(
     			"Option 3", 
