@@ -122,12 +122,4 @@ public class DatePoll extends AbstractPoll<DatePoll, DateOption> {
 	 * = UI auxiliary methods =
 	 * ======================== */
 	
-	/* =================
-	 * = Other methods =
-	 * ================= */
-	
-	public void sortOptions() {
-		getOptions().sort(new DateOptionComparator());
-	}
-	
 }
