@@ -83,7 +83,6 @@ public abstract class OptionListView<P extends AbstractPoll<P, O>, O extends Abs
 		
 		//hookup listener for buttons
 		saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-		saveButton.addClickShortcut(Key.ENTER);
 		saveButton.addClickListener(e -> saveCurrentVote());
 		
 		deleteButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
