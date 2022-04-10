@@ -254,7 +254,7 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 	 * Assumes a vote has been selected!
 	 */
 	protected void buildFooter() {
-		if (poll.getWinners() == null || poll.getWinners().isEmpty()) buildSaveBar();
+		if (!poll.isClosed()) buildSaveBar();
 	}
 	
 	protected void buildSaveBar() {

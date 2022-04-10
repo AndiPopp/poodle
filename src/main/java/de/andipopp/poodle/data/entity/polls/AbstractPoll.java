@@ -4,12 +4,10 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.UUID;
 
-import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -26,7 +24,6 @@ import org.jsoup.safety.Safelist;
 import de.andipopp.poodle.data.entity.AbstractEntity;
 import de.andipopp.poodle.data.entity.Config;
 import de.andipopp.poodle.data.entity.User;
-import de.andipopp.poodle.util.InvalidException;
 
 @Entity
 //public abstract class AbstractPoll<O extends AbstractOption<? extends AbstractPoll<O>>> extends AbstractEntity {
@@ -83,14 +80,8 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	 */
 	private boolean enableAbstain;
 	
-	/**
-	 * Set of winning options.
-	 * If this field is not null, this indicates that the poll is closed.
-	 */
-	@Nullable
-	@OneToMany(cascade = CascadeType.ALL, targetEntity=AbstractOption.class)
-	@LazyCollection(LazyCollectionOption.FALSE)
-	private List<O> winners;
+	private boolean closed;
+	
 	
 	@NotNull
 	@OneToMany(cascade = CascadeType.ALL, targetEntity=Vote.class, mappedBy = "parent",  orphanRemoval = true)
@@ -201,6 +192,23 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 		}else {
 			this.deleteDate = deleteDate;
 		}
+	}
+	
+
+	/**
+	 * Getter for {@link #closed}
+	 * @return the {@link #closed}
+	 */
+	public boolean isClosed() {
+		return closed;
+	}
+
+	/**
+	 * Setter for {@link #closed}
+	 * @param closed the {@link #closed} to set
+	 */
+	public void setClosed(boolean closed) {
+		this.closed = closed;
 	}
 
 	/**
@@ -333,60 +341,6 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	 */
 	public Iterator<O> getOptionIterator() {
 		return options.iterator();
-	}
-	
-	
-	/**
-	 * Check if the poll is closed
-	 * @return true if the poll is closed, false otherwise
-	 */
-	public boolean isClosed() {
-		return winners != null && !winners.isEmpty();
-	}
-	
-	/**
-	 * Getter for {@link #winners}
-	 * @return the {@link #winners}
-	 */
-	public List<O> getWinners() {
-		return winners;
-	}
-
-	/**
-	 * Setter for {@link #winners}
-	 * @param winners the {@link #winners} to set
-	 */
-	public void setWinners(List<O> winners) {
-		this.winners = winners;
-	}
-	
-	public void addWinner(O winner) throws InvalidException {
-		if (getOptions() != null) throw new InvalidException("This poll has no options");
-		if (!options.contains(winner)) throw new InvalidException("The winner is not an option of this poll");
-		
-		if(winners == null) winners = new LinkedList<>();
-		winners.add(winner);
-	}
-	
-	public boolean removeWinner(O winner) {
-		if(winners == null || !winners.contains(winner)) return false;
-		winners.remove(winner);
-		return true;
-	}
-	
-	public boolean clearWinners() {
-		if (winners == null) return false;
-		winners.clear();
-		return true;
-	}
-	
-	/**
-	 * Get the iterator for {@link #winners}
-	 * @return the iterator for {@link #winners, null if #winners is null
-	 */
-	public Iterator<O> getWinnerIterator() {
-		if (winners == null) return null;
-		return winners.iterator();
 	}
 
 	/**

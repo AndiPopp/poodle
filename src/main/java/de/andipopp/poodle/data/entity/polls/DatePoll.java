@@ -8,12 +8,8 @@ import javax.validation.constraints.NotNull;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-
 import de.andipopp.poodle.PoodleApplication;
 import de.andipopp.poodle.data.entity.User;
-import de.andipopp.poodle.views.poll.OptionListItem;
 
 @Entity
 public class DatePoll extends AbstractPoll<DatePoll, DateOption> {
@@ -100,20 +96,6 @@ public class DatePoll extends AbstractPoll<DatePoll, DateOption> {
 		for (Iterator<DateOption> it = getOptionIterator(); it.hasNext(); ) {
 			result += "\r\n" + it.next().toString();
 		}
-//		for (DateOption option : getOptions()) {
-//		result += "\r\n" + option.toString();
-//		}
-		//add winners if present
-		Iterator<DateOption> it = getWinnerIterator();
-		if (it != null) {
-			result += "\r\n" + "Winners: ";
-			String sep = "";
-			while(it.hasNext()) {
-				result += sep + it.next().getId();
-				sep = ",";
-			}
-		}
-		
 		//return result
 		return result;
 	}
