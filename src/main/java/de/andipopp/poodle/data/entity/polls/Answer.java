@@ -54,9 +54,7 @@ public class Answer<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> 
 	/**
 	 * 
 	 */
-	public Answer() {
-		super();
-	}
+	public Answer() {}
 	
 	/**
 	 * 
@@ -95,7 +93,6 @@ public class Answer<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> 
 	 */
 	public void setOption(O option) {
 		this.option = option;
-		option.getAnswers().add(this);
 	}
 	
 	

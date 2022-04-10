@@ -49,7 +49,7 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 	 * The list of answers for this vote
 	 */
 	@NotNull
-	@OneToMany(cascade = CascadeType.ALL, targetEntity=Answer.class, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, targetEntity=Answer.class, orphanRemoval = true, mappedBy = "vote")
 	@LazyCollection(LazyCollectionOption.FALSE)
 	List<Answer<P,O>> answers; //TODO this should probably be a map, so every option gets max one answer, but I have no idea how to configure this in JPA/Hibernate
 	
