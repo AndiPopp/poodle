@@ -451,10 +451,10 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 		sorted = null;
 	}
 
-	public void debug_PrintVoteIds() {
-		for(Vote<P,O> vote : votes) {
-			System.out.println(vote.getId());
-		}
-	}
+//	public void debug_PrintVoteIds() {
+//		for(Vote<P,O> vote : votes) {
+//			System.out.println(vote.getId());
+//		}
+//	}
 	
 }

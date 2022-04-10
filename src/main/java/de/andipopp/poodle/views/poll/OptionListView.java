@@ -205,7 +205,7 @@ public abstract class OptionListView<P extends AbstractPoll<P, O>, O extends Abs
 			return;
 		}
 		
-		Logger logger = LoggerFactory.getLogger(getClass());
+//		Logger logger = LoggerFactory.getLogger(getClass());
     	
 		
 		//write the results to backend
@@ -213,21 +213,20 @@ public abstract class OptionListView<P extends AbstractPoll<P, O>, O extends Abs
 		String message = "Unexpected result while saving vote. Refresh to see if it worked.";
 		//TODO new vote logic goes here
 		if (currentVote.equals(newVote)) {
-			logger.info("Adding to "+voteService.count()+" votes, new vote "+currentVote.getId());
+//			logger.info("Adding to "+voteService.count()+" votes, new vote "+currentVote.getId());
 			//hookup the new vote to the poll
 			this.poll.addVote(newVote);
 			newVote.setOwner(user);
-			poll.debug_PrintVoteIds();
-			System.out.println();
 			
-			//write the poll with the new vote with id null and get a new poll object with an id for the vote
+			//write write the new vote to the db and get the id from the result
 			Vote<?,?> repResult = voteService.update(currentVote);
+			currentVote.setId(repResult.getId());
 			
 			newVote = null;
 			result = repResult != null;
 		} else 
 		if(currentVote.getOwner() == null || currentVote.getOwner().equals(user)) {
-			logger.info("Modifying in "+voteService.count()+" votes, vote "+currentVote.getId());
+//			logger.info("Modifying in "+voteService.count()+" votes, vote "+currentVote.getId());
 			result = voteService.update(currentVote) != null;
 		} else {
 			message = "You don't have permission to edit this vote.";
@@ -245,28 +244,17 @@ public abstract class OptionListView<P extends AbstractPoll<P, O>, O extends Abs
 			Notification notification = Notification.show(message);
 			notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
 		}
-		logger.info("Now having "+voteService.count()+" votes.");
+//		logger.info("Now having "+voteService.count()+" votes.");
 	}
 
 	private void deleteCurrentVote() {
-		destroyNewVote();
-		Logger logger = LoggerFactory.getLogger(getClass());
-    	logger.info("Deleting from "+voteService.count()+" votes, vote "+currentVote.getId());
+//		Logger logger = LoggerFactory.getLogger(getClass());
+//    	logger.info("Deleting from "+voteService.count()+" votes, vote "+currentVote.getId());
 		poll.removeVote(currentVote);
-//		pollService.update(poll);
 		voteService.delete(currentVote); //first time removes the connections
 		voteService.delete(currentVote); //second time removes echo
-		logger.info("Now having "+voteService.count()+" votes.");
-		UI.getCurrent().getPage().reload(); //TODO: second delete attempt tries to look for non-existing answer, fix and remove reload
-//		Vote<P,O> usersVote = configureVoteSelector();
-//		guessVote(usersVote);
-	}
-	
-	private void destroyNewVote() {
-		for(AbstractOption<P, O> option : poll.getOptions()) {
-			option.removeAnswer(newVote);
-		}
-		newVote = null;
+//		logger.info("Now having "+voteService.count()+" votes.");
+		guessVote(configureVoteSelector());
 	}
 	
 	public void loadVote(Vote<P,O> vote) {
