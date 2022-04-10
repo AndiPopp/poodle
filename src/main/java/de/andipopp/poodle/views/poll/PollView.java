@@ -12,6 +12,9 @@ import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.avatar.AvatarVariant;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.contextmenu.ContextMenu;
+import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
@@ -32,6 +35,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
+import de.andipopp.poodle.data.Role;
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
@@ -82,9 +86,15 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 	
 	private VerticalLayout info = new VerticalLayout();
 
-	ViewToggleState state = ViewToggleState.list;
+	private Button topRightMenu;
 	
-	ViewToggleButton viewToggleButton = new ViewToggleButton();
+	private ContextMenu topRightContextMenu;
+	
+	ViewToggleState state = ViewToggleState.LIST;
+	
+	private enum ViewToggleState {
+		LIST, TABLE
+	}
 	
 	OptionListView<?, ?> listView;
 	
@@ -103,6 +113,9 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
     	//hook up the poll and vote service 
 		this.pollService = pollService;
 		this.voteService = voteService;
+		
+		//set the toggle state to default
+		state = ViewToggleState.LIST; //TODO decide default on Mobile or Desktop Browser
 		
 		this.setDefaultHorizontalComponentAlignment(Alignment.START);
 		
@@ -155,8 +168,12 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 		
 		if (poll instanceof DatePoll) {
 			listView = new DateOptionListView((DatePoll) poll, currentUser, voteService, pollService); 
-			this.pollContent.add(listView);
+			//TODO also build table vie
+			if (state == ViewToggleState.LIST) this.pollContent.add(listView);
 		}
+		
+		//now that we know the view toggle state, we can build the top right context menu
+		configureTopRightContextMenu();
 		
 		//strip content from all its components (especially the "not found")
 		this.content.removeAll();
@@ -210,7 +227,8 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 	
 	private Component configureHeader() {
 		header.removeAll();
-		header.setDefaultVerticalComponentAlignment(Alignment.CENTER);
+		header.setWidthFull();
+		header.setDefaultVerticalComponentAlignment(Alignment.START);
 		Avatar ownerAvatar = poll.getOwner().getAvatar();
 		ownerAvatar.addThemeVariants(AvatarVariant.LUMO_XLARGE);
 		ownerAvatar.getStyle().set("border", "3px solid black") ;
@@ -220,15 +238,35 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 		title.getStyle().set("margin-top", "0ex");
 		title.getStyle().set("margin-bottom", "0ex");
 //		title.getStyle().set("border", "2px dotted Red") ; //for debug purposes
-		header.add(ownerAvatar, title);
-//		header.getStyle().set("border", "2px dotted Red") ; //for debug purposes
+		title.setWidthFull();
+		HorizontalLayout avatarAndTitleWrapper = new HorizontalLayout(ownerAvatar, title);
+		avatarAndTitleWrapper.setDefaultVerticalComponentAlignment(Alignment.CENTER);
+		avatarAndTitleWrapper.setWidthFull();
+//		avatarAndTitleWrapper.getStyle().set("border", "2px dotted DarkOrange") ; //for debug purpose
+		header.add(avatarAndTitleWrapper);
+//		header.getStyle().set("border", "2px dotted Green") ; //for debug purposes
+
 		
-		if (poll.getOwner().equals(currentUser)) {
-			Icon editIcon = new Icon(VaadinIcon.EDIT);
-			editIcon.setSize("var(var(--lumo-size-xl)"); //TODO does not work 
-			header.add(new Icon(VaadinIcon.EDIT));
+		//build the menu button:
+		//Owner/Admin: share, edit, pick winner
+		//Others: only share
+		
+		topRightMenu = new Button();
+		topRightMenu.addClassName("primary-text");
+		topRightMenu.setIcon(new Icon(VaadinIcon.MENU));
+		topRightMenu.addThemeVariants(ButtonVariant.LUMO_ICON);
+		if (currentUser != null && (poll.getOwner().equals(currentUser) || (currentUser.getRoles().contains(Role.ADMIN)))) {
+			
+		}else {
+			
 		}
 		
+		
+		HorizontalLayout headerMenuButtonWrapper = new HorizontalLayout(topRightMenu);
+		headerMenuButtonWrapper.setHeightFull();
+		headerMenuButtonWrapper.setDefaultVerticalComponentAlignment(Alignment.START);
+//		headerMenuButtonWrapper.getStyle().set("border", "2px dotted FireBrick") ; //for debug purposes
+		header.add(headerMenuButtonWrapper);
 		return header;
 	}
 	
@@ -246,13 +284,11 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 	
 	private Component configureInfo() {
 		info.removeAll();
-		HorizontalLayout lastElement = null;
 		if (poll.getDescription() != null && !poll.getDescription().isBlank()) {
 			HorizontalLayout description = new HorizontalInfoContainer(true);
 			description.add(new Html("<p>" + Jsoup.clean(poll.getDescription(), JSoupUtils.BASIC) + "</p>"));
 			description.setJustifyContentMode(JustifyContentMode.BETWEEN);
 			info.add(description);
-			lastElement = description;
 		}
 		if (poll instanceof DatePoll) {
 			DatePoll datePoll = (DatePoll) poll;
@@ -261,14 +297,26 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 				location.add(new HorizontalInfoContainer(false, new Icon(VaadinIcon.MAP_MARKER), new Html("<span>"+Jsoup.clean(datePoll.getLocation(), JSoupUtils.BASIC)+"</span>")));
 				location.setJustifyContentMode(JustifyContentMode.BETWEEN);
 				info.add(location);
-				lastElement = location;
 			}	
-		}
-		lastElement.add(viewToggleButton);
+		};
 		info.setSpacing(false);
 		info.setPadding(false);
 //		info.getStyle().set("border", "2px dotted Green") ; //for debug purposes
 		return info;
+	}
+	
+	private void configureTopRightContextMenu() {
+		if (topRightContextMenu != null) topRightContextMenu.setTarget(null);
+		topRightContextMenu = new ContextMenu();
+		
+		MenuItem share = topRightContextMenu.addItem("Share", e -> {});
+		MenuItem edit = topRightContextMenu.addItem("Edit", e->{});
+		MenuItem close = topRightContextMenu.addItem("Select Winners", e->{});
+		MenuItem tableView = topRightContextMenu.addItem("Table View", e -> {});
+		MenuItem listView = topRightContextMenu.addItem("List View", e -> {});
+		
+		topRightContextMenu.setOpenOnClick(true);
+		topRightContextMenu.setTarget(topRightMenu);
 	}
 	
 	private static class HorizontalInfoContainer extends HorizontalLayout {
@@ -298,56 +346,5 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 //			this.getStyle().set("border", "2px dotted DarkOrange") ; //for debug purposes
 		}
 		
-	}
-	
-	
-    @NpmPackage(value = "line-awesome", version = "1.3.0")
-    public static class LineAwesomeIcon extends Span {
-        private static final long serialVersionUID = 1L;
-
-		public LineAwesomeIcon(String lineawesomeClassnames) {
-            if (!lineawesomeClassnames.isEmpty()) {
-                addClassNames(lineawesomeClassnames);
-                this.getStyle().set("font-size", "x-large");
-            }
-        }
-    }
-    
-    private enum ViewToggleState {
-		list, table
-	}
-    
-    private class ViewToggleButton extends Button {
-    	
-    	private static final long serialVersionUID = 1L;
-		
-		Icon table = new Icon(VaadinIcon.TABLE);
-		
-		Icon list = new Icon(VaadinIcon.LINES_LIST);
-		
-		/**
-		 * @param state
-		 */
-		ViewToggleButton() {
-			this.setMinWidth("1em");
-			setLabel();
-		}
-		
-		private void setLabel() {
-			switch (state) {
-			case list:
-				setIcon(table);
-				break;
-			case table:
-				setIcon(list);
-				break;
-			default:
-				break;
-			
-			}
-		}
-    	
-    	
-    	
-    }
+	}  
 }

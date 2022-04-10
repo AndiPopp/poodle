@@ -24,3 +24,7 @@
 .toggle {
 	cursor: pointer;
 }
+
+.primary-text {
+	color: var(--lumo-primary-text-color);
+}
