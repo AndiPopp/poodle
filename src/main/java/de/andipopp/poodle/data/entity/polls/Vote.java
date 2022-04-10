@@ -43,7 +43,7 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 	
 	public static final String NEW_VOTE_LABEL = "- new vote -";
 	
-	Random rng = new Random();
+	static Random rng = new Random();
 	
 	/**
 	 * The list of answers for this vote

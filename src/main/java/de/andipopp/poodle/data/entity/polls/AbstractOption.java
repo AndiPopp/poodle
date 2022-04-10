@@ -4,9 +4,7 @@
 package de.andipopp.poodle.data.entity.polls;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -25,7 +23,7 @@ import de.andipopp.poodle.views.poll.OptionListItem;
  * An abstract representation of an option in a poll
  * @author Andi Popp
  */
-@Entity
+@Entity(name = "Option")
 //public abstract class AbstractOption<P extends AbstractPoll<? extends AbstractOption<P>>> extends AbstractEntity {
 public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> extends AbstractAutoIdEntity {	
 
