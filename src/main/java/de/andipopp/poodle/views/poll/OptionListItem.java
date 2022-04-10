@@ -7,6 +7,7 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
+import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.data.entity.polls.AbstractOption;
 import de.andipopp.poodle.data.entity.polls.Answer;
 import de.andipopp.poodle.data.entity.polls.Vote;
@@ -17,6 +18,8 @@ public class OptionListItem extends HorizontalLayout {
 	
 	private AbstractOption<?,?> option;
 	
+	private User currentUser;
+	
 	/**
 	 * Getter for {@link #option}
 	 * @return the {@link #option}
@@ -25,30 +28,30 @@ public class OptionListItem extends HorizontalLayout {
 		return option;
 	}
 
-	//Currently modified vote
+	/**
+	 * Currently modified vote
+	 */
 	Vote<?, ?> vote;
 	
+	/**
+	 * The toggle button to switch the answer
+	 */
 	AnswerListToggleButton toggleButton;
 	
-	/**
-	 * @param option
-	 */
-	public OptionListItem(AbstractOption<?, ?> option) {
+
+	public OptionListItem(AbstractOption<?, ?> option, User currentUser) {
+		this.currentUser = currentUser;
 		this.option = option;
-//		this.getStyle().set("border", "2px solid rgba(27, 43, 65, 0.69)");
-//		this.getStyle().set("background", "rgba(25, 59, 103, 0.05)");
-//		this.getStyle().set("background-image", "url('https://openclipart.org/image/400px/279328'");
 		this.addClassName("optionListBox");
 		if (option.isPotentialWinnerByPositiveVotes()) this.addClassName("potentialWinner");
 		this.setPadding(true);
 		this.setDefaultVerticalComponentAlignment(Alignment.CENTER);
 		this.setWidthFull();
-		
 	}
 
 
-	public OptionListItem(AbstractOption<?, ?> option, Vote<?,?> vote) {
-		this(option);
+	public OptionListItem(AbstractOption<?, ?> option, Vote<?,?> vote, User currentUser) {
+		this(option, currentUser);
 		loadVote(vote);
 	}
 	
@@ -59,6 +62,7 @@ public class OptionListItem extends HorizontalLayout {
 		if (left != null) this.add(left);
 		if (center != null) this.add(center);
 		toggleButton = new AnswerListToggleButton(this, findAnswer());
+		toggleButton.setEnabled(vote.canEdit(currentUser));
 		this.add(toggleButton);
 	}
 	

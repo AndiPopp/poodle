@@ -138,7 +138,7 @@ public abstract class OptionListView<P extends AbstractPoll<P, O>, O extends Abs
 
 	private void guessVote(Vote<P, O> usersVote) {
 		//select the most likely vote, which triggers the set and build event
-		if (usersVote == null) voteSelector.setValue(newVote); //TODO put in new vote
+		if (usersVote == null) voteSelector.setValue(newVote);
 		else voteSelector.setValue(usersVote);
 	}
 
@@ -149,7 +149,6 @@ public abstract class OptionListView<P extends AbstractPoll<P, O>, O extends Abs
 		configureVoteSelectorMode = true;
 		List<Vote<P,O>> votes = new LinkedList<>();
 		
-		//TODO replace old new vote logic with new one
 		if (newVote == null) {
 			newVote = new Vote<P,O>(this.poll);
 		}
@@ -200,11 +199,9 @@ public abstract class OptionListView<P extends AbstractPoll<P, O>, O extends Abs
 		
 //		Logger logger = LoggerFactory.getLogger(getClass());
     	
-		
 		//write the results to backend
 		boolean result = false;
 		String message = "Unexpected result while saving vote. Refresh to see if it worked.";
-		//TODO new vote logic goes here
 		if (currentVote.equals(newVote)) {
 //			logger.info("Adding to "+voteService.count()+" votes, new vote "+currentVote.getId());
 			//hookup the new vote to the poll
@@ -272,7 +269,7 @@ public abstract class OptionListView<P extends AbstractPoll<P, O>, O extends Abs
 		//if we have a currrent vote, build the list
 		if (currentVote != null) {
 			for(AbstractOption<P,O> option : poll.getOptions()) {
-				OptionListItem item = option.toOptionsListItem();
+				OptionListItem item = option.toOptionsListItem(user);
 				item.loadVote(currentVote);
 				item.build();
 				this.add(item);
@@ -293,13 +290,11 @@ public abstract class OptionListView<P extends AbstractPoll<P, O>, O extends Abs
 		//configure button enabling
 		saveButton.setEnabled(true);
 		deleteButton.setEnabled(true);
+		displayNameInput.setEnabled(true);
 		if (currentVote.getOwner() != null) {
-			saveButton.setEnabled(false);
-			deleteButton.setEnabled(false);
-			if (user.equals(currentVote.getOwner()) || user.equals(poll.getOwner())) {
-				saveButton.setEnabled(true);
-				deleteButton.setEnabled(true);
-			}
+			saveButton.setEnabled(currentVote.canEdit(user));
+			deleteButton.setEnabled(currentVote.canEdit(user));
+			displayNameInput.setEnabled(currentVote.canEdit(user));
 		}
 		
 		configureDisplayNameInput();
@@ -323,7 +318,7 @@ public abstract class OptionListView<P extends AbstractPoll<P, O>, O extends Abs
 		}else if (voteSelector.getValue().getOwner() != null) {
 			displayNameInput.setValue(voteSelector.getValue().getOwner().getName());
 		}
-		//TODO new vote logic goes here
+
 		else if(voteSelector.getValue().equals(newVote)){
 			if (user != null) {
 				displayNameInput.setValue(user.getName());

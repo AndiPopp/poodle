@@ -17,6 +17,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 
 import de.andipopp.poodle.data.entity.AbstractAutoIdEntity;
+import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.views.poll.OptionListItem;
 
 /**
@@ -152,8 +153,8 @@ public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends Abst
 	 * = UI auxiliary methods =
 	 * ======================== */
 	
-	public OptionListItem toOptionsListItem() {
-		return new OptionListItem(this);
+	public OptionListItem toOptionsListItem(User currentUser) {
+		return new OptionListItem(this, currentUser);
 	}
 	
 	/* ========================

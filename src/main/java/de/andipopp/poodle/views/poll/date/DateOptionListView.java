@@ -79,7 +79,7 @@ public class DateOptionListView extends OptionListView<DatePoll, DateOption> {
 				lastStart = currentStart;
 				
 				//Construct the list item
-				DateOptionListItem item = option.toOptionsListItem();
+				DateOptionListItem item = option.toOptionsListItem(getUser());
 				item.setZoneId(zoneId);
 				
 				item.loadVote(currentVote);

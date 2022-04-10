@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
 import biweekly.component.VEvent;
+import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.views.poll.date.DateOptionListItem;
 
 /**
@@ -140,8 +141,8 @@ public class DateOption extends AbstractOption<DatePoll, DateOption> {
 	 * ======================== */
 	
 	@Override
-	public DateOptionListItem toOptionsListItem() {
-		return new DateOptionListItem(this);
+	public DateOptionListItem toOptionsListItem(User currentUser) {
+		return new DateOptionListItem(this, currentUser);
 	}
 	
 	/* ===============

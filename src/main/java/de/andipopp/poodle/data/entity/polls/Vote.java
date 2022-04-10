@@ -307,6 +307,13 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 		return avatar;
 	}	
 	
+	public boolean canEdit(User user) {
+		if (this.owner == null) return true;
+		if (this.owner.equals(user)) return true;
+		if (this.parent.getOwner().equals(user)) return true;
+		return false;
+	}
+	
 	public void fillInMissingAnswers() {
 		SortedSet<O> sortedOptions = new TreeSet<>((o1, o2) -> o1.getId().compareTo(o2.getId()));
 		sortedOptions.addAll(parent.getOptions());

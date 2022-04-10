@@ -7,6 +7,7 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
+import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.data.entity.polls.AbstractOption;
 import de.andipopp.poodle.data.entity.polls.DateOption;
 import de.andipopp.poodle.data.entity.polls.Vote;
@@ -31,15 +32,15 @@ public class DateOptionListItem extends OptionListItem {
 	 * @param option
 	 * @param vote
 	 */
-	public DateOptionListItem(AbstractOption<?, ?> option, Vote<?, ?> vote) {
-		super(option, vote);
+	public DateOptionListItem(AbstractOption<?, ?> option, Vote<?, ?> vote, User currentUser) {
+		super(option, vote, currentUser);
 	}
 
 	/**
 	 * @param option
 	 */
-	public DateOptionListItem(AbstractOption<?, ?> option) {
-		super(option);
+	public DateOptionListItem(AbstractOption<?, ?> option, User currentUser) {
+		super(option, currentUser);
 	}
 
 	/**
