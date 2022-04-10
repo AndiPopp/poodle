@@ -33,7 +33,7 @@ public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends Abst
 	
 	@OneToMany(cascade = CascadeType.ALL, targetEntity=Answer.class, mappedBy = "option", orphanRemoval = true)
 	@LazyCollection(LazyCollectionOption.FALSE)
-	private Set<Answer<P,O>> answers = new HashSet<>();
+	private Set<Answer<P,O>> answers;
 	
 	/**
 	 * An optional human readable title
@@ -114,27 +114,38 @@ public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends Abst
 	
 	public void removeAnswer(Answer<P, O> answer) {
 		answers.remove(answer);
+		answer.setOption(null);
 	}
 	
 	public void removeAnswer(Vote<P,O> vote) {
+		System.out.println("Trying to remove answer. Is answers null? " + (answers == null));
 		for(Answer<P, O> answer : answers) {
+			System.out.println("Vote Id? "+answer.getVote().getId());
 			if (answer.getVote().equals(vote)) removeAnswer(answer);
 		}
 	}
 	
+	public void addAnswer(Answer<P, O> answer) {
+		answers.add(answer);
+		setThisOption(answer);
+	}
+	
+	protected abstract void setThisOption(Answer<P, O> answer);
+
 	/**
 	 * Counts the answers of a specific type for this option
 	 * @param type the answer type to count
 	 * @return the count of answers of the given type
 	 */
 	public int countAnswers(AnswerType type) {
+		if (answers == null) return -1;
 		int count = 0;
 		for(Answer<P,O> answer : answers) {
-			if (answer.getValue() == type) count++;
+			if (type == null || answer.getValue() == type) count ++;
 		}
 		return count;
 	}
-
+	
 	/* ========================
 	 * = UI auxiliary methods =
 	 * ======================== */

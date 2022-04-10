@@ -390,6 +390,7 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	public boolean removeVote(Vote<P,O> vote) {
 		if (votes.contains(vote)) {
 			for(AbstractOption<P, O> option : options) {
+				System.out.println("Removing from option with "+option.countAnswers(null)+" answers");
 				option.removeAnswer(vote);
 			}
 			votes.remove(vote);

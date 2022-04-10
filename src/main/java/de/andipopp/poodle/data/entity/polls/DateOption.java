@@ -82,6 +82,11 @@ public class DateOption extends AbstractOption<DatePoll, DateOption> {
 	 * = Getters and Setter =
 	 * ====================== */
 
+	@Override
+	protected void setThisOption(Answer<DatePoll, DateOption> answer) {
+		answer.setOption(this);
+	}
+	
 	/**
 	 * Getter for {@link #start}
 	 * @return the {@link #start}
@@ -218,5 +223,7 @@ public class DateOption extends AbstractOption<DatePoll, DateOption> {
 		//close with end line
 		return result + "\r\n" + "EndOfDateOption";
 	}
+
+
 	
 }

@@ -12,6 +12,7 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -85,7 +86,12 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 		this.parent = parent;
 		this.owner = owner;
 		for(Iterator<O> it = parent.getOptionIterator(); it.hasNext();) {
-			answers.add(new Answer<P,O>(it.next(), this, defaultAnswer));
+			O option = it.next();
+			//the constructor hooks up the answer's (child) fields
+			Answer<P, O> answer = new Answer<P,O>(defaultAnswer);
+			//we also need to hook up the parents' fields
+			this.addAnswer(answer);
+			option.addAnswer(answer);
 		}
 	}
 	
@@ -129,6 +135,7 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 	
 	public void removeAnswer(Answer<P,O> answer) {
 		answers.remove(answer);
+		answer.setVote(null);
 	}
 	
 	public void removeAnswer(AbstractOption<P, O> option) {
@@ -139,6 +146,7 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 	
 	public void addAnswer(Answer<P,O> answer) {
 		answers.add(answer);
+		answer.setVote(this);
 	}
 	
 	/**
@@ -147,12 +155,12 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 	 * @param answerType the type of answer
 	 */
 	public Answer<P,O> addAnswer(O option, AnswerType answerType) {
-		//TODO this loop can be removed once I figure out how to replace 'answers' by a map
 		for(Answer<P,O> answer : answers) {
 			if (answer.getOption().equals(option)) answers.remove(answer);
 		}
-		Answer<P,O> answer = new Answer<P,O>(option, this, answerType);
-		answers.add(answer);
+		Answer<P,O> answer = new Answer<P,O>(answerType);
+		addAnswer(answer);
+		option.addAnswer(answer);
 		return answer;
 	}
 	
@@ -167,8 +175,6 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 		}
 		return Optional.empty();
 	}
-	
-	//TODO the following two methods can be simplified/deprecated once I figure out how to make 'answers' a map
 	
 	/**
 	 * Get the {@link #answers} as a map

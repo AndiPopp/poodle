@@ -54,23 +54,27 @@ public class Answer<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> 
 	 */
 	public Answer() {}
 	
-	/**
-	 * 
-	 */
-	public Answer(@NotNull O option, @NotNull Vote<P,O> vote) {
-		setOption(option);
-		setVote(vote);
-	}
-	
-	/**
-	 * @param option
-	 * @param value
-	 */
-	public Answer(@NotNull O option, @NotNull Vote<P,O> vote, AnswerType value) {
-		this(option, vote);
+	public Answer(AnswerType value) {
 		this.value = value;
 	}
 	
+//	/**
+//	 * 
+//	 */
+//	public Answer(@NotNull O option, @NotNull Vote<P,O> vote) {
+//		setOption(option);
+//		setVote(vote);
+//	}
+//	
+//	/**
+//	 * @param option
+//	 * @param value
+//	 */
+//	public Answer(@NotNull O option, @NotNull Vote<P,O> vote, AnswerType value) {
+//		this(option, vote);
+//		this.value = value;
+//	}
+//	
 	
 
 	/* =====================
