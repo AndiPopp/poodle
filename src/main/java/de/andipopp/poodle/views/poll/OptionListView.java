@@ -7,6 +7,8 @@ import java.util.List;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -85,7 +87,7 @@ public abstract class OptionListView<P extends AbstractPoll<P, O>, O extends Abs
 		saveButton.addClickListener(e -> saveCurrentVote());
 		
 		deleteButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
-		deleteButton.addClickListener(e -> deleteCurrentVote());
+		deleteButton.addClickListener(e -> confirmDeleteVote());
 	}
 
 	/**
@@ -236,14 +238,36 @@ public abstract class OptionListView<P extends AbstractPoll<P, O>, O extends Abs
 		}
 //		logger.info("Now having "+voteService.count()+" votes.");
 	}
-
+	
+	private void confirmDeleteVote() {
+		//let user confirm delete via dialogue
+		Dialog confirm = new Dialog();
+		confirm.setModal(true);
+		
+		Button ok = new Button("OK");
+		ok.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
+		ok.addClickListener(e -> {
+			confirm.close();
+			deleteCurrentVote();
+		});
+		Button cancel = new Button("Cancel");
+		cancel.addClickListener(e -> confirm.close());
+		cancel.addThemeName("secondary");
+		
+		HorizontalLayout buttonLayout = new HorizontalLayout(cancel, ok);
+		Label label = new Label("Delete vote of "+currentVote.getDisplayName());
+		
+		VerticalLayout dialogLayout = new VerticalLayout(label, buttonLayout);
+		
+		confirm.add(dialogLayout);
+		confirm.open();
+		
+	}
+	
 	private void deleteCurrentVote() {
-//		Logger logger = LoggerFactory.getLogger(getClass());
-//    	logger.info("Deleting from "+voteService.count()+" votes, vote "+currentVote.getId());
 		poll.removeVote(currentVote);
 		voteService.delete(currentVote); //first time removes the connections
 		voteService.delete(currentVote); //second time removes echo
-//		logger.info("Now having "+voteService.count()+" votes.");
 		guessVote(configureVoteSelector());
 	}
 	
@@ -296,10 +320,11 @@ public abstract class OptionListView<P extends AbstractPoll<P, O>, O extends Abs
 			deleteButton.setEnabled(currentVote.canEdit(user));
 			displayNameInput.setEnabled(currentVote.canEdit(user));
 		}
+		if (currentVote.equals(newVote)) deleteButton.setEnabled(false);
 		
 		configureDisplayNameInput();
-		saveButton.setMinWidth("5em");
-		HorizontalLayout saveBar = new HorizontalLayout(displayNameInput, saveButton, deleteButton);
+//		saveButton.setMinWidth("5em");
+		HorizontalLayout saveBar = new HorizontalLayout(deleteButton, displayNameInput, saveButton);
 		saveBar.setWidthFull();
 //		saveBar.getStyle().set("border", "2px dotted FireBrick"); //for debug purposes
 		saveBar.getStyle().set("margin-top", "1ex"); 
