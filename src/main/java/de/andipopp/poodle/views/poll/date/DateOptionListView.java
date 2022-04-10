@@ -28,10 +28,6 @@ public class DateOptionListView extends OptionListView<DatePoll, DateOption> {
 
 	private ComboBox<ZoneId> zoneIdSelector;
 	
-	/**
-	 * @param poll
-	 * @param zoneId
-	 */
 	public DateOptionListView(DatePoll poll, User user, VoteService voteService, PollService pollService) {
 		super(poll, user, voteService, pollService);
 		

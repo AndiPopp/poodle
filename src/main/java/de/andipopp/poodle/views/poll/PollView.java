@@ -48,6 +48,11 @@ import de.andipopp.poodle.views.poll.date.DateOptionListView;
 @PageTitle("Poodle Poll")
 @Route(value = "poll", layout = MainLayout.class)
 @AnonymousAllowed
+/**
+ * The core view to vote in a poll.
+ * @author Andi Popp
+ *
+ */
 public class PollView extends VerticalLayout implements BeforeEnterObserver {
 
 	private static final long serialVersionUID = 1L;
@@ -109,8 +114,6 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 	    this.add(content);
 //	    this.content.getStyle().set("border", "2px dotted FireBrick"); //for debug purposes
 	}
-	
-	
 
 	@Override
 	public void beforeEnter(BeforeEnterEvent event) {
@@ -128,6 +131,14 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 				//do nothing, keep the "not found"
 			}
 		}
+	}
+	
+	/**
+	 * Getter for {@link #poll}
+	 * @return the {@link #poll}
+	 */
+	public AbstractPoll<?, ?> getPoll() {
+		return poll;
 	}
 	
 	private void loadPoll(AbstractPoll<?,?> poll) {
@@ -161,6 +172,9 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 		this.content.add(horizontalAlignmentWrapper);
 	}
 
+	
+	
+	
 	private static VerticalLayout notFound() {
 		VerticalLayout notFound = new VerticalLayout();
 		notFound.setSpacing(false);
