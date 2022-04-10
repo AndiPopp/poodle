@@ -3,13 +3,8 @@ package de.andipopp.poodle.views.poll;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.notification.Notification;
@@ -60,9 +55,7 @@ public abstract class OptionListView<P extends AbstractPoll<P, O>, O extends Abs
 	
 	TextField displayNameInput = new TextField();
 	
-	/**
-	 * @param poll
-	 */
+
 	public OptionListView(P poll, User user, VoteService voteService, PollService pollService) {
 		//Set fields
 		this.poll = poll;

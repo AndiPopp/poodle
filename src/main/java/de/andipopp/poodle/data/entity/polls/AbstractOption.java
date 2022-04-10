@@ -24,7 +24,6 @@ import de.andipopp.poodle.views.poll.OptionListItem;
  * @author Andi Popp
  */
 @Entity(name = "Option")
-//public abstract class AbstractOption<P extends AbstractPoll<? extends AbstractOption<P>>> extends AbstractEntity {
 public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> extends AbstractAutoIdEntity {	
 
 	@ManyToOne(targetEntity=AbstractPoll.class)

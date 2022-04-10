@@ -12,10 +12,6 @@ public class AnswerListToggleButton extends Image{
 	
 	Answer<?,?> answer;
 
-	/**
-	 * @param parent
-	 * @param answer
-	 */
 	public AnswerListToggleButton(OptionListItem parent, Answer<?, ?> answer) {
 		this.parent = parent;
 		this.answer = answer;
