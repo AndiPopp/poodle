@@ -28,3 +28,7 @@
 .primary-text {
 	color: var(--lumo-primary-text-color);
 }
+
+.menu-pretext-icon {
+	font-size: x-large;
+}

@@ -15,13 +15,11 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.contextmenu.MenuItem;
-import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.H6;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -45,6 +43,7 @@ import de.andipopp.poodle.data.service.VoteService;
 import de.andipopp.poodle.util.JSoupUtils;
 import de.andipopp.poodle.util.NotAUuidException;
 import de.andipopp.poodle.util.UUIDUtils;
+import de.andipopp.poodle.views.LineAwesomeMenuIcon;
 import de.andipopp.poodle.views.MainLayout;
 import de.andipopp.poodle.views.poll.date.DateOptionListView;
 
@@ -309,11 +308,22 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 		if (topRightContextMenu != null) topRightContextMenu.setTarget(null);
 		topRightContextMenu = new ContextMenu();
 		
-		MenuItem share = topRightContextMenu.addItem("Share", e -> {});
-		MenuItem edit = topRightContextMenu.addItem("Edit", e->{});
-		MenuItem close = topRightContextMenu.addItem("Select Winners", e->{});
-		MenuItem tableView = topRightContextMenu.addItem("Table View", e -> {});
-		MenuItem listView = topRightContextMenu.addItem("List View", e -> {});
+		MenuItem share = topRightContextMenu.addItem(" Share", e -> {});
+		share.addComponentAsFirst(new LineAwesomeMenuIcon("la-share"));
+		
+		MenuItem edit = topRightContextMenu.addItem(" Edit", e->{});
+		edit.addComponentAsFirst(new LineAwesomeMenuIcon("la-edit"));
+		
+		MenuItem close = topRightContextMenu.addItem(" Select Winners", e->{});
+		close.addComponentAsFirst(new LineAwesomeMenuIcon("la-award"));
+		
+		if (state == ViewToggleState.LIST) {
+			MenuItem tableView = topRightContextMenu.addItem(" Table View", e -> {});
+			tableView.addComponentAsFirst(new LineAwesomeMenuIcon("la-table"));
+		}else if (state == ViewToggleState.TABLE) {
+			MenuItem listView = topRightContextMenu.addItem(" List View", e -> {});
+			listView.addComponentAsFirst(new LineAwesomeMenuIcon("la-list-ul"));
+		}
 		
 		topRightContextMenu.setOpenOnClick(true);
 		topRightContextMenu.setTarget(topRightMenu);
