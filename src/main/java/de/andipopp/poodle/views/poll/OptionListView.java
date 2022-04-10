@@ -49,7 +49,9 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 	
 	protected HorizontalLayout header;
 	
-	Button saveButton = new Button("Save Vote");
+	Button saveButton = new Button("Save");
+	
+	Button deleteButton = new Button("Delete");
 	
 	TextField displayNameInput = new TextField();
 	
@@ -82,11 +84,17 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 		if (usersVote == null) voteSelector.setValue(newVote);
 		else voteSelector.setValue(usersVote);
 		
-		//hookup listener for save button
+		//hookup listener for buttons
 		saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 		saveButton.addClickShortcut(Key.ENTER);
-		saveButton.addClickListener(e -> saveVote());
+		saveButton.addClickListener(e -> saveCurrentVote());
+		
+		deleteButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
+		deleteButton.addClickListener(e -> deleteCurrentVote());
 	}
+
+
+
 
 
 	private boolean configureVoteSelectorMode = false;
@@ -130,7 +138,7 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 	/**
 	 * Save the current vote
 	 */
-	private void saveVote() {
+	private void saveCurrentVote() {
 		
 		//Validate inputs
 		displayNameInput.setValue(displayNameInput.getValue().strip());
@@ -171,6 +179,10 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 		
 	}
 
+	private void deleteCurrentVote() {
+		voteService.delete(currentVote);
+	}
+	
 	/**
 	 * Getter for {@link #poll}
 	 * @return the {@link #poll}
@@ -267,7 +279,7 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 		
 		configureDisplayNameInput();
 		saveButton.setMinWidth("5em");
-		HorizontalLayout saveBar = new HorizontalLayout(displayNameInput, saveButton);
+		HorizontalLayout saveBar = new HorizontalLayout(displayNameInput, saveButton, deleteButton);
 		saveBar.setWidthFull();
 //		saveBar.getStyle().set("border", "2px dotted FireBrick"); //for debug purposes
 		saveBar.getStyle().set("margin-top", "1ex"); 
@@ -279,6 +291,7 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 	private void configureDisplayNameInput() {
 		displayNameInput.setValue("");
 		displayNameInput.setPlaceholder("Enter name");
+		displayNameInput.setMaxWidth("5em");
 		
 		if (voteSelector.getValue().getDisplayName() != null) {
 			displayNameInput.setValue(voteSelector.getValue().getDisplayName());
