@@ -27,7 +27,7 @@ import de.andipopp.poodle.data.service.PollService;
 import de.andipopp.poodle.data.service.VoteService;
 import de.andipopp.poodle.util.InvalidException;
 
-public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOption<P, O>> extends VerticalLayout {
+public abstract class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOption<P, O>> extends VerticalLayout {
 
 	private static final long serialVersionUID = 1L;
 
@@ -213,10 +213,18 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 		//TODO new vote logic goes here
 		if (currentVote.equals(newVote)) {
 			logger.info("Adding to "+voteService.count()+" votes, new vote "+currentVote.getId());
+			//hookup the new vote to the poll
 			this.poll.addVote(newVote);
 			newVote.setOwner(user);
+			poll.debug_PrintVoteIds();
+			System.out.println();
+			
+			//write the poll with the new vote with id null and get a new poll object with an id for the vote
+			AbstractPoll<?,?> resultPoll = pollService.update(poll);
+			resultPoll.debug_PrintVoteIds();
+			
 			newVote = null;
-			result = pollService.update(poll) != null;
+			result = resultPoll != null;
 		} else 
 		if(currentVote.getOwner() == null || currentVote.getOwner().equals(user)) {
 			logger.info("Modifying in "+voteService.count()+" votes, vote "+currentVote.getId());
@@ -325,7 +333,7 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 	private void configureDisplayNameInput() {
 		displayNameInput.setValue("");
 		displayNameInput.setPlaceholder("Enter name");
-		displayNameInput.setMaxWidth("5em");
+		displayNameInput.setMaxWidth("10em");
 		
 		if (voteSelector.getValue().getDisplayName() != null) {
 			displayNameInput.setValue(voteSelector.getValue().getDisplayName());
