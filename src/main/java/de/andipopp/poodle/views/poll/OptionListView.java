@@ -3,6 +3,7 @@ package de.andipopp.poodle.views.poll;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -220,11 +221,10 @@ public abstract class OptionListView<P extends AbstractPoll<P, O>, O extends Abs
 			System.out.println();
 			
 			//write the poll with the new vote with id null and get a new poll object with an id for the vote
-			AbstractPoll<?,?> resultPoll = pollService.update(poll);
-			resultPoll.debug_PrintVoteIds();
+			Vote<?,?> repResult = voteService.update(currentVote);
 			
 			newVote = null;
-			result = resultPoll != null;
+			result = repResult != null;
 		} else 
 		if(currentVote.getOwner() == null || currentVote.getOwner().equals(user)) {
 			logger.info("Modifying in "+voteService.count()+" votes, vote "+currentVote.getId());
@@ -253,7 +253,9 @@ public abstract class OptionListView<P extends AbstractPoll<P, O>, O extends Abs
 		Logger logger = LoggerFactory.getLogger(getClass());
     	logger.info("Deleting from "+voteService.count()+" votes, vote "+currentVote.getId());
 		poll.removeVote(currentVote);
-		pollService.update(poll);
+//		pollService.update(poll);
+		voteService.delete(currentVote); //first time removes the connections
+		voteService.delete(currentVote); //second time removes echo
 		logger.info("Now having "+voteService.count()+" votes.");
 		UI.getCurrent().getPage().reload(); //TODO: second delete attempt tries to look for non-existing answer, fix and remove reload
 //		Vote<P,O> usersVote = configureVoteSelector();

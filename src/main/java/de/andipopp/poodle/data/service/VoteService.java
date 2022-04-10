@@ -1,5 +1,7 @@
 package de.andipopp.poodle.data.service;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,8 +26,11 @@ public class VoteService {
     }
     
     public void delete(Vote<?,?> vote) {
-  
     	repository.delete(vote);
-    	
+    }
+    
+    public void delete(UUID id) {
+    	repository.deleteById(id);
     }
 }
+
