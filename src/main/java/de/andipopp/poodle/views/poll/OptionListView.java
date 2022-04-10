@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.notification.Notification;
@@ -43,10 +44,10 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 	 */
 	private User user;
 	
-	/**
-	 * A new vote to store
-	 */
-	Vote<P,O> newVote;
+//	/**
+//	 * A new vote to store
+//	 */
+//	Vote<P,O> newVote;
 	
 	private Select<Vote<P,O>> voteSelector;
 	
@@ -82,10 +83,7 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 	
 		//configure
 		Vote<P,O> usersVote = configureVoteSelector();
-	
-		//select the most likely vote, which triggers the set and build event
-		if (usersVote == null) voteSelector.setValue(newVote);
-		else voteSelector.setValue(usersVote);
+		guessVote(usersVote);
 		
 		//hookup listener for buttons
 		saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -97,7 +95,11 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 	}
 
 
-
+	private void guessVote(Vote<P, O> usersVote) {
+		//select the most likely vote, which triggers the set and build event
+		if (usersVote == null) System.out.println("Put the new vote in here"); //TODO put in new vote
+		else voteSelector.setValue(usersVote);
+	}
 
 
 	private boolean configureVoteSelectorMode = false;
@@ -105,10 +107,12 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 	private Vote<P,O> configureVoteSelector() {
 		configureVoteSelectorMode = true;
 		List<Vote<P,O>> votes = new LinkedList<>();
-		if (newVote == null) {
-			newVote = new Vote<P,O>(this.poll);
-		}
-		votes.add(newVote); //add the default new vote
+		
+		//TODO replace old new vote logic with new one
+//		if (newVote == null) {
+//			newVote = new Vote<P,O>(this.poll);
+//		}
+//		votes.add(newVote); //add the default new vote
 		
 		ArrayList<Vote<P,O>> sortedVotes = new ArrayList<>();
 		sortedVotes.addAll(poll.getVotes());
@@ -156,12 +160,14 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 		//write the results to backend
 		boolean result = false;
 		String message = "Unexpected result while saving vote. Refresh to see if it worked.";
-		if (currentVote.equals(newVote)) {
-			this.poll.addVote(newVote);
-			newVote.setOwner(user);
-			newVote = null;
-			result = pollService.update(poll) != null;
-		} else if(currentVote.getOwner() == null || currentVote.getOwner().equals(user)) {
+		//TODO new vote logic goes here
+//		if (currentVote.equals(newVote)) {
+//			this.poll.addVote(newVote);
+//			newVote.setOwner(user);
+//			newVote = null;
+//			result = pollService.update(poll) != null;
+//		} else 
+		if(currentVote.getOwner() == null || currentVote.getOwner().equals(user)) {
 			result = voteService.update(currentVote) != null;
 		} else {
 			message = "You don't have permission to edit this vote.";
@@ -188,6 +194,9 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 		poll.removeVote(currentVote);
 		pollService.update(poll);
 		logger.info("Now with "+voteService.count()+" votes.");
+		UI.getCurrent().getPage().reload(); //TODO: second delete attempt tries to look for non-existing answer, fix and remove reload
+//		Vote<P,O> usersVote = configureVoteSelector();
+//		guessVote(usersVote);
 	}
 	
 	/**
@@ -310,11 +319,13 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 			displayNameInput.setValue(voteSelector.getValue().getDisplayName());
 		}else if (voteSelector.getValue().getOwner() != null) {
 			displayNameInput.setValue(voteSelector.getValue().getOwner().getName());
-		}else if(voteSelector.getValue().equals(newVote)){
-			if (user != null) {
-				displayNameInput.setValue(user.getName());
-			}
 		}
+		//TODO new vote logic goes here
+//		else if(voteSelector.getValue().equals(newVote)){
+//			if (user != null) {
+//				displayNameInput.setValue(user.getName());
+//			}
+//		}
 		
 		try {
 			if (!displayNameInput.getValue().isEmpty()) voteSelector.getValue().validateDisplayName(displayNameInput.getValue());

@@ -3,6 +3,7 @@
  */
 package de.andipopp.poodle.data.entity.polls;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,7 +34,7 @@ public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends Abst
 	
 	@OneToMany(cascade = CascadeType.ALL, targetEntity=Answer.class, mappedBy = "option", orphanRemoval = true)
 	@LazyCollection(LazyCollectionOption.FALSE)
-	private Set<Answer<P,O>> answers;
+	private List<Answer<P,O>> answers;
 	
 	/**
 	 * An optional human readable title
@@ -48,7 +49,7 @@ public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends Abst
 	 * Empty constructor
 	 */
 	public AbstractOption() {
-		this.answers = new HashSet<>();
+		this.answers = new ArrayList<>();
 	}
 
 	/**
@@ -100,7 +101,7 @@ public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends Abst
 	 * Getter for {@link #answers}
 	 * @return the {@link #answers}
 	 */
-	public Set<Answer<P,O>> getAnswers() {
+	public List<Answer<P,O>> getAnswers() {
 		return answers;
 	}
 
@@ -108,7 +109,7 @@ public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends Abst
 	 * Setter for {@link #answers}
 	 * @param answers the {@link #answers} to set
 	 */
-	public void setAnswers(Set<Answer<P,O>> answers) {
+	public void setAnswers(List<Answer<P,O>> answers) {
 		this.answers = answers;
 	}
 	
@@ -118,11 +119,15 @@ public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends Abst
 	}
 	
 	public void removeAnswer(Vote<P,O> vote) {
-		System.out.println("Trying to remove answer. Is answers null? " + (answers == null));
+		List<Answer<P,O>> deleteThose = new ArrayList<>(1); //should typically only one answer per option
 		for(Answer<P, O> answer : answers) {
-			System.out.println("Vote Id? "+answer.getVote().getId());
-			if (answer.getVote().equals(vote)) removeAnswer(answer);
+			if (answer.getVote().equals(vote)) {
+				answer.setOption(null);
+				deleteThose.add(answer);
+			}
 		}
+		answers.removeAll(deleteThose);
+		
 	}
 	
 	public void addAnswer(Answer<P, O> answer) {
