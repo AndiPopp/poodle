@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
-import de.andipopp.poodle.data.entity.AbstractEntity;
+import de.andipopp.poodle.data.entity.AbstractAutoIdEntity;
 
 /**
  * A reply to single poll option.
@@ -13,7 +13,7 @@ import de.andipopp.poodle.data.entity.AbstractEntity;
  *
  */
 @Entity
-public class Answer<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> extends AbstractEntity{
+public class Answer<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> extends AbstractAutoIdEntity{
 
 	/* ==========
 	 * = Fields =

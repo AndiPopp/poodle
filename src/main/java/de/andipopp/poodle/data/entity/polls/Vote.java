@@ -25,7 +25,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import com.vaadin.flow.component.avatar.Avatar;
 
-import de.andipopp.poodle.data.entity.AbstractEntity;
+import de.andipopp.poodle.data.entity.AbstractAutoIdEntity;
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.util.InvalidException;
 
@@ -35,7 +35,7 @@ import de.andipopp.poodle.util.InvalidException;
  *
  */
 @Entity
-public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> extends AbstractEntity {
+public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> extends AbstractAutoIdEntity {
 
 	/* ==========
 	 * = Fields =

@@ -27,7 +27,7 @@ import de.andipopp.poodle.data.entity.polls.Vote;
 
 @Entity
 @Table(name = "application_user")
-public class User extends AbstractEntity {
+public class User extends AbstractAutoIdEntity {
 
     private String username;
     private String name;

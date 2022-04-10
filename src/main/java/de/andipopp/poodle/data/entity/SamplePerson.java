@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import javax.persistence.Entity;
 
 @Entity
-public class SamplePerson extends AbstractEntity {
+public class SamplePerson extends AbstractAutoIdEntity {
 
     private String firstName;
     private String lastName;

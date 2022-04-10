@@ -1,42 +1,33 @@
 package de.andipopp.poodle.data.entity;
 
 import java.util.UUID;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
 public abstract class AbstractEntity {
 
-    @Id
-    @GeneratedValue
-    private UUID id;
+    public abstract UUID getId();
 
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    @Override
+    public abstract void setId(UUID id);
+	
+	@Override
     public int hashCode() {
-        if (id != null) {
-            return id.hashCode();
+        if (getId() != null) {
+            return getId().hashCode();
         }
         return super.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof AbstractEntity)) {
+        if (!(obj instanceof AbstractAutoIdEntity)) {
             return false; // null or other class
         }
-        AbstractEntity other = (AbstractEntity) obj;
+        AbstractAutoIdEntity other = (AbstractAutoIdEntity) obj;
 
-        if (id != null) {
-            return id.equals(other.id);
+        if (getId() != null) {
+            return getId().equals(other.getId());
         }
         return super.equals(other);
     }

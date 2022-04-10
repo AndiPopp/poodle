@@ -3,6 +3,7 @@ package de.andipopp.poodle.data.entity;
 import java.util.UUID;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.data.generator.ConfigLoader;
@@ -54,6 +55,25 @@ public class Config extends AbstractEntity {
 	 * = Constructors =
 	 * ================ */
 	
+	@Id
+	UUID id;
+	
+	/**
+	 * Getter for {@link #id}
+	 * @return the {@link #id}
+	 */
+	public UUID getId() {
+		return id;
+	}
+
+	/**
+	 * Setter for {@link #id}
+	 * @param id the {@link #id} to set
+	 */
+	public void setId(UUID id) {
+		this.id = id;
+	}
+
 	/**
 	 * Create a new config with the default id.
 	 * For other ids use {@link #PoodleConfig(UUID)} instead.
@@ -118,6 +138,8 @@ public class Config extends AbstractEntity {
 	public void setDefaultPollRententionDays(int defaultPollRententionDays) {
 		this.defaultPollRententionDays = defaultPollRententionDays;
 	}
+
+
 	
 	
 }
