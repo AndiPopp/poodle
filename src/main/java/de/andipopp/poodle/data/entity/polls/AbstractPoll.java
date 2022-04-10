@@ -36,7 +36,6 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	/**
 	 * The poll's title
 	 */
-	@NotNull
 	@NotEmpty
 	private String title;
 	
@@ -49,7 +48,6 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	 * The poll's owner
 	 */
 	@ManyToOne
-	@NotNull
 	private User owner;
 	
 	/**
@@ -62,10 +60,8 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	 * The date by which this poll is to be deleted
 	 * @return
 	 */
-	@NotNull
 	private LocalDate deleteDate;
 	
-	@NotNull
 	@OneToMany(cascade = CascadeType.ALL, targetEntity=AbstractOption.class, mappedBy = "parent", orphanRemoval = true)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<O> options;
@@ -82,8 +78,6 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	
 	private boolean closed;
 	
-	
-	@NotNull
 	@OneToMany(cascade = CascadeType.ALL, targetEntity=Vote.class, mappedBy = "parent",  orphanRemoval = true)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<Vote<P,O>> votes;
@@ -395,6 +389,9 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	 */
 	public boolean removeVote(Vote<P,O> vote) {
 		if (votes.contains(vote)) {
+			for(AbstractOption<P, O> option : options) {
+				option.removeAnswer(vote);
+			}
 			votes.remove(vote);
 			vote.setParent(null);
 			return true;

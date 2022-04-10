@@ -33,7 +33,7 @@ public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends Abst
 	
 	@OneToMany(cascade = CascadeType.ALL, targetEntity=Answer.class, mappedBy = "option", orphanRemoval = true)
 	@LazyCollection(LazyCollectionOption.FALSE)
-	private Set<Answer<P,O>> answers;
+	private Set<Answer<P,O>> answers = new HashSet<>();
 	
 	/**
 	 * An optional human readable title
@@ -110,6 +110,16 @@ public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends Abst
 	 */
 	public void setAnswers(Set<Answer<P,O>> answers) {
 		this.answers = answers;
+	}
+	
+	public void removeAnswer(Answer<P, O> answer) {
+		answers.remove(answer);
+	}
+	
+	public void removeAnswer(Vote<P,O> vote) {
+		for(Answer<P, O> answer : answers) {
+			if (answer.getVote().equals(vote)) removeAnswer(answer);
+		}
 	}
 	
 	/**

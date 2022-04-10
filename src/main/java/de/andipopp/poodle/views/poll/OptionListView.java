@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -180,7 +183,11 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 	}
 
 	private void deleteCurrentVote() {
-		voteService.delete(currentVote);
+		Logger logger = LoggerFactory.getLogger(getClass());
+    	logger.info("Trying to delete vote "+currentVote.getId()+" from repository with "+voteService.count()+" votes.");
+		poll.removeVote(currentVote);
+		pollService.update(poll);
+		logger.info("Now with "+voteService.count()+" votes.");
 	}
 	
 	/**
@@ -271,10 +278,16 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 	
 	protected void buildSaveBar() {
 		
+		//configure button enabling
 		saveButton.setEnabled(true);
+		deleteButton.setEnabled(true);
 		if (currentVote.getOwner() != null) {
 			saveButton.setEnabled(false);
-			if (user.equals(currentVote.getOwner()) || user.equals(poll.getOwner())) saveButton.setEnabled(true);
+			deleteButton.setEnabled(false);
+			if (user.equals(currentVote.getOwner()) || user.equals(poll.getOwner())) {
+				saveButton.setEnabled(true);
+				deleteButton.setEnabled(true);
+			}
 		}
 		
 		configureDisplayNameInput();

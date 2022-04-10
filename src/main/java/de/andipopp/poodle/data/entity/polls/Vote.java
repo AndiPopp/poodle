@@ -13,7 +13,6 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -48,12 +47,10 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 	/**
 	 * The list of answers for this vote
 	 */
-	@NotNull
 	@OneToMany(cascade = CascadeType.ALL, targetEntity=Answer.class, orphanRemoval = true, mappedBy = "vote")
 	@LazyCollection(LazyCollectionOption.FALSE)
 	List<Answer<P,O>> answers; //TODO this should probably be a map, so every option gets max one answer, but I have no idea how to configure this in JPA/Hibernate
 	
-	@NotNull
 	@ManyToOne(targetEntity=AbstractPoll.class)
 	private AbstractPoll<P,O> parent; 
 	
@@ -62,7 +59,6 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 	 * If a vote has an owner, only the owner, an admin or the poll owner shall 
 	 * be able to modify this vote. Otherwise everyone can modify the vote.
 	 */
-	@Nullable
 	@ManyToOne
 	private User owner;
 	
@@ -129,6 +125,20 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 	 */
 	public void setAnswers(List<Answer<P,O>> answers) {
 		this.answers = answers;
+	}
+	
+	public void removeAnswer(Answer<P,O> answer) {
+		answers.remove(answer);
+	}
+	
+	public void removeAnswer(AbstractOption<P, O> option) {
+		for(Answer<P, O> answer : answers) {
+			if (answer.getOption().equals(option)) removeAnswer(answer);
+		}
+	}
+	
+	public void addAnswer(Answer<P,O> answer) {
+		answers.add(answer);
 	}
 	
 	/**

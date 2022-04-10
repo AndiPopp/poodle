@@ -30,14 +30,12 @@ public class Answer<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> 
 	/**
 	 * The answered option
 	 */
-	@NotNull
 	@ManyToOne(targetEntity=AbstractOption.class)
 	private O option;
 	
 	/**
 	 * The vote this answer belongs to
 	 */
-	@NotNull
 	@ManyToOne(targetEntity=Vote.class)
 	private Vote<P, O> vote;
 	
