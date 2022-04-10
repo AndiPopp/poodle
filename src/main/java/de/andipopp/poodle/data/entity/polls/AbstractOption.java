@@ -39,6 +39,11 @@ public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends Abst
 	 */
 	private String title;
 
+	/**
+	 * A flag indicating this option is one of {@link #parent}'s winners
+	 */
+	private boolean winner;
+	
 	/* ================
 	 * = Constructors = 
 	 * ================ */
@@ -93,6 +98,22 @@ public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends Abst
 	 */
 	public void setParent(P parent) {
 		this.parent = parent;
+	}
+
+	/**
+	 * Getter for {@link #winner}
+	 * @return the {@link #winner}
+	 */
+	public boolean isWinner() {
+		return winner;
+	}
+
+	/**
+	 * Setter for {@link #winner}
+	 * @param winner the {@link #winner} to set
+	 */
+	public void setWinner(boolean winner) {
+		this.winner = winner;
 	}
 
 	/**
