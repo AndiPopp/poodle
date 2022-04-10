@@ -421,6 +421,7 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 		return removeVote(UUID.fromString(id));
 	}
 	
+	
 	/* ========================
 	 * = UI auxiliary methods =
 	 * ======================== */
@@ -434,6 +435,7 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	@Transient
 	private List<O> sorted;
 	
+	@Transient
 	public List<O> getOptionsByPositiveAnswers() {
 		if (options == null) return null;
 		if (sorted == null) {
@@ -444,6 +446,7 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 		return sorted;
 	}
 	
+	@Transient
 	public void clearSortedOptionsByPositiveAnswers() {;
 		sorted = null;
 	}

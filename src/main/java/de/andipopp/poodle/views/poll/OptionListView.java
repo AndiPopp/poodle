@@ -44,10 +44,10 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 	 */
 	private User user;
 	
-//	/**
-//	 * A new vote to store
-//	 */
-//	Vote<P,O> newVote;
+	/**
+	 * A new vote to store
+	 */
+	Vote<P,O> newVote;
 	
 	private Select<Vote<P,O>> voteSelector;
 	
@@ -94,111 +94,6 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 		deleteButton.addClickListener(e -> deleteCurrentVote());
 	}
 
-
-	private void guessVote(Vote<P, O> usersVote) {
-		//select the most likely vote, which triggers the set and build event
-		if (usersVote == null) System.out.println("Put the new vote in here"); //TODO put in new vote
-		else voteSelector.setValue(usersVote);
-	}
-
-
-	private boolean configureVoteSelectorMode = false;
-
-	private Vote<P,O> configureVoteSelector() {
-		configureVoteSelectorMode = true;
-		List<Vote<P,O>> votes = new LinkedList<>();
-		
-		//TODO replace old new vote logic with new one
-//		if (newVote == null) {
-//			newVote = new Vote<P,O>(this.poll);
-//		}
-//		votes.add(newVote); //add the default new vote
-		
-		ArrayList<Vote<P,O>> sortedVotes = new ArrayList<>();
-		sortedVotes.addAll(poll.getVotes());
-		sortedVotes.sort((v1, v2) -> v1.getListLabel().compareTo(v2.getListLabel()));
-		
-		//add the other votes to the selector and use the loop to find the user's vote if present
-		Vote<P,O> usersVote = null;
-		for(Vote<P,O> vote : sortedVotes) {
-			votes.add(vote);
-			if (vote.getOwner() != null && vote.getOwner().equals(user)) usersVote = vote;
-		}
-//		System.out.println("Loaded "+(sortedVotes.size()+1)+" votes");
-		voteSelector.setItems(votes);
-		voteSelector.setItemLabelGenerator(v -> {
-			if (v.getOwner() == null) return v.getListLabel();
-			if (v.getOwner().equals(user)) return v.getListLabel()+" ★";
-			return v.getListLabel()+" ☆";
-		});
-		voteSelector.setLabel("Select vote");
-		voteSelector.addValueChangeListener(e -> {
-			if (!configureVoteSelectorMode) loadVote(e.getValue());
-		});
-		voteSelector.setMaxWidth("10em");
-		
-		configureVoteSelectorMode = false;
-		return usersVote;
-	}
-
-
-	/**
-	 * Save the current vote
-	 */
-	private void saveCurrentVote() {
-		
-		//Validate inputs
-		displayNameInput.setValue(displayNameInput.getValue().strip());
-		try {
-			currentVote.validateAllAndSetDisplayName(displayNameInput.getValue());
-		} catch (InvalidException e) {
-			Notification notification = Notification.show(e.getMessage(), 4000, Notification.Position.BOTTOM_CENTER);
-			notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
-			return;
-		}
-		
-		//write the results to backend
-		boolean result = false;
-		String message = "Unexpected result while saving vote. Refresh to see if it worked.";
-		//TODO new vote logic goes here
-//		if (currentVote.equals(newVote)) {
-//			this.poll.addVote(newVote);
-//			newVote.setOwner(user);
-//			newVote = null;
-//			result = pollService.update(poll) != null;
-//		} else 
-		if(currentVote.getOwner() == null || currentVote.getOwner().equals(user)) {
-			result = voteService.update(currentVote) != null;
-		} else {
-			message = "You don't have permission to edit this vote.";
-			result = false;
-		}
-		
-		if (result) {
-			Notification notification = Notification.show("Vote saved", 2000, Notification.Position.BOTTOM_CENTER);
-			notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-			poll.clearSortedOptionsByPositiveAnswers();
-			Vote<P,O> currentAux = currentVote;
-			configureVoteSelector();
-			voteSelector.setValue(currentAux);
-		}else {
-			Notification notification = Notification.show(message);
-			notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
-		}
-		
-	}
-
-	private void deleteCurrentVote() {
-		Logger logger = LoggerFactory.getLogger(getClass());
-    	logger.info("Trying to delete vote "+currentVote.getId()+" from repository with "+voteService.count()+" votes.");
-		poll.removeVote(currentVote);
-		pollService.update(poll);
-		logger.info("Now with "+voteService.count()+" votes.");
-		UI.getCurrent().getPage().reload(); //TODO: second delete attempt tries to look for non-existing answer, fix and remove reload
-//		Vote<P,O> usersVote = configureVoteSelector();
-//		guessVote(usersVote);
-	}
-	
 	/**
 	 * Getter for {@link #poll}
 	 * @return the {@link #poll}
@@ -245,6 +140,123 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 	 */
 	public void setVoteSelector(Select<Vote<P, O>> voteSelector) {
 		this.voteSelector = voteSelector;
+	}
+
+	private void guessVote(Vote<P, O> usersVote) {
+		//select the most likely vote, which triggers the set and build event
+		if (usersVote == null) voteSelector.setValue(newVote); //TODO put in new vote
+		else voteSelector.setValue(usersVote);
+	}
+
+
+	private boolean configureVoteSelectorMode = false;
+
+	private Vote<P,O> configureVoteSelector() {
+		configureVoteSelectorMode = true;
+		List<Vote<P,O>> votes = new LinkedList<>();
+		
+		//TODO replace old new vote logic with new one
+		if (newVote == null) {
+			newVote = new Vote<P,O>(this.poll);
+		}
+		votes.add(newVote); //add the default new vote
+		
+		ArrayList<Vote<P,O>> sortedVotes = new ArrayList<>();
+		sortedVotes.addAll(poll.getVotes());
+		sortedVotes.sort((v1, v2) -> v1.getListLabel().compareTo(v2.getListLabel()));
+		
+		//add the other votes to the selector and use the loop to find the user's vote if present
+		Vote<P,O> usersVote = null;
+		for(Vote<P,O> vote : sortedVotes) {
+			votes.add(vote);
+			if (vote.getOwner() != null && vote.getOwner().equals(user)) usersVote = vote;
+		}
+//		System.out.println("Loaded "+(sortedVotes.size()+1)+" votes");
+		voteSelector.setItems(votes);
+		voteSelector.setItemLabelGenerator(v -> {
+			if (v.getOwner() == null) return v.getListLabel();
+			if (v.getOwner().equals(user)) return v.getListLabel()+" ★";
+			return v.getListLabel()+" ☆";
+		});
+		voteSelector.setLabel("Select vote");
+		voteSelector.addValueChangeListener(e -> {
+			if (!configureVoteSelectorMode) loadVote(e.getValue());
+		});
+		voteSelector.setMaxWidth("10em");
+		
+		configureVoteSelectorMode = false;
+		return usersVote;
+	}
+
+
+	/**
+	 * Save the current vote
+	 */
+	private void saveCurrentVote() {
+		
+		//Validate inputs
+		displayNameInput.setValue(displayNameInput.getValue().strip());
+		try {
+			currentVote.validateAllAndSetDisplayName(displayNameInput.getValue());
+		} catch (InvalidException e) {
+			Notification notification = Notification.show(e.getMessage(), 4000, Notification.Position.BOTTOM_CENTER);
+			notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+			return;
+		}
+		
+		Logger logger = LoggerFactory.getLogger(getClass());
+    	
+		
+		//write the results to backend
+		boolean result = false;
+		String message = "Unexpected result while saving vote. Refresh to see if it worked.";
+		//TODO new vote logic goes here
+		if (currentVote.equals(newVote)) {
+			logger.info("Adding to "+voteService.count()+" votes, new vote "+currentVote.getId());
+			this.poll.addVote(newVote);
+			newVote.setOwner(user);
+			newVote = null;
+			result = pollService.update(poll) != null;
+		} else 
+		if(currentVote.getOwner() == null || currentVote.getOwner().equals(user)) {
+			logger.info("Modifying in "+voteService.count()+" votes, vote "+currentVote.getId());
+			result = voteService.update(currentVote) != null;
+		} else {
+			message = "You don't have permission to edit this vote.";
+			result = false;
+		}
+		
+		if (result) {
+			Notification notification = Notification.show("Vote saved", 2000, Notification.Position.BOTTOM_CENTER);
+			notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+			poll.clearSortedOptionsByPositiveAnswers();
+			Vote<P,O> currentAux = currentVote;
+			configureVoteSelector();
+			voteSelector.setValue(currentAux);
+		}else {
+			Notification notification = Notification.show(message);
+			notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+		}
+		logger.info("Now having "+voteService.count()+" votes.");
+	}
+
+	private void deleteCurrentVote() {
+		destroyNewVote();
+		Logger logger = LoggerFactory.getLogger(getClass());
+    	logger.info("Deleting from "+voteService.count()+" votes, vote "+currentVote.getId());
+		poll.removeVote(currentVote);
+		pollService.update(poll);
+		logger.info("Now having "+voteService.count()+" votes.");
+		UI.getCurrent().getPage().reload(); //TODO: second delete attempt tries to look for non-existing answer, fix and remove reload
+//		Vote<P,O> usersVote = configureVoteSelector();
+//		guessVote(usersVote);
+	}
+	
+	private void destroyNewVote() {
+		for(AbstractOption<P, O> option : poll.getOptions()) {
+			option.removeAnswer(newVote);
+		}
+		newVote = null;
 	}
 	
 	public void loadVote(Vote<P,O> vote) {
@@ -321,11 +333,11 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 			displayNameInput.setValue(voteSelector.getValue().getOwner().getName());
 		}
 		//TODO new vote logic goes here
-//		else if(voteSelector.getValue().equals(newVote)){
-//			if (user != null) {
-//				displayNameInput.setValue(user.getName());
-//			}
-//		}
+		else if(voteSelector.getValue().equals(newVote)){
+			if (user != null) {
+				displayNameInput.setValue(user.getName());
+			}
+		}
 		
 		try {
 			if (!displayNameInput.getValue().isEmpty()) voteSelector.getValue().validateDisplayName(displayNameInput.getValue());
@@ -336,12 +348,4 @@ public class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOpti
 	
 	}
 	
-//	private boolean displayNameExists(String name) {
-//		name = name.strip();
-//		for(Iterator<Vote<P,O>> it = voteSelector.getListDataView().getItems().iterator(); it.hasNext();) {
-//			if (it.next().getDisplayName().equals(name)) return true;
-//		}
-//		return false;
-//	}
-
 }

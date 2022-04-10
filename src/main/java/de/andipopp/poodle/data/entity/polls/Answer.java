@@ -2,7 +2,6 @@ package de.andipopp.poodle.data.entity.polls;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
 
 import de.andipopp.poodle.data.entity.AbstractAutoIdEntity;
 
