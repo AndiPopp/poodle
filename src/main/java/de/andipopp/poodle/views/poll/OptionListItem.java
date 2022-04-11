@@ -7,7 +7,6 @@ import com.vaadin.flow.component.avatar.AvatarVariant;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.html.Hr;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
@@ -264,7 +263,7 @@ public class OptionListItem extends HorizontalLayout {
 			VerticalLayout voteList = new VerticalLayout();
 			voteList.setPadding(false);
 			count = 0;
-			for(Answer<?,?> answer : getOption().getAnswers()) { //TODO use the sorted version once we properly detach the new vote
+			for(Answer<?,?> answer : getOption().sortAnswersByDisplayName()) { //TODO use the sorted version once we properly detach the new vote
 				if(answer.getValue() == answerType) {
 					count++;
 					Avatar avatar = answer.getVote().getAvatar();

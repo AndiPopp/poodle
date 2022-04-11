@@ -369,9 +369,17 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	 * @return a new empty vote for this poll's option 
 	 */
 	public Vote<P,O> addEmptyVote(){
-		Vote<P,O> vote = new Vote<P,O>(this);
+		Vote<P,O> vote = new Vote<P,O>(this, true);
 		votes.add(vote);
 		return vote;
+	}
+	
+	/**
+	 * Create an empty vote for this poll, but do not attacht it to the poll or any of its childrent
+	 * @return the newly created empty vote
+	 */
+	public Vote<P,O> createEmptyVote(){
+		return new Vote<P,O>(this, false);
 	}
 	
 	/**

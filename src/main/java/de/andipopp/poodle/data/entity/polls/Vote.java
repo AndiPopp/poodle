@@ -79,8 +79,9 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 	 * @param parent the parent poll
 	 * @param owner the vote's owner
 	 * @param defaultAnswer the default answer to all options
+	 * @param if the options should be aware of the new answers
 	 */
-	public Vote(@NotNull AbstractPoll<P,O> parent, User owner, AnswerType defaultAnswer) {
+	public Vote(@NotNull AbstractPoll<P,O> parent, User owner, AnswerType defaultAnswer, boolean hookupOption) {
 		this();
 		this.parent = parent;
 		this.owner = owner;
@@ -88,18 +89,32 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 			O option = it.next();
 			//the constructor hooks up the answer's (child) fields
 			Answer<P, O> answer = new Answer<P,O>(defaultAnswer);
-			//we also need to hook up the parents' fields
 			this.addAnswer(answer);
-			option.addAnswer(answer);
+			if (hookupOption) {
+				//we hook up the parents' fields
+				option.addAnswer(answer);
+			}else {
+				answer.setOption(option);
+			}
 		}
 	}
+	
+//	/**
+//	 * Create a new empty vote for a given poll with the given owner
+//	 * @param parent the parent poll
+//	 * @param owner the vote's owner
+//	 * @param defaultAnswer the default answer to all options
+//	 */
+//	public Vote(@NotNull AbstractPoll<P,O> parent, User owner, AnswerType defaultAnswer) {
+//		this(parent, owner, defaultAnswer, true);
+//	}
 	
 	/**
 	 * Create a new empty vote for a given poll
 	 * @param parent the parent poll
 	 */
-	public Vote(@NotNull AbstractPoll<P,O> parent) {
-		this(parent, null, AnswerType.NONE);
+	public Vote(@NotNull AbstractPoll<P,O> parent, boolean hookupOption) {
+		this(parent, null, AnswerType.NONE, hookupOption);
 	}
 	
 	/**
@@ -107,8 +122,8 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 	 * @param parent the parent poll
 	 * @param owner the vote's owner
 	 */
-	public Vote(@NotNull AbstractPoll<P,O> parent, User owner) {
-		this(parent, owner, AnswerType.NONE);
+	public Vote(@NotNull AbstractPoll<P,O> parent, User owner, boolean hookupOption) {
+		this(parent, owner, AnswerType.NONE, hookupOption);
 	}
 	
 
@@ -161,6 +176,12 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 		addAnswer(answer);
 		option.addAnswer(answer);
 		return answer;
+	}
+	
+	public void hookupAnswersToOptions() {
+		for(Answer<P,O> answer : answers) {
+			answer.getOption().addAnswer(answer);
+		}
 	}
 	
 	/**
@@ -313,6 +334,8 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 		if (this.parent.getOwner().equals(user)) return true;
 		return false;
 	}
+	
+	
 	
 	public void fillInMissingAnswers() {
 		SortedSet<O> sortedOptions = new TreeSet<>((o1, o2) -> o1.getId().compareTo(o2.getId()));

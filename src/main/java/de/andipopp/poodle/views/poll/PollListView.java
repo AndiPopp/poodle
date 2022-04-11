@@ -95,8 +95,6 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 		closeButton.addClickListener(e -> saveAndClosePoll());
 	}
 
-
-
 	/**
 	 * Getter for {@link #poll}
 	 * @return the {@link #poll}
@@ -180,7 +178,7 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 		List<Vote<P,O>> votes = new LinkedList<>();
 		
 		if (newVote == null) {
-			newVote = new Vote<P,O>(this.poll);
+			newVote = new Vote<P,O>(this.poll, false);
 		}
 		votes.add(newVote); //add the default new vote
 		
@@ -241,9 +239,10 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 		String message = "Unexpected result while saving vote. Refresh to see if it worked.";
 		if (currentVote.equals(newVote)) {
 //			logger.info("Adding to "+voteService.count()+" votes, new vote "+currentVote.getId());
-			//hookup the new vote to the poll
-			this.poll.addVote(newVote);
-			newVote.setOwner(user);
+			//hookup the new vote to the poll, its answers to the options and declare the owner
+			this.poll.addVote(currentVote);
+			currentVote.hookupAnswersToOptions();
+			currentVote.setOwner(user);
 			
 			//write write the new vote to the db and get the id from the result
 			Vote<?,?> repResult = voteService.update(currentVote);
