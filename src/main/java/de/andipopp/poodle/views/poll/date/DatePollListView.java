@@ -18,9 +18,9 @@ import de.andipopp.poodle.data.service.PollService;
 import de.andipopp.poodle.data.service.VoteService;
 import de.andipopp.poodle.util.TimeUtils;
 import de.andipopp.poodle.util.VaadinUtils;
-import de.andipopp.poodle.views.poll.OptionListView;
+import de.andipopp.poodle.views.poll.PollListView;
 
-public class DateOptionListView extends OptionListView<DatePoll, DateOption> {
+public class DatePollListView extends PollListView<DatePoll, DateOption> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -28,7 +28,7 @@ public class DateOptionListView extends OptionListView<DatePoll, DateOption> {
 
 	private ComboBox<ZoneId> zoneIdSelector;
 	
-	public DateOptionListView(DatePoll poll, User user, VoteService voteService, PollService pollService) {
+	public DatePollListView(DatePoll poll, User user, VoteService voteService, PollService pollService) {
 		super(poll, user, voteService, pollService);
 		
 		if (user != null && user.getTimeZone() != null) {

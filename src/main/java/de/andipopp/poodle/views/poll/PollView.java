@@ -45,7 +45,7 @@ import de.andipopp.poodle.util.NotAUuidException;
 import de.andipopp.poodle.util.UUIDUtils;
 import de.andipopp.poodle.views.LineAwesomeMenuIcon;
 import de.andipopp.poodle.views.MainLayout;
-import de.andipopp.poodle.views.poll.date.DateOptionListView;
+import de.andipopp.poodle.views.poll.date.DatePollListView;
 
 
 @PageTitle("Poodle Poll")
@@ -92,7 +92,7 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 		LIST, TABLE
 	}
 	
-	OptionListView<?, ?> listView;
+	PollListView<?, ?> listView;
 	
 	/**
 	 * @param pollService
@@ -163,7 +163,7 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 //		this.pollContent.getStyle().set("border", "2px dotted FireBrick"); //for debug purposes
 		
 		if (poll instanceof DatePoll) {
-			listView = new DateOptionListView((DatePoll) poll, currentUser, voteService, pollService); 
+			listView = new DatePollListView((DatePoll) poll, currentUser, voteService, pollService); 
 			//TODO also build table vie
 			if (state == ViewToggleState.LIST) this.pollContent.add(listView);
 		}

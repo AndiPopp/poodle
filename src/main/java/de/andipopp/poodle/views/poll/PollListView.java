@@ -24,7 +24,7 @@ import de.andipopp.poodle.data.service.PollService;
 import de.andipopp.poodle.data.service.VoteService;
 import de.andipopp.poodle.util.InvalidException;
 
-public abstract class OptionListView<P extends AbstractPoll<P, O>, O extends AbstractOption<P, O>> extends VerticalLayout {
+public abstract class PollListView<P extends AbstractPoll<P, O>, O extends AbstractOption<P, O>> extends VerticalLayout {
 
 	private static final long serialVersionUID = 1L;
 
@@ -57,7 +57,7 @@ public abstract class OptionListView<P extends AbstractPoll<P, O>, O extends Abs
 	TextField displayNameInput = new TextField();
 	
 
-	public OptionListView(P poll, User user, VoteService voteService, PollService pollService) {
+	public PollListView(P poll, User user, VoteService voteService, PollService pollService) {
 		//Set fields
 		this.poll = poll;
 		this.user = user;
