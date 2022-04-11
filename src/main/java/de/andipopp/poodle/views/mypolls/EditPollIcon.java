@@ -1,13 +1,14 @@
 package de.andipopp.poodle.views.mypolls;
 
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.notification.Notification;
 
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.views.MainLayout;
 
 public class EditPollIcon extends Span {
 
+	private static final long serialVersionUID = 1L;
+	
 	private AbstractPoll<?,?> poll;
 
 	/**

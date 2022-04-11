@@ -1,13 +1,13 @@
 package de.andipopp.poodle;
 
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * The entry point of the Spring Boot application.
@@ -46,7 +46,7 @@ public class PoodleApplication extends SpringBootServletInitializer implements A
 	}
 	
     public static void main(String[] args) {
-    	ConfigurableApplicationContext context = SpringApplication.run(PoodleApplication.class, args);
+    	SpringApplication.run(PoodleApplication.class, args);
     }
 
 }

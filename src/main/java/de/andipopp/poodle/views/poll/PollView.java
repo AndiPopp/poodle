@@ -85,9 +85,6 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 	
 	private VerticalLayout info = new VerticalLayout();
 
-	private Button topRightMenu;
-	
-	private ContextMenu topRightContextMenu;
 	
 	ViewToggleState state = ViewToggleState.LIST;
 	
@@ -304,6 +301,31 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 		return info;
 	}
 	
+
+	/* ==================================
+	 * = Members to configure poll menu =
+	 * ================================== */
+	
+	/**
+	 * The button to open the poll menu
+	 */
+	private Button topRightMenu;
+	
+	/**
+	 * The actual menu
+	 */
+	private ContextMenu topRightContextMenu;
+	
+	/**
+	 * Remember the item to switch to table view to toggle visibility
+	 */
+	private MenuItem switchToTableView;
+	
+	/**
+	 * Remember the item to switch to list view to toggle visibility
+	 */
+	private MenuItem switchToListView;
+	
 	private void configureTopRightContextMenu() {
 		if (topRightContextMenu != null) topRightContextMenu.setTarget(null);
 		topRightContextMenu = new ContextMenu();
@@ -311,18 +333,26 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 		MenuItem share = topRightContextMenu.addItem(" Share", e -> {});
 		share.addComponentAsFirst(new LineAwesomeMenuIcon("la-share"));
 		
-		MenuItem edit = topRightContextMenu.addItem(" Edit", e->{});
-		edit.addComponentAsFirst(new LineAwesomeMenuIcon("la-edit"));
+		if (currentUser != null && currentUser.equals(poll.getOwner())) {
+			MenuItem edit = topRightContextMenu.addItem(" Edit", e->{});
+			edit.addComponentAsFirst(new LineAwesomeMenuIcon("la-edit"));
+			
+			MenuItem close = topRightContextMenu.addItem(" Select Winners", e->{});
+			close.addComponentAsFirst(new LineAwesomeMenuIcon("la-award"));
+		}
+			
 		
-		MenuItem close = topRightContextMenu.addItem(" Select Winners", e->{});
-		close.addComponentAsFirst(new LineAwesomeMenuIcon("la-award"));
+		switchToTableView = topRightContextMenu.addItem(" Table View", e -> {});
+		switchToTableView.addComponentAsFirst(new LineAwesomeMenuIcon("la-table"));
+		switchToTableView.setVisible(state == ViewToggleState.LIST);
 		
-		if (state == ViewToggleState.LIST) {
-			MenuItem tableView = topRightContextMenu.addItem(" Table View", e -> {});
-			tableView.addComponentAsFirst(new LineAwesomeMenuIcon("la-table"));
-		}else if (state == ViewToggleState.TABLE) {
-			MenuItem listView = topRightContextMenu.addItem(" List View", e -> {});
-			listView.addComponentAsFirst(new LineAwesomeMenuIcon("la-list-ul"));
+		switchToListView = topRightContextMenu.addItem(" List View", e -> {});
+		switchToListView.addComponentAsFirst(new LineAwesomeMenuIcon("la-list-ul"));
+		switchToListView.setVisible(state == ViewToggleState.TABLE);
+		
+		if (poll instanceof DatePoll) {
+			MenuItem conflictSettings = topRightContextMenu.addItem(" Date Conflicts", e -> {});
+			conflictSettings.addComponentAsFirst(new LineAwesomeMenuIcon("la-calendar-times"));
 		}
 		
 		topRightContextMenu.setOpenOnClick(true);
