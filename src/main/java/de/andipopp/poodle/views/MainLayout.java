@@ -140,7 +140,7 @@ public class MainLayout extends AppLayout {
 
                 new MenuItemInfo("View Polls", "la la-poll-h", ViewPollsView.class), //
 
-                new MenuItemInfo("My Polls", "la la-calendar-check", MyPollsView.class), //
+                new MenuItemInfo("My Polls", "la la-poll", MyPollsView.class), //
 
                 new MenuItemInfo("User Settings", "la la-user-edit", UserSettingsView.class), //
 
