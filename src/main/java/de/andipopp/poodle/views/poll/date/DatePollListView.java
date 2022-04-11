@@ -91,10 +91,7 @@ public class DatePollListView extends PollListView<DatePoll, DateOption> {
 				//Construct the list item
 				DateOptionListItem item = option.toOptionsListItem(getUser());
 				item.setZoneId(zoneId);
-				item.setClosingMode(isClosingMode()); //TODO a little bit of code redundancy here, should be removed
-				item.loadVote(currentVote);
-				item.build();
-				this.add(item);
+				configureItemAndaddToList(item);
 			}
 		}
 	}	

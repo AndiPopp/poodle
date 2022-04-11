@@ -3,34 +3,51 @@ package de.andipopp.poodle.views.poll;
 import com.vaadin.flow.component.html.Image;
 
 import de.andipopp.poodle.data.entity.polls.Answer;
+import de.andipopp.poodle.data.entity.polls.AnswerType;
+import de.andipopp.poodle.util.InvalidException;
 
 public class AnswerListToggleButton extends Image{
 
 	private static final long serialVersionUID = 1L;
-
-	OptionListItem parent;
 	
+	/**
+	 * The answers whose value is to be changed
+	 */
 	Answer<?,?> answer;
 
-	public AnswerListToggleButton(OptionListItem parent, Answer<?, ?> answer) {
-		this.parent = parent;
+	/**
+	 * The value of this button
+	 */
+	AnswerType value;
+	
+	
+	public AnswerListToggleButton(Answer<?, ?> answer) {
 		this.answer = answer;
+		this.value = answer.getValue();
 		this.addClassName("toggle");
 		this.setMinHeight("3ex");
 		this.setMaxHeight("5ex");
-		this.addClickListener(e -> toggleAnswerValue());
+		this.addClickListener(e -> toggleValue());
 		loadImage();
 	}
 	
-	private void toggleAnswerValue() {
-		this.answer.setValue(answer.getValue().nextAnswer(
-				parent.getOption().getParent().isEnableAbstain(), 
-				parent.getOption().getParent().isEnableIfNeedBe()));
+	public void validateAnswer() throws InvalidException {
+		answer.validate(value);
+	}
+	
+	public void readValueToAnswer() {
+		answer.setValue(value);
+	}
+	
+	private void toggleValue() {
+		value = (value.nextAnswer(
+				answer.getOption().getParent().isEnableAbstain(), 
+				answer.getOption().getParent().isEnableIfNeedBe()));
 		loadImage();
 	}
 	
 	private void loadImage() {
-		switch (answer.getValue()) {
+		switch (value) {
 		case YES:
 			this.setSrc("images/VoteIcons-Yes.drawio.png");
 			this.setAlt("Yes");

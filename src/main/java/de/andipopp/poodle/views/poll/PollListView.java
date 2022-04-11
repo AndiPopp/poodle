@@ -53,6 +53,8 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 	private Select<Vote<P,O>> voteSelector;
 	
 	protected HorizontalLayout header;
+
+	protected List<OptionListItem> optionListItems = new LinkedList<>();
 	
 	Button saveButton = new Button("Save");
 	
@@ -218,12 +220,19 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 		//Validate inputs
 		displayNameInput.setValue(displayNameInput.getValue().strip());
 		try {
-			currentVote.validateAllAndSetDisplayName(displayNameInput.getValue());
+			//validate the input fields
+			currentVote.validateDisplayName(displayNameInput.getValue());
+			for(OptionListItem item : optionListItems) item.validateAnswerFromButton();
+			//read values into the object
+			currentVote.setDisplayName(displayNameInput.getValue());
+			for(OptionListItem item : optionListItems) item.readAnswerFromButton();
 		} catch (InvalidException e) {
 			Notification notification = Notification.show(e.getMessage(), 4000, Notification.Position.BOTTOM_CENTER);
 			notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
 			return;
 		}
+		
+		//TODO The rest down here needs to be cleaned up
 		
 //		Logger logger = LoggerFactory.getLogger(getClass());
     	
@@ -330,6 +339,7 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 	
 	protected void clearList() {
 		this.removeAll();
+		this.optionListItems.clear();
 	}
 	
 	protected void buildList() {
@@ -340,14 +350,18 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 		if (currentVote != null) {
 			for(AbstractOption<P,O> option : poll.getOptions()) {
 				OptionListItem item = option.toOptionsListItem(user);
-				item.setClosingMode(closingMode);
-				item.loadVote(currentVote);
-				item.build();
-				this.add(item);
+				configureItemAndaddToList(item);
 			}
 		}
 	}
-	
+
+	protected void configureItemAndaddToList(OptionListItem item) {
+		item.setClosingMode(closingMode);
+		item.loadVote(currentVote);
+		item.build();
+		optionListItems.add(item);
+		this.add(item);
+	}
 
 	/**
 	 * Builds the footer.

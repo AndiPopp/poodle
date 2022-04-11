@@ -11,6 +11,7 @@ import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.data.entity.polls.AbstractOption;
 import de.andipopp.poodle.data.entity.polls.Answer;
 import de.andipopp.poodle.data.entity.polls.Vote;
+import de.andipopp.poodle.util.InvalidException;
 
 public class OptionListItem extends HorizontalLayout {
 
@@ -106,7 +107,7 @@ public class OptionListItem extends HorizontalLayout {
 					(currentUser != null && currentUser.equals(option.getParent().getOwner())));
 			this.add(winnerToggleButton);
 		} else {
-			answerToggleButton = new AnswerListToggleButton(this, findAnswer());
+			answerToggleButton = new AnswerListToggleButton(findAnswer());
 			answerToggleButton.setEnabled(!option.getParent().isClosed() && vote.canEdit(currentUser));
 			this.add(answerToggleButton);
 		}
@@ -114,6 +115,14 @@ public class OptionListItem extends HorizontalLayout {
 	
 	public void loadVote(Vote<?,?> vote) {
 		this.vote = vote;
+	}
+	
+	public void validateAnswerFromButton() throws InvalidException {
+		answerToggleButton.validateAnswer();
+	}
+	
+	public void readAnswerFromButton() {
+		answerToggleButton.readValueToAnswer();
 	}
 	
 	protected Answer<?,?> findAnswer() {

@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
 import de.andipopp.poodle.data.entity.AbstractAutoIdEntity;
+import de.andipopp.poodle.util.InvalidException;
 
 /**
  * A reply to single poll option.
@@ -130,4 +131,25 @@ public class Answer<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> 
 		this.value = value;
 	}
 	
+	/* =================
+	 * = Other Methods =
+	 * ================= */
+	
+	/**
+	 * validate a value for this answer
+	 * @param value the value
+	 * @throws InvalidException if the value is invalid for this answer
+	 */
+	public void validate(AnswerType value) throws InvalidException {
+		if (value == AnswerType.IF_NEED_BE && !vote.getParent().isEnableIfNeedBe()) throw new InvalidException("Poll does not allow if-need-be answers.");
+		if (value == AnswerType.NONE && !vote.getParent().isEnableAbstain()) throw new InvalidException("Poll does not abstaining.");
+	}
+
+	/**
+	 * Validate {@link #value}
+	 * @throws InvalidException if {@link #value} is invalidate for this answer
+	 */
+	public void validate() throws InvalidException {
+		validate(this.value);
+	}
 }
