@@ -20,6 +20,8 @@ public class OptionListItem extends HorizontalLayout {
 	
 	private User currentUser;
 	
+	private boolean closingMode;
+	
 	/**
 	 * Getter for {@link #option}
 	 * @return the {@link #option}
@@ -36,14 +38,33 @@ public class OptionListItem extends HorizontalLayout {
 	/**
 	 * The toggle button to switch the answer
 	 */
-	AnswerListToggleButton toggleButton;
+	AnswerListToggleButton answerToggleButton;
 	
+	/**
+	 * The toggle button to select the winner
+	 */
+	OptionSelectToggleButton winnerToggleButton;
 
 	public OptionListItem(AbstractOption<?, ?> option, User currentUser) {
+		//set fields
 		this.currentUser = currentUser;
 		this.option = option;
+		
+		//format according to state
 		this.addClassName("optionListBox");
-		if (option.isPotentialWinnerByPositiveVotes()) this.addClassName("potentialWinner");
+		
+		this.removeClassNames("winningOption", "losingOption");
+		if (option.getParent().isClosed()) {
+			if (option.isWinner()) {
+				this.addClassName("winningOption");
+			} else {
+				this.addClassName("losingOption");
+			}
+		} else {
+			if (option.isPotentialWinnerByPositiveVotes()) this.addClassName("potentialWinner");
+		}
+		
+		//general format
 		this.setPadding(true);
 		this.setDefaultVerticalComponentAlignment(Alignment.CENTER);
 		this.setWidthFull();
@@ -55,15 +76,40 @@ public class OptionListItem extends HorizontalLayout {
 		loadVote(vote);
 	}
 	
+	/**
+	 * Getter for {@link #closingMode}
+	 * @return the {@link #closingMode}
+	 */
+	public boolean isClosingMode() {
+		return closingMode;
+	}
+
+
+	/**
+	 * Setter for {@link #closingMode}
+	 * @param closingMode the {@link #closingMode} to set
+	 */
+	public void setClosingMode(boolean closingMode) {
+		this.closingMode = closingMode;
+	}
+
 	public void build() {
 		this.removeAll();
 		Component left = left();
 		Component center = center();
 		if (left != null) this.add(left);
 		if (center != null) this.add(center);
-		toggleButton = new AnswerListToggleButton(this, findAnswer());
-		toggleButton.setEnabled(vote.canEdit(currentUser));
-		this.add(toggleButton);
+		
+		if (option.getParent().isClosed() || closingMode) {
+			winnerToggleButton = new OptionSelectToggleButton(this);
+			winnerToggleButton.setEnabled(!option.getParent().isClosed() &&
+					(currentUser != null && currentUser.equals(option.getParent().getOwner())));
+			this.add(winnerToggleButton);
+		} else {
+			answerToggleButton = new AnswerListToggleButton(this, findAnswer());
+			answerToggleButton.setEnabled(!option.getParent().isClosed() && vote.canEdit(currentUser));
+			this.add(answerToggleButton);
+		}
 	}
 	
 	public void loadVote(Vote<?,?> vote) {

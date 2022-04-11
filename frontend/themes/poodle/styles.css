@@ -10,8 +10,8 @@
 }
 
 .optionListBox {
-	border: 2px solid #1b2b41B0;
-	background:  rgba(25, 59, 103, 0.05);
+	border: 1px solid var(--lumo-contrast-70pct);
+	background: var(--lumo-contrast-5pct);
 }
 
 .optionListBox.potentialWinner {
@@ -19,6 +19,16 @@
 	background-repeat: no-repeat;
 	background-position: top right;
 	background-size: 5ex auto;
+}
+
+.optionListBox.losingOption {
+	color: var(--lumo-tertiary-text-color); 
+	border: 1px solid var(--lumo-contrast-50pct);
+}
+
+.optionListBox.winningOption {
+	border: 3px solid var(--lumo-contrast-80pct);
+	background: var(--lumo-contrast-10pct);
 }
 
 .toggle {

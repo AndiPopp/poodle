@@ -326,6 +326,11 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 	 */
 	private MenuItem switchToListView;
 	
+	/**
+	 * Remember the closing item to switch labels
+	 */
+	private MenuItem close;
+	
 	private void configureTopRightContextMenu() {
 		if (topRightContextMenu != null) topRightContextMenu.setTarget(null);
 		topRightContextMenu = new ContextMenu();
@@ -337,7 +342,14 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 			MenuItem edit = topRightContextMenu.addItem(" Edit", e->{});
 			edit.addComponentAsFirst(new LineAwesomeMenuIcon("la-edit"));
 			
-			MenuItem close = topRightContextMenu.addItem(" Select Winners", e->{});
+			String closeLabelOpen = " Select Winners";
+			String closeLabelClosing = " Exit Winner Select";
+			close = topRightContextMenu.addItem(closeLabelOpen, e->{
+				listView.toggleClosingMode();
+				if (listView.isClosingMode()) close.setText(closeLabelClosing);
+				else close.setText(closeLabelOpen);
+				close.addComponentAsFirst(new LineAwesomeMenuIcon("la-award"));
+			});
 			close.addComponentAsFirst(new LineAwesomeMenuIcon("la-award"));
 		}
 			

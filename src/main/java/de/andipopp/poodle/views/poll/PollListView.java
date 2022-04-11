@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -41,6 +43,8 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 	 */
 	private User user;
 	
+	private boolean closingMode = false;
+	
 	/**
 	 * A new vote to store
 	 */
@@ -56,6 +60,7 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 	
 	TextField displayNameInput = new TextField();
 	
+	Button closeButton = new Button("Save and Close Poll");
 
 	public PollListView(P poll, User user, VoteService voteService, PollService pollService) {
 		//Set fields
@@ -66,17 +71,14 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 		//configure layout
 		this.setPadding(false);
 		this.setSpacing(false);
+		this.header = new HorizontalLayout();
+		this.header.setWidthFull();
+		this.header.getStyle().set("margin-bottom", "1ex");
+//		this.header.getStyle().set("border", "2px dotted AntiqueWhite"); //for debug purposes
+		this.add(header); 
 		
 		//build vote selector
 		voteSelector = new Select<>();
-		this.header = new HorizontalLayout();
-//		this.header.getStyle().set("border", "2px dotted AntiqueWhite"); //for debug purposes
-		this.header.setWidthFull();
-		this.header.getStyle().set("margin-bottom", "1ex");
-		header.add(voteSelector);
-		this.add(header); 
-	
-		//configure
 		Vote<P,O> usersVote = configureVoteSelector();
 		guessVote(usersVote);
 		
@@ -86,7 +88,12 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 		
 		deleteButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
 		deleteButton.addClickListener(e -> confirmDeleteVote());
+		
+		closeButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+		closeButton.addClickListener(e -> saveAndClosePoll());
 	}
+
+
 
 	/**
 	 * Getter for {@link #poll}
@@ -120,6 +127,27 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 		this.user = user;
 	}
 
+	/**
+	 * Getter for {@link #closingMode}
+	 * @return the {@link #closingMode}
+	 */
+	public boolean isClosingMode() {
+		return closingMode;
+	}
+
+	/**
+	 * Setter for {@link #closingMode}
+	 * @param closingMode the {@link #closingMode} to set
+	 */
+	public void setClosingMode(boolean closingMode) {
+		this.closingMode = closingMode;
+		buildAll();
+	}
+
+	public void toggleClosingMode() {
+		setClosingMode(!closingMode);
+	}
+	
 	/**
 	 * Getter for {@link #voteSelector}
 	 * @return the {@link #voteSelector}
@@ -269,14 +297,35 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 		guessVote(configureVoteSelector());
 	}
 	
+	private void saveAndClosePoll() {
+		destroyNewVote();
+		poll.setClosed(true);
+		pollService.update(poll);
+		UI.getCurrent().getPage().reload();
+	}
+	
+	
+	private void destroyNewVote() {
+		for(AbstractOption<P, O> option : poll.getOptions()) {
+			option.removeAnswer(newVote);
+		}
+		newVote = null;
+	}
+	
 	public void loadVote(Vote<P,O> vote) {
 		this.currentVote = vote;
 		buildAll();
 	}
 	
 	protected void buildAll() {
+		buildHeader();
 		buildList();
 		buildFooter();
+	}
+	
+	protected void buildHeader() {
+		header.removeAll();
+		if (!poll.isClosed() && !closingMode) header.add(voteSelector);
 	}
 	
 	protected void clearList() {
@@ -287,11 +336,11 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 		//start clean with only header
 		this.clearList();
 		this.add(header);
-		
 		//if we have a currrent vote, build the list
 		if (currentVote != null) {
 			for(AbstractOption<P,O> option : poll.getOptions()) {
 				OptionListItem item = option.toOptionsListItem(user);
+				item.setClosingMode(closingMode);
 				item.loadVote(currentVote);
 				item.build();
 				this.add(item);
@@ -299,12 +348,20 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 		}
 	}
 	
+
 	/**
 	 * Builds the footer.
 	 * Assumes a vote has been selected!
 	 */
 	protected void buildFooter() {
-		if (!poll.isClosed()) buildSaveBar();
+		if (!poll.isClosed() && !closingMode) buildSaveBar();
+		else if(!poll.isClosed() && closingMode) buildCloseBar();
+	}
+	
+	protected void buildCloseBar() {
+		closeButton.setEnabled(user != null && user.equals(poll.getOwner()));
+		HorizontalLayout closeBar = buildFooterBar(closeButton);
+		this.add(closeBar);
 	}
 	
 	protected void buildSaveBar() {
@@ -321,13 +378,8 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 		if (currentVote.equals(newVote)) deleteButton.setEnabled(false);
 		
 		configureDisplayNameInput();
-//		saveButton.setMinWidth("5em");
-		HorizontalLayout saveBar = new HorizontalLayout(deleteButton, displayNameInput, saveButton);
-		saveBar.setWidthFull();
+		HorizontalLayout saveBar = buildFooterBar(deleteButton, displayNameInput, saveButton);
 //		saveBar.getStyle().set("border", "2px dotted FireBrick"); //for debug purposes
-		saveBar.getStyle().set("margin-top", "1ex"); 
-		saveBar.setDefaultVerticalComponentAlignment(Alignment.CENTER);
-		saveBar.setJustifyContentMode(JustifyContentMode.END);
 		this.add(saveBar);
 	}
 
@@ -353,8 +405,15 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 		} catch (InvalidException e) {
 			displayNameInput.setValue(displayNameInput.getValue()+" "+NameGenerator.randomNumberLabel(3));
 		}
-		
+	}
 	
+	private HorizontalLayout buildFooterBar(Component ... comps) {
+		HorizontalLayout footerBar = new HorizontalLayout(comps);
+		footerBar.setWidthFull();
+		footerBar.getStyle().set("margin-top", "1ex"); 
+		footerBar.setDefaultVerticalComponentAlignment(Alignment.CENTER);
+		footerBar.setJustifyContentMode(JustifyContentMode.END);
+		return footerBar;
 	}
 	
 }

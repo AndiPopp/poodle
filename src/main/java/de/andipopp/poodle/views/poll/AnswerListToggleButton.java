@@ -37,15 +37,15 @@ public class AnswerListToggleButton extends Image{
 			break;
 		case IF_NEED_BE:
 			this.setSrc("images/VoteIcons-IfNeedBe.drawio.png");
-			this.setAlt("Yes");
+			this.setAlt("If Need Be");
 			break;
 		case NO:
 			this.setSrc("images/VoteIcons-No.drawio.png");
-			this.setAlt("Yes");
+			this.setAlt("No");
 			break;
 		default:
 			this.setSrc("images/VoteIcons-None.drawio.png");
-			this.setAlt("Yes");
+			this.setAlt("Abstain");
 			break;
 		}
 	}

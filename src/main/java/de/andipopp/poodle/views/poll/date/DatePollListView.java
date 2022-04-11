@@ -52,6 +52,16 @@ public class DatePollListView extends PollListView<DatePoll, DateOption> {
 
 	private final static DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMM Y");
 	
+	
+	
+	@Override
+	protected void buildHeader() {
+		super.buildHeader();
+		if (zoneIdSelector != null) header.add(zoneIdSelector);
+	}
+
+
+
 	@Override
 	protected void buildList() {
 		getPoll().sortOptions();
@@ -81,7 +91,7 @@ public class DatePollListView extends PollListView<DatePoll, DateOption> {
 				//Construct the list item
 				DateOptionListItem item = option.toOptionsListItem(getUser());
 				item.setZoneId(zoneId);
-				
+				item.setClosingMode(isClosingMode()); //TODO a little bit of code redundancy here, should be removed
 				item.loadVote(currentVote);
 				item.build();
 				this.add(item);
