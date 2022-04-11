@@ -239,7 +239,7 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 	public String getDisplayName() {
 		return displayName;
 	}
-
+	
 	/**
 	 * Setter for {@link #displayName}
 	 * @param displayName the {@link #displayName} to set
@@ -300,7 +300,7 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 	}
 	
 	public Avatar getAvatar() {
-		if (owner != null) return owner.getAvatar();
+		if (owner != null) return owner.getAvatarCopy();
 		Avatar avatar = new Avatar();
 		avatar.setColorIndex(rng.nextInt(6));
 		if (displayName != null & !displayName.isEmpty()) avatar.setName(displayName);

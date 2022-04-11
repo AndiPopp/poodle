@@ -125,6 +125,15 @@ public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends Abst
 	}
 
 	/**
+	 * Sort {@link #answers} by their votes' display names
+	 * @return the sorted {@link #answers}
+	 */
+	public List<Answer<P,O>> sortAnswersByDisplayName(){
+		answers.sort((a1, a2) -> a1.getVote().getDisplayName().compareTo(a2.getVote().getDisplayName()));
+		return answers;
+	}
+	
+	/**
 	 * Setter for {@link #answers}
 	 * @param answers the {@link #answers} to set
 	 */

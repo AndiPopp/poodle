@@ -1,0 +1,68 @@
+/* Variables */
+
+:root {
+  --vote-color-yes: #537341;
+  --vote-color-no: #733432;
+  --vote-color-if-need-be: #D6B656;
+  --vote-color-node: #666666;
+}
+
+
+/* Classes */
+
+.vote-count-inline{
+	font-weight: bold;
+	-webkit-text-stroke: .5px black;
+}
+
+.vote-count-inline-vote-image {
+	width: 1em;
+	height: 1em;
+	vertical-align: text-bottom;
+}
+
+.vote-yes{
+	color: var(--vote-color-yes);
+}
+
+.vote-no{
+	color: var(--vote-color-no);
+}
+
+.vote-if-need-be{
+	color: var(--vote-color-if-need-be);
+}
+
+.optionListBox {
+	border: 1px solid var(--lumo-contrast-70pct);
+	background: var(--lumo-contrast-5pct);
+}
+
+.optionListBox.potentialWinner {
+	background-image: url('images/VoteIcons-CornerMarker.drawio.png');
+	background-repeat: no-repeat;
+	background-position: top right;
+	background-size: 5ex auto;
+}
+
+.optionListBox.losingOption {
+	color: var(--lumo-tertiary-text-color); 
+	border: 1px solid var(--lumo-contrast-50pct);
+}
+
+.optionListBox.winningOption {
+	border: 3px solid var(--lumo-contrast-80pct);
+	background: var(--lumo-contrast-10pct);
+}
+
+.toggle {
+	cursor: pointer;
+}
+
+.primary-text {
+	color: var(--lumo-primary-text-color);
+}
+
+.menu-pretext-icon {
+	font-size: x-large;
+}

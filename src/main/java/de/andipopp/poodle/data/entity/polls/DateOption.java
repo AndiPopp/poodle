@@ -191,6 +191,10 @@ public class DateOption extends AbstractOption<DatePoll, DateOption> {
 
 	}
 	
+	/* ========================
+	 * = Other methods =
+	 * ======================== */
+	
 	/**
 	 * Construct a VEvent from this date option
 	 * @return a VEvent constructed from this date option
@@ -225,6 +229,6 @@ public class DateOption extends AbstractOption<DatePoll, DateOption> {
 		return result + "\r\n" + "EndOfDateOption";
 	}
 
-
+	
 	
 }

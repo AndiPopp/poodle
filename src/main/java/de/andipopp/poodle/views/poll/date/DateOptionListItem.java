@@ -1,6 +1,8 @@
 package de.andipopp.poodle.views.poll.date;
 
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Span;
@@ -12,6 +14,7 @@ import de.andipopp.poodle.data.entity.polls.AbstractOption;
 import de.andipopp.poodle.data.entity.polls.DateOption;
 import de.andipopp.poodle.data.entity.polls.Vote;
 import de.andipopp.poodle.util.JSoupUtils;
+import de.andipopp.poodle.util.VaadinUtils;
 import de.andipopp.poodle.views.poll.OptionListItem;
 
 /**
@@ -116,5 +119,36 @@ public class DateOptionListItem extends OptionListItem {
 		leftWrapper.setPadding(false);
 		return leftWrapper;
 	}
+
+	private static DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).withLocale(VaadinUtils.getLocaleFromVaadinRequest());
+	private static DateTimeFormatter weekDayFormatter = DateTimeFormatter.ofPattern("E", VaadinUtils.getLocaleFromVaadinRequest());
+	private static DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm", VaadinUtils.getLocaleFromVaadinRequest());
+	
+	@Override
+	protected String optionSummary() {
+		String result = "";
+		String connector = ", ";
+		String currentConnector = "";
+		if (getOption().getTitle() != null) {
+			result += currentConnector + JSoupUtils.cleanNone(getOption().getTitle());
+			currentConnector = connector;
+		}
+		
+		result += currentConnector + weekDayFormatter.format(getOption().getZonedStart(zoneId));
+		result += " " + formatter.format(getOption().getZonedStart(zoneId));
+		long dayJumps = getOption().getZonedDayJumps(zoneId);
+		if (dayJumps > 0) result += " (+" + dayJumps +")";
+		result += " " + timeFormatter.format(getOption().getZonedStart(zoneId));
+		currentConnector = connector;
+				
+		if (getOption().getLocation() != null) {
+			result += currentConnector + getOption().getLocation();
+			currentConnector = connector;
+		}
+				
+		return result;
+	}
+	
+	
 	
 }

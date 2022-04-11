@@ -83,23 +83,34 @@ public class User extends AbstractAutoIdEntity {
     public void setProfilePictureUrl(String profilePictureUrl) {
         this.profilePictureUrl = profilePictureUrl;
     }
-	/**
-	 * Getter for {@link #avatar}
-	 * @return the {@link #avatar}
+	
+    /**
+	 * Getter for a copy of {@link #avatar}
+	 * @return a copy of {@link #avatar}
 	 */
-	public Avatar getAvatar() {
-		if (avatar == null) {
-			avatar = new Avatar(name);
-			if (profilePictureUrl != null && !profilePictureUrl.isEmpty()) avatar.setImage(profilePictureUrl);
-		}
+	public Avatar getAvatarCopy() {
+		Avatar avatar = new Avatar(name);
+		if (this.avatar != null && this.avatar.getImage() != null) avatar.setImage(this.avatar.getImage());
+		else if (this.avatar != null && this.avatar.getImageResource() != null) avatar.setImageResource(this.avatar.getImageResource());
+		else if (profilePictureUrl != null && !profilePictureUrl.isEmpty()) avatar.setImage(profilePictureUrl);
 		return avatar;
 	}
+	
+	
 	/**
 	 * Setter for {@link #avatar}
 	 * @param avatar the {@link #avatar} to set
 	 */
 	public void setAvatar(Avatar avatar) {
 		this.avatar = avatar;
+	}
+	
+	/**
+	 * Getter for {@link #avatar}
+	 * @return the {@link #avatar}
+	 */
+	public Avatar getAvatar() {
+		return avatar;
 	}
 	/**
 	 * Getter for {@link #polls}

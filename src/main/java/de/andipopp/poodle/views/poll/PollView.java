@@ -225,7 +225,7 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 		header.removeAll();
 		header.setWidthFull();
 		header.setDefaultVerticalComponentAlignment(Alignment.START);
-		Avatar ownerAvatar = poll.getOwner().getAvatar();
+		Avatar ownerAvatar = poll.getOwner().getAvatarCopy();
 		ownerAvatar.addThemeVariants(AvatarVariant.LUMO_XLARGE);
 		ownerAvatar.getStyle().set("border", "3px solid black") ;
 		this.content.add(ownerAvatar);

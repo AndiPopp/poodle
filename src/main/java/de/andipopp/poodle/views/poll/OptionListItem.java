@@ -2,7 +2,14 @@ package de.andipopp.poodle.views.poll;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Html;
+import com.vaadin.flow.component.avatar.Avatar;
+import com.vaadin.flow.component.avatar.AvatarVariant;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.Hr;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -10,6 +17,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.data.entity.polls.AbstractOption;
 import de.andipopp.poodle.data.entity.polls.Answer;
+import de.andipopp.poodle.data.entity.polls.AnswerType;
 import de.andipopp.poodle.data.entity.polls.Vote;
 import de.andipopp.poodle.util.InvalidException;
 
@@ -159,6 +167,7 @@ public class OptionListItem extends HorizontalLayout {
 	}
 	
 	protected Component voteSummary() {
+		//count answers
 		int countYes = 0, countNeedBe = 0, countNo = 0;
 		for(Answer<?, ?> answer : option.getAnswers()) {
 			switch (answer.getValue()){
@@ -176,32 +185,97 @@ public class OptionListItem extends HorizontalLayout {
 			}
 		}
 
+		
+		//build component
 		Span result = new Span();
-		result.getStyle().set("font-weight", "weight:bold");
-		result.getStyle().set("-webkit-text-stroke", ".5px black");
+		result.addClassName("vote-count-inline");
 		Span yes = new Span(""+countYes+" ");
-		yes.getStyle().set("color", Answer.YES_COLOR);
-		Image imgYes = new Image("images/VoteIcons-YesSquare.drawio.png", "in favor");
-		imgYes.getStyle().set("width", "1em");
-		imgYes.getStyle().set("height", "1em");
-		imgYes.getStyle().set("vertical-align", "text-bottom");
+		yes.addClassName("vote-yes");
+		Image imgYes = new Image("images/VoteIcons-Yes.drawio.png", "in favor");
+		imgYes.addClassName("vote-count-inline-vote-image");
 		result.add(yes, imgYes);
+		
 		if (countNeedBe > 0) {
 			Span ifNeedBe = new Span(" / "+countNeedBe+" ");
-			ifNeedBe.getStyle().set("color", Answer.IF_NEED_BE_COLOR);
-			Image imgNeedBe = new Image("images/VoteIcons-IfNeedBeSquare.drawio.png", "in favor if need be");
-			imgNeedBe.getStyle().set("width", "1em");
-			imgNeedBe.getStyle().set("height", "1em");
-			imgNeedBe.getStyle().set("vertical-align", "text-bottom");
+			ifNeedBe.addClassName("vote-if-need-be");
+			Image imgNeedBe = new Image("images/VoteIcons-IfNeedBe.drawio.png", "in favor if need be");
+			imgNeedBe.addClassName("vote-count-inline-vote-image");
 			result.add(ifNeedBe, imgNeedBe);
 		}
 		Span no = new Span(" / "+countNo+" ");
-		no.getStyle().set("color", Answer.NO_COLOR);
-		Image imgNo = new Image("images/VoteIcons-NoSquare.drawio.png", "opposed");
-		imgNo.getStyle().set("width", "1em");
-		imgNo.getStyle().set("height", "1em");
-		imgNo.getStyle().set("vertical-align", "text-bottom");
+		no.addClassName("vote-no");
+		Image imgNo = new Image("images/VoteIcons-No.drawio.png", "opposed");
+		imgNo.addClassName("vote-count-inline-vote-image");
 		result.add(no, imgNo);
+		
+		//add click listener
+		result.addClickListener(e -> optionVoteList().open());
+		result.getStyle().set("cursor", "pointer");
+		
+		//return result
 		return result;
 	}
+	
+	protected String optionSummary() {
+		return option.getTitle();
+	}
+	
+	private Dialog optionVoteList() {
+		//build the title
+		Label title = new Label(optionSummary());
+		title.getStyle().set("font-weight", "bold");
+		
+		//build the yes vote list
+		AnswerBlock yesVoteBlock = new AnswerBlock(AnswerType.YES, "/images/VoteIcons-Yes.drawio.png", "Yes");
+		AnswerBlock ifNeedBeVoteBlock = new AnswerBlock(AnswerType.IF_NEED_BE, "/images/VoteIcons-IfNeedBe.drawio.png", "If need be");
+		AnswerBlock noVoteBlock = new AnswerBlock(AnswerType.NO, "/images/VoteIcons-No.drawio.png", "No");
+		
+		VerticalLayout dialogLayout = new VerticalLayout(title);
+		if (yesVoteBlock.count > 0) dialogLayout.add(yesVoteBlock);
+		if (ifNeedBeVoteBlock.count > 0) dialogLayout.add(ifNeedBeVoteBlock);
+		if (noVoteBlock.count > 0) dialogLayout.add(noVoteBlock);
+		
+		dialogLayout.setDefaultHorizontalComponentAlignment(Alignment.START);
+		dialogLayout.setPadding(false);
+		Dialog dialog = new Dialog(dialogLayout);
+		
+		Button closeButton = new Button("Close");
+		closeButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+		closeButton.addClickListener(e -> dialog.close());
+		HorizontalLayout buttonLayout = new HorizontalLayout(closeButton);
+		buttonLayout.setWidthFull();
+		buttonLayout.setJustifyContentMode(JustifyContentMode.END);
+		dialogLayout.add(buttonLayout);
+		dialog.setModal(true);
+		
+		return dialog;
+	}
+	
+	private class AnswerBlock extends HorizontalLayout{
+		private static final long serialVersionUID = 1L;
+		
+		int count;
+		
+		AnswerBlock(AnswerType answerType, String imageSrc, String imageAlt) {
+			Image imgVote = new Image(imageSrc, imageAlt);
+			imgVote.setHeight("3ex");
+			this.add(imgVote);
+			this.setDefaultVerticalComponentAlignment(Alignment.START);
+			VerticalLayout voteList = new VerticalLayout();
+			voteList.setPadding(false);
+			count = 0;
+			for(Answer<?,?> answer : getOption().getAnswers()) { //TODO use the sorted version once we properly detach the new vote
+				if(answer.getValue() == answerType) {
+					count++;
+					Avatar avatar = answer.getVote().getAvatar();
+					avatar.addThemeVariants(AvatarVariant.LUMO_XSMALL);
+					HorizontalLayout entry = new HorizontalLayout(avatar, new Label(answer.getVote().getDisplayName()));
+					voteList.add(entry);
+				}
+			}
+			this.add(voteList);
+		}
+	}
+	
+	
 }
