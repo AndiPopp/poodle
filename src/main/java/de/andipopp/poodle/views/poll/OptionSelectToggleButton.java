@@ -8,8 +8,11 @@ public class OptionSelectToggleButton extends Image {
 
 	OptionListItem parent;
 	
+	boolean winner;
+	
 	public OptionSelectToggleButton(OptionListItem parent) {
 		this.parent = parent;
+		winner = parent.getOption().isWinner();
 		setCursor();
 		this.setMinHeight("3ex");
 		this.setMaxHeight("5ex");
@@ -18,7 +21,7 @@ public class OptionSelectToggleButton extends Image {
 	}
 
 	private void loadImage() {
-		if (parent.getOption().isWinner()) {
+		if (winner) {
 			this.setSrc("images/VoteIcons-Winner.drawio.png");
 			this.setAlt("selected");
 		} else if (isEnabled()) {
@@ -32,10 +35,14 @@ public class OptionSelectToggleButton extends Image {
 	}
 
 	private void toggleSelected() {
-		parent.getOption().setWinner(!parent.getOption().isWinner());
+		winner = !winner;
 		loadImage();
 	}
 
+	public void readToOption() {
+		parent.getOption().setWinner(winner);
+	}
+	
 	@Override
 	public void setEnabled(boolean enabled) {
 		super.setEnabled(enabled);

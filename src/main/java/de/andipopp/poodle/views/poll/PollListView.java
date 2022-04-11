@@ -308,6 +308,7 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 	
 	private void saveAndClosePoll() {
 		destroyNewVote();
+		for(OptionListItem item : optionListItems) item.readWinnerFromButton();
 		poll.setClosed(true);
 		pollService.update(poll);
 		UI.getCurrent().getPage().reload();

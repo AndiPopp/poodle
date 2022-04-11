@@ -125,6 +125,10 @@ public class OptionListItem extends HorizontalLayout {
 		answerToggleButton.readValueToAnswer();
 	}
 	
+	public void readWinnerFromButton() {
+		winnerToggleButton.readToOption();
+	}
+	
 	protected Answer<?,?> findAnswer() {
 		vote.fillInMissingAnswers();
 		for(Answer<?,?> answer : vote.getAnswers()) {
