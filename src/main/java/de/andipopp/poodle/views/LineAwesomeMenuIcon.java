@@ -8,6 +8,6 @@ public class LineAwesomeMenuIcon extends Span{
 	private static final long serialVersionUID = 1L;
 
 	public LineAwesomeMenuIcon(String laName) {
-		this.addClassNames("las", laName, "menu-pretext-icon ");
+		this.addClassNames("las", laName, "menu-pretext-icon");
 	}
 }

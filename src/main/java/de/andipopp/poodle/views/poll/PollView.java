@@ -40,6 +40,7 @@ import de.andipopp.poodle.data.entity.polls.DatePoll;
 import de.andipopp.poodle.data.service.PollService;
 import de.andipopp.poodle.data.service.UserService;
 import de.andipopp.poodle.data.service.VoteService;
+import de.andipopp.poodle.util.HtmlUtils;
 import de.andipopp.poodle.util.JSoupUtils;
 import de.andipopp.poodle.util.NotAUuidException;
 import de.andipopp.poodle.util.UUIDUtils;
@@ -217,6 +218,7 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 		metaInfBlock.add(configureHeader());
 		metaInfBlock.add(configureSubtitle());
 		metaInfBlock.add(configureInfo());
+		metaInfBlock.add(HtmlUtils.pollShareScript(poll));
 //		metaInfBlock.getStyle().set("border", "2px dotted Red"); //for debug purposes
 		return metaInfBlock; //new HorizontalLayout(metaInfBlock);
 	}
@@ -335,8 +337,13 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 		if (topRightContextMenu != null) topRightContextMenu.setTarget(null);
 		topRightContextMenu = new ContextMenu();
 		
-		MenuItem share = topRightContextMenu.addItem(" Share", e -> {});
-		share.addComponentAsFirst(new LineAwesomeMenuIcon("la-share"));
+//		MenuItem share = topRightContextMenu.addItem(" Share", e -> {});
+//		share.addComponentAsFirst(new LineAwesomeMenuIcon("la-share"));
+		
+		topRightContextMenu.addItem(new Html("<span onclick=\""
+				+ "share_" + UUIDUtils.uuidToBase64url(poll.getId()) +  "()" 
+				+ "\"><span class=\"las la-share menu-pretext-icon\"></span> Share"
+				+ "</span>"));
 		
 		if (currentUser != null && currentUser.equals(poll.getOwner())) {
 			MenuItem edit = topRightContextMenu.addItem(" Edit", e->{});
