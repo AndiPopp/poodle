@@ -76,6 +76,7 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 		this.header = new HorizontalLayout();
 		this.header.setWidthFull();
 		this.header.getStyle().set("margin-bottom", "1ex");
+		this.header.setDefaultVerticalComponentAlignment(Alignment.END);
 //		this.header.getStyle().set("border", "2px dotted AntiqueWhite"); //for debug purposes
 		this.add(header); 
 		

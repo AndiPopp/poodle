@@ -165,7 +165,7 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 		
 		if (poll instanceof DatePoll) {
 			listView = new DatePollListView((DatePoll) poll, currentUser, voteService, pollService); 
-			//TODO also build table vie
+			//TODO also build table view
 			if (state == ViewToggleState.LIST) this.pollContent.add(listView);
 		}
 		

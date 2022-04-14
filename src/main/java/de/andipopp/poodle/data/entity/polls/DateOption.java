@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
 
 import biweekly.component.VEvent;
 import de.andipopp.poodle.data.entity.User;
+import de.andipopp.poodle.util.JSoupUtils;
 import de.andipopp.poodle.views.poll.date.DateOptionListItem;
 
 /**
@@ -204,12 +205,37 @@ public class DateOption extends AbstractOption<DatePoll, DateOption> {
 		VEvent event = new VEvent();
 		event.setCreated(new Date());
 		//set start and end date
-		if (getStart() != null) event.setDateStart(getStart());
-		if (getEnd() != null) event.setDateEnd(getEnd());
-		//set name of option as summary if given, else name of poll
-		event.setSummary(getTitle());
+		if (getStart() != null) event.setDateStart(getStart()); //should always be != null
+		if (getEnd() != null) event.setDateEnd(getEnd()); //should always be != null
+		//set the UUID
+		event.setUid(getId() + "@poodle");
+		//set poll title as summary 
+		if (getParent().getTitle() != null) event.setSummary(getParent().getTitle()); //should always be != null
+		//build description from poll description, option title and answers
+		event.setDescription(buildIcalDescription());
+		
 		//return VEvent
 		return event;
+	}
+	
+	private String buildIcalDescription() {
+		String desc = "";
+		if (getParent().getDescription() != null && !getParent().getDescription().isBlank()) {
+			desc += JSoupUtils.cleanNone(getParent().getDescription()) + "\n\n";
+		}
+		if (this.getTitle() != null && !this.getTitle().isBlank()) {
+			desc += JSoupUtils.cleanNone(getTitle())  + "\n\n";
+		}
+		
+		sortAnswersByDisplayName();
+		String listByType = listDisplayNamesByAnswer(AnswerType.YES, "* ");
+		if (listByType != null && !listByType.isBlank()) desc += "Available:\n" +listByType;
+		listByType = listDisplayNamesByAnswer(AnswerType.IF_NEED_BE, "* ");
+		if (listByType != null && !listByType.isBlank()) desc += "Available if need be:\n" +listByType;
+		listByType = listDisplayNamesByAnswer(AnswerType.NO, "* ");
+		if (listByType != null && !listByType.isBlank()) desc += "Not available:\n" +listByType;
+		
+		return desc;
 	}
 	
 	@Override

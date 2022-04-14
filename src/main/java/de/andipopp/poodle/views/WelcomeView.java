@@ -1,10 +1,15 @@
 package de.andipopp.poodle.views;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.Locale;
 
+import org.apache.commons.io.IOUtils;
+
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
@@ -12,6 +17,8 @@ import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.InputStreamFactory;
+import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.server.WrappedSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
@@ -41,11 +48,39 @@ public class WelcomeView extends VerticalLayout {
         WrappedSession session = VaadinRequest.getCurrent().getWrappedSession();
         add(new Paragraph(session.getId()));
         
+        StreamResource res = new StreamResource("Test.ics", () -> testIcsAsInputStream());
+        res.setContentType("text/calendar");
+        
+        Anchor anchor = new Anchor(res, "Click me to download");
+        add(anchor);
+       
+        
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         getStyle().set("text-align", "center");
     }
+	
+	
+	private InputStream testIcsAsInputStream() {
+		try {
+			return IOUtils.toInputStream(testIcs, "UTF-8");
+		} catch (IOException e) {
+			return null;
+		}
+	}
+	
+	private String testIcs = "BEGIN:VCALENDAR\n"
+			+ "VERSION:2.0\n"
+			+ "PRODID:-//ABC Corporation//NONSGML My Product//EN\n"
+			+ "BEGIN:VEVENT\n"
+			+ "SUMMARY:Lunchtime meeting\n"
+			+ "UID:ff808181-1fd7389e-011f-d7389ef9-00000003\n"
+			+ "DTSTART;TZID=America/New_York:20160420T120000\n"
+			+ "DURATION:PT1H\n"
+			+ "LOCATION:Mo's bar - back room\n"
+			+ "END:VEVENT\n"
+			+ "END:VCALENDAR";
 	
 //	private Component listHttpHeaders() {
 //		VerticalLayout result = new VerticalLayout();

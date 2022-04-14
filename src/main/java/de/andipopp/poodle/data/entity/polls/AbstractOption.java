@@ -179,6 +179,19 @@ public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends Abst
 		return count;
 	}
 	
+	/**
+	 * Get a list of answers with a specific value
+	 * @param type the answer type, if null all answers match
+	 * @return the subset of answers of this given type
+	 */
+	public List<Answer<P, O>> getAnswersByType(AnswerType type) {
+		List<Answer<P,O>> matchedAnswers = new ArrayList<>();
+		for(Answer<P,O> answer : this.answers) {
+			if (type == null || answer.getValue() == type) matchedAnswers.add(answer);
+		}
+		return matchedAnswers;
+	}
+	
 	/* ========================
 	 * = UI auxiliary methods =
 	 * ======================== */
@@ -196,6 +209,16 @@ public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends Abst
 		if (aux == null) return false; //TODO Maybe an exception?
 		O best = aux.get(0);
 		return OptionComparatorByPositiveVotes.GET.compare(this, best) <= 0;
+	}
+	
+	public String listDisplayNamesByAnswer(AnswerType type, String listPrefix) {
+		String list = "";
+		List<Answer<P,O>> answers = getAnswersByType(type);
+		if (answers == null) return "";
+		for (Answer<P,O> answer : answers) {
+			list += listPrefix + answer.getVote().getDisplayName() +"\r\n"; 
+		}
+		return list;
 	}
 	
 }

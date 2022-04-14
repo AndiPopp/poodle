@@ -10,6 +10,7 @@ import java.util.Locale;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.H4;
+import com.vaadin.flow.server.StreamResourceRegistry;
 
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.data.entity.polls.DateOption;
@@ -48,6 +49,7 @@ public class DatePollListView extends PollListView<DatePoll, DateOption> {
 		zoneIdSelector.setItemLabelGenerator(z -> z.getDisplayName(TextStyle.NARROW, Locale.US) + " " + z.getRules().getOffset(Instant.now()));
 		
 		header.add(zoneIdSelector);
+		if (getPoll().isClosed()) header.add(getPoll().winnerIcalAnchor());
 	}
 
 	private final static DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMM Y");
@@ -57,7 +59,10 @@ public class DatePollListView extends PollListView<DatePoll, DateOption> {
 	@Override
 	protected void buildHeader() {
 		super.buildHeader();
-		if (zoneIdSelector != null) header.add(zoneIdSelector);
+		if (zoneIdSelector != null) {
+			header.add(zoneIdSelector);
+			if (getPoll().isClosed()) header.add(getPoll().winnerIcalAnchor());
+		}
 	}
 
 

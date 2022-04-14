@@ -8,8 +8,16 @@ import javax.validation.constraints.NotNull;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.flow.server.StreamResource;
+
+import biweekly.Biweekly;
+import biweekly.ICalendar;
 import de.andipopp.poodle.PoodleApplication;
 import de.andipopp.poodle.data.entity.User;
+import de.andipopp.poodle.util.UUIDUtils;
 
 @Entity
 public class DatePoll extends AbstractPoll<DatePoll, DateOption> {
@@ -104,6 +112,18 @@ public class DatePoll extends AbstractPoll<DatePoll, DateOption> {
 	 * = UI auxiliary methods =
 	 * ======================== */
 	
+	public Component winnerIcalAnchor() {  
+		
+		StreamResource res = new StreamResource(UUIDUtils.uuidToBase64url(getId())+".ics", (stream, session) -> {
+			Biweekly.write(winnserToIcal()).go(stream);
+			stream.close();
+		});
+		
+        Anchor anchor = new Anchor(res, "Results as iCalendar");
+        anchor.add(new Button("Results as iCalendar"));
+        return anchor;
+	}
+	
 	/* =================
 	 * = Other methods =
 	 * ================= */
@@ -111,5 +131,16 @@ public class DatePoll extends AbstractPoll<DatePoll, DateOption> {
 	public void sortOptions() {
 		getOptions().sort(new DateOptionComparator());
 	}
+	
+	public ICalendar winnserToIcal() {
+		ICalendar calendar = new ICalendar();
+		calendar.setProductId(iCalProductID());
+		for (DateOption option : getOptions()) {
+			if (option.isWinner()) calendar.addComponent(option.toVEvent());
+		}
+		return calendar;
+	}
+	
+	
 	
 }
