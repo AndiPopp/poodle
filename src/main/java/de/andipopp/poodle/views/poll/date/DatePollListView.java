@@ -10,7 +10,6 @@ import java.util.Locale;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.H4;
-import com.vaadin.flow.server.StreamResourceRegistry;
 
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.data.entity.polls.DateOption;
@@ -64,8 +63,6 @@ public class DatePollListView extends PollListView<DatePoll, DateOption> {
 			if (getPoll().isClosed()) header.add(getPoll().winnerIcalAnchor());
 		}
 	}
-
-
 
 	@Override
 	protected void buildList() {
