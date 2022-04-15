@@ -43,8 +43,6 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 		this.pollService = pollService;
 	}
 	
-	
-	
 	/**
 	 * Getter for {@link #poll}
 	 * @return the {@link #poll}
@@ -52,8 +50,6 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 	public AbstractPoll<?, ?> getPoll() {
 		return poll;
 	}
-
-
 
 	/**
 	 * Getter for {@link #pollService}

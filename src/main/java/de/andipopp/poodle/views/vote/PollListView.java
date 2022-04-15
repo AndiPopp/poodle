@@ -5,7 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.ComponentEvent;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -16,6 +17,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.shared.Registration;
 
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.data.entity.polls.AbstractOption;
@@ -37,6 +39,7 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 	protected P poll;
 	
 	protected Vote<P,O> currentVote;
+	
 	
 	/**
 	 * The user using this view, if null we have an anonymous vote
@@ -93,7 +96,7 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 		deleteButton.addClickListener(e -> confirmDeleteVote());
 		
 		closeButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-		closeButton.addClickListener(e -> saveAndClosePoll());
+		closeButton.addClickListener(e -> closePoll());
 	}
 
 	/**
@@ -306,20 +309,13 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 		guessVote(configureVoteSelector());
 	}
 	
-	private void saveAndClosePoll() {
-		destroyNewVote();
+	private void closePoll() {
 		for(OptionListItem item : optionListItems) item.readWinnerFromButton();
 		poll.setClosed(true);
 		pollService.update(poll);
-		UI.getCurrent().getPage().reload();
-	}
-	
-	
-	private void destroyNewVote() {
-		for(AbstractOption<P, O> option : poll.getOptions()) {
-			option.removeAnswer(newVote);
-		}
-		newVote = null;
+		setClosingMode(false);
+		buildAll();
+		fireEvent(new ViewChangeEvent(this));
 	}
 	
 	public void loadVote(Vote<P,O> vote) {
@@ -431,4 +427,16 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 		return footerBar;
 	}
 	
+	public <T extends ComponentEvent<?>> Registration addListener(Class<T> eventType, ComponentEventListener<T> listener) { 
+		return getEventBus().addListener(eventType, listener);
+	}
+	
+	public static class ViewChangeEvent extends ComponentEvent<PollListView<?, ?>>{
+
+		private static final long serialVersionUID = 1L;
+		
+		public ViewChangeEvent(PollListView<?, ?> source) {
+			super(source, false);
+		}
+	}
 }

@@ -119,7 +119,7 @@ public class DatePoll extends AbstractPoll<DatePoll, DateOption> {
 			stream.close();
 		});
 		
-        Anchor anchor = new Anchor(res, "Results as iCalendar");
+        Anchor anchor = new Anchor(res, "");
         anchor.add(new Button("Results as iCalendar"));
         return anchor;
 	}

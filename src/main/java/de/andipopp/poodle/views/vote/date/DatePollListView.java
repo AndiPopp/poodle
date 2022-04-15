@@ -53,8 +53,6 @@ public class DatePollListView extends PollListView<DatePoll, DateOption> {
 
 	private final static DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMM Y");
 	
-	
-	
 	@Override
 	protected void buildHeader() {
 		super.buildHeader();

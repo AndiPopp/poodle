@@ -26,7 +26,6 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
-import de.andipopp.poodle.data.Role;
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
 import de.andipopp.poodle.data.service.PollService;
@@ -112,6 +111,7 @@ public class VoteView extends PollView {
 		
 		if (poll instanceof DatePoll) {
 			listView = new DatePollListView((DatePoll) poll, getCurrentUser(), voteService, pollService); 
+			listView.addListener(PollListView.ViewChangeEvent.class, e -> configureTopRightContextMenu());
 			//TODO also build table view
 			if (state == ViewToggleState.LIST) this.pollContent.add(listView);
 		}
@@ -191,19 +191,11 @@ public class VoteView extends PollView {
 //		header.getStyle().set("border", "2px dotted Green") ; //for debug purposes
 
 		
-		//build the menu button:
-		//Owner/Admin: share, edit, pick winner
-		//Others: only share
-		
+		//build the menu button:	
 		topRightMenu = new Button();
 		topRightMenu.addClassName("primary-text");
 		topRightMenu.setIcon(new Icon(VaadinIcon.MENU));
 		topRightMenu.addThemeVariants(ButtonVariant.LUMO_ICON);
-		if (currentUser != null && (poll.getOwner().equals(currentUser) || (currentUser.getRoles().contains(Role.ADMIN)))) {
-			
-		}else {
-			
-		}
 		
 		
 		HorizontalLayout headerMenuButtonWrapper = new HorizontalLayout(topRightMenu);
@@ -282,6 +274,7 @@ public class VoteView extends PollView {
 	private void configureTopRightContextMenu() {
 		if (topRightContextMenu != null) topRightContextMenu.setTarget(null);
 		topRightContextMenu = new ContextMenu();
+		topRightContextMenu.removeAll();
 		
 //		MenuItem share = topRightContextMenu.addItem(" Share", e -> {});
 //		share.addComponentAsFirst(new LineAwesomeMenuIcon("la-share"));
@@ -295,15 +288,24 @@ public class VoteView extends PollView {
 			MenuItem edit = topRightContextMenu.addItem(" Edit", e->{});
 			edit.addComponentAsFirst(new LineAwesomeMenuIcon("la-edit"));
 			
-			String closeLabelOpen = " Select Winners";
-			String closeLabelClosing = " Exit Winner Select";
-			close = topRightContextMenu.addItem(closeLabelOpen, e->{
-				listView.toggleClosingMode();
-				if (listView.isClosingMode()) close.setText(closeLabelClosing);
-				else close.setText(closeLabelOpen);
+			if (poll.isClosed()) {
+				MenuItem reopen = topRightContextMenu.addItem(" Reopen Poll", e -> {
+					poll.setClosed(false);
+					listView.buildAll();
+					configureTopRightContextMenu();
+				});
+				reopen.addComponentAsFirst(new LineAwesomeMenuIcon("la-lock-open"));
+			} else {		
+				String closeLabelOpen = " Select Winners";
+				String closeLabelClosing = " Exit Winner Select";
+				close = topRightContextMenu.addItem(closeLabelOpen, e->{
+					listView.toggleClosingMode();
+					if (listView.isClosingMode()) close.setText(closeLabelClosing);
+					else close.setText(closeLabelOpen);
+					close.addComponentAsFirst(new LineAwesomeMenuIcon("la-award"));
+				});
 				close.addComponentAsFirst(new LineAwesomeMenuIcon("la-award"));
-			});
-			close.addComponentAsFirst(new LineAwesomeMenuIcon("la-award"));
+			}
 		}
 			
 		
