@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 import biweekly.component.VEvent;
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.util.JSoupUtils;
-import de.andipopp.poodle.views.poll.date.DateOptionListItem;
+import de.andipopp.poodle.views.vote.date.DateOptionListItem;
 
 /**
  * An option in a {@link DatePoll}

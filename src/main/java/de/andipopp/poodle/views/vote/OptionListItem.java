@@ -1,4 +1,4 @@
-package de.andipopp.poodle.views.poll;
+package de.andipopp.poodle.views.vote;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Html;

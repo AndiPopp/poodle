@@ -1,9 +1,7 @@
-package de.andipopp.poodle.views.poll;
+package de.andipopp.poodle.views.vote;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Optional;
-import java.util.UUID;
 
 import org.jsoup.Jsoup;
 
@@ -24,17 +22,11 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.BeforeEnterEvent;
-import com.vaadin.flow.router.BeforeEnterObserver;
-import com.vaadin.flow.router.Location;
 import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 import de.andipopp.poodle.data.Role;
-import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
 import de.andipopp.poodle.data.service.PollService;
@@ -42,11 +34,11 @@ import de.andipopp.poodle.data.service.UserService;
 import de.andipopp.poodle.data.service.VoteService;
 import de.andipopp.poodle.util.HtmlUtils;
 import de.andipopp.poodle.util.JSoupUtils;
-import de.andipopp.poodle.util.NotAUuidException;
 import de.andipopp.poodle.util.UUIDUtils;
 import de.andipopp.poodle.views.LineAwesomeMenuIcon;
 import de.andipopp.poodle.views.MainLayout;
-import de.andipopp.poodle.views.poll.date.DatePollListView;
+import de.andipopp.poodle.views.PollView;
+import de.andipopp.poodle.views.vote.date.DatePollListView;
 
 
 @PageTitle("Poodle Poll")
@@ -57,20 +49,12 @@ import de.andipopp.poodle.views.poll.date.DatePollListView;
  * @author Andi Popp
  *
  */
-public class PollView extends VerticalLayout implements BeforeEnterObserver {
-
+public class VoteView extends PollView {
+		
 	private static final long serialVersionUID = 1L;
-	
-	public static final String ID_PARAMETER_NAME = "pollId";
-	
-	private PollService pollService;
-	
+
 	private VoteService voteService;
 
-	private AbstractPoll<?,?> poll;
-
-	private User currentUser;
-	
 	/* =====================
 	 * = Layout Components =
 	 * ===================== */
@@ -95,20 +79,9 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 	
 	PollListView<?, ?> listView;
 	
-	/**
-	 * @param pollService
-	 */
-	public PollView(UserService userService, PollService pollService, VoteService voteService) {
-		//remember the current user
-		if (VaadinRequest.getCurrent().getUserPrincipal()!=null) {
-			String userName = VaadinRequest.getCurrent().getUserPrincipal().getName(); 
-			this.currentUser = userService.get(userName);
-		}else {
-			this.currentUser = null;
-		}
-		
-    	//hook up the poll and vote service 
-		this.pollService = pollService;
+	public VoteView(UserService userService, PollService pollService, VoteService voteService) {
+		super(userService, pollService);
+		//hookup the vote service
 		this.voteService = voteService;
 		
 		//set the toggle state to default
@@ -126,35 +99,9 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 	}
 
 	@Override
-	public void beforeEnter(BeforeEnterEvent event) {
-		Location location = event.getLocation();
-		QueryParameters queryParameters = location.getQueryParameters();
-		if (queryParameters.getParameters().containsKey(ID_PARAMETER_NAME)) {
-			try {
-				String pollIdBase64url = queryParameters.getParameters().get(ID_PARAMETER_NAME).get(0);
-				UUID pollId = UUIDUtils.base64urlToUuid(pollIdBase64url);
-				Optional<AbstractPoll<?,?>> opt = pollService.get(pollId);
-				if (!opt.isEmpty()) {
-					loadPoll(opt.get());
-				}
-			} catch (NotAUuidException e) {
-				//do nothing, keep the "not found"
-			}
-		}
-	}
-	
-	/**
-	 * Getter for {@link #poll}
-	 * @return the {@link #poll}
-	 */
-	public AbstractPoll<?, ?> getPoll() {
-		return poll;
-	}
-	
-	private void loadPoll(AbstractPoll<?,?> poll) {
+	protected void loadPoll(AbstractPoll<?,?> poll) {
 		//load the poll itself
-		this.poll = poll;
-		//set the current vote	
+		super.loadPoll(poll);
 
 		//add the poll specific content
 		this.pollContent = new VerticalLayout();
@@ -164,7 +111,7 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 //		this.pollContent.getStyle().set("border", "2px dotted FireBrick"); //for debug purposes
 		
 		if (poll instanceof DatePoll) {
-			listView = new DatePollListView((DatePoll) poll, currentUser, voteService, pollService); 
+			listView = new DatePollListView((DatePoll) poll, getCurrentUser(), voteService, pollService); 
 			//TODO also build table view
 			if (state == ViewToggleState.LIST) this.pollContent.add(listView);
 		}
@@ -187,7 +134,9 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 	}
 
 	
-	
+	/* ===============
+	 * = Sub-Layouts =
+	 * =============== */
 	
 	private static VerticalLayout notFound() {
 		VerticalLayout notFound = new VerticalLayout();
@@ -207,9 +156,6 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 	    return notFound;
 	}
 	
-	/* ===============
-	 * = Sub-Layouts =
-	 * =============== */
 	
 	private Component metaInfBlock() {
 		VerticalLayout metaInfBlock = new VerticalLayout();
@@ -218,7 +164,7 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 		metaInfBlock.add(configureHeader());
 		metaInfBlock.add(configureSubtitle());
 		metaInfBlock.add(configureInfo());
-		metaInfBlock.add(HtmlUtils.pollShareScript(poll));
+		metaInfBlock.add(HtmlUtils.pollShareScript(getPoll()));
 //		metaInfBlock.getStyle().set("border", "2px dotted Red"); //for debug purposes
 		return metaInfBlock; //new HorizontalLayout(metaInfBlock);
 	}

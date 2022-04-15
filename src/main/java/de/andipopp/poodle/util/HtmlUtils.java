@@ -4,7 +4,7 @@ import com.vaadin.flow.component.Html;
 import com.vaadin.flow.router.RouterLink;
 
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
-import de.andipopp.poodle.views.poll.PollView;
+import de.andipopp.poodle.views.vote.VoteView;
 
 public class HtmlUtils {
 
@@ -28,7 +28,7 @@ public class HtmlUtils {
 	}
 	
 	public static String linkToPoll(AbstractPoll<?, ?> poll) {
-		RouterLink link = new RouterLink("", PollView.class);
+		RouterLink link = new RouterLink("", VoteView.class);
 		return link.getHref()+"?pollId="+UUIDUtils.uuidToBase64url(poll.getId());
 	}
 	

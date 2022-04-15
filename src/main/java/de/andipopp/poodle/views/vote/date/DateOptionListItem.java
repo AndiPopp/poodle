@@ -1,4 +1,4 @@
-package de.andipopp.poodle.views.poll.date;
+package de.andipopp.poodle.views.vote.date;
 
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -15,7 +15,7 @@ import de.andipopp.poodle.data.entity.polls.DateOption;
 import de.andipopp.poodle.data.entity.polls.Vote;
 import de.andipopp.poodle.util.JSoupUtils;
 import de.andipopp.poodle.util.VaadinUtils;
-import de.andipopp.poodle.views.poll.OptionListItem;
+import de.andipopp.poodle.views.vote.OptionListItem;
 
 /**
  * A box to display a single date option

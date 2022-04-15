@@ -18,7 +18,7 @@ import org.jsoup.safety.Safelist;
 
 import de.andipopp.poodle.data.entity.AbstractAutoIdEntity;
 import de.andipopp.poodle.data.entity.User;
-import de.andipopp.poodle.views.poll.OptionListItem;
+import de.andipopp.poodle.views.vote.OptionListItem;
 
 /**
  * An abstract representation of an option in a poll

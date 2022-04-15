@@ -1,1 +1,0 @@
-package de.andipopp.poodle.views.poll;

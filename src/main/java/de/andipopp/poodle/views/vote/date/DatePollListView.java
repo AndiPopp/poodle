@@ -1,4 +1,4 @@
-package de.andipopp.poodle.views.poll.date;
+package de.andipopp.poodle.views.vote.date;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -18,7 +18,7 @@ import de.andipopp.poodle.data.service.PollService;
 import de.andipopp.poodle.data.service.VoteService;
 import de.andipopp.poodle.util.TimeUtils;
 import de.andipopp.poodle.util.VaadinUtils;
-import de.andipopp.poodle.views.poll.PollListView;
+import de.andipopp.poodle.views.vote.PollListView;
 
 public class DatePollListView extends PollListView<DatePoll, DateOption> {
 

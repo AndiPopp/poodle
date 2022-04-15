@@ -1,4 +1,4 @@
-package de.andipopp.poodle.views.poll;
+package de.andipopp.poodle.views.vote;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
