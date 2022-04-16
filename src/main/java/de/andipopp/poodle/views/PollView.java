@@ -3,6 +3,9 @@ package de.andipopp.poodle.views;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
@@ -75,6 +78,7 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 	
 	@Override
 	public void beforeEnter(BeforeEnterEvent event) {
+		
 		Location location = event.getLocation();
 		QueryParameters queryParameters = location.getQueryParameters();
 		if (queryParameters.getParameters().containsKey(ID_PARAMETER_NAME)) {
@@ -90,4 +94,23 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 			}
 		}
 	}
+	
+	protected static VerticalLayout notFound() {
+		VerticalLayout notFound = new VerticalLayout();
+		notFound.setSpacing(false);
+		
+	    Image img = new Image("images/empty-plant.png", "placeholder plant");
+	    img.setWidth("200px");
+	    notFound.add(img);
+	
+	    notFound.add(new H2("Poll not found"));
+	    notFound.add(new Paragraph("Sorry, the poll could not be found. Do you have the correct URL?"));
+	    notFound.setSizeFull();
+	    notFound.setJustifyContentMode(JustifyContentMode.CENTER);
+	    notFound.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+	    notFound.getStyle().set("text-align", "center");
+	    
+	    return notFound;
+	}
+
 }

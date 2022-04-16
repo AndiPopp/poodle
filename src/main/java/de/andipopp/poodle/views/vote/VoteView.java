@@ -18,11 +18,8 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.contextmenu.MenuItem;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.H6;
-import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -143,25 +140,6 @@ public class VoteView extends PollView {
 	/* ===============
 	 * = Sub-Layouts =
 	 * =============== */
-	
-	private static VerticalLayout notFound() {
-		VerticalLayout notFound = new VerticalLayout();
-		notFound.setSpacing(false);
-		
-	    Image img = new Image("images/empty-plant.png", "placeholder plant");
-	    img.setWidth("200px");
-	    notFound.add(img);
-	
-	    notFound.add(new H2("Poll not found"));
-	    notFound.add(new Paragraph("Sorry, the poll could not be found. Do you have the correct URL?"));
-	    notFound.setSizeFull();
-	    notFound.setJustifyContentMode(JustifyContentMode.CENTER);
-	    notFound.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-	    notFound.getStyle().set("text-align", "center");
-	    
-	    return notFound;
-	}
-	
 	
 	private Component metaInfBlock() {
 		VerticalLayout metaInfBlock = new VerticalLayout();
