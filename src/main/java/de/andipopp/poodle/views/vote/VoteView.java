@@ -2,11 +2,16 @@ package de.andipopp.poodle.views.vote;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.jsoup.Jsoup;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Html;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.avatar.AvatarVariant;
 import com.vaadin.flow.component.button.Button;
@@ -23,6 +28,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
@@ -285,7 +291,15 @@ public class VoteView extends PollView {
 				+ "</span>"));
 		
 		if (currentUser != null && currentUser.equals(poll.getOwner())) {
-			MenuItem edit = topRightContextMenu.addItem(" Edit", e->{});
+//			RouterLink linkToEdit = new RouterLink(" Edit", EditPollView.class, new RouteParameters(ID_PARAMETER_NAME, UUIDUtils.uuidToBase64url(poll.getId())));
+			MenuItem edit = topRightContextMenu.addItem(" Edit", e->{
+				Map<String, List<String>> params = new HashMap<>(1);
+				List<String> idList = new ArrayList<>(1);
+				idList.add(UUIDUtils.uuidToBase64url(poll.getId()));
+				params.put(ID_PARAMETER_NAME, idList);
+				UI.getCurrent().navigate("edit", new QueryParameters(params));
+			});
+//			MenuItem edit = topRightContextMenu.addItem(linkToEdit);
 			edit.addComponentAsFirst(new LineAwesomeMenuIcon("la-edit"));
 			
 			if (poll.isClosed()) {
