@@ -1,9 +1,8 @@
 package de.andipopp.poodle.views.editpoll;
 
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.accordion.AccordionPanel;
-import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
@@ -14,8 +13,10 @@ import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
 import de.andipopp.poodle.data.service.PollService;
 import de.andipopp.poodle.data.service.UserService;
+import de.andipopp.poodle.util.VaadinUtils;
 import de.andipopp.poodle.views.MainLayout;
 import de.andipopp.poodle.views.PollView;
+import de.andipopp.poodle.views.editpoll.date.DateOptionFormList;
 
 @PageTitle("Edit Poodle Poll")
 @Route(value = "edit", layout = MainLayout.class)
@@ -30,7 +31,7 @@ public class EditPollView extends PollView {
     
     private PollSettingsForm pollSettingsForm;
     
-    private Component pollOptionsForm;
+    private AbstractOptionFormList<? extends AbstractOptionForm> optionFormList;
     
     //each step gets an accordion panel
     
@@ -38,7 +39,7 @@ public class EditPollView extends PollView {
     
     private AccordionPanel pollSettingsFormPanel;
     
-    private AccordionPanel pollOptionsFormPanel;
+    private AccordionPanel optionFormListPanel;
     
     //the accordion to display them
     
@@ -71,6 +72,13 @@ public class EditPollView extends PollView {
 		pollSettingsForm = new PollSettingsForm(this.poll);
 		pollSettingsFormPanel = new AccordionPanel("Step 2: Poll Settings", pollSettingsForm);
 		formAccordion.add(pollSettingsFormPanel);
+		
+		if (poll instanceof DatePoll) 
+			optionFormList = new DateOptionFormList((DatePoll) this.poll, VaadinUtils.guessTimeZoneFromVaadinRequest()); //TODO get timezone from user settings
+		optionFormList.buildList();
+		optionFormList.setPadding(false);
+		optionFormListPanel = new AccordionPanel("Step 3: Define Options", optionFormList);
+		formAccordion.add(optionFormListPanel);
 		
 		//load the data
 		bindAndLoad();

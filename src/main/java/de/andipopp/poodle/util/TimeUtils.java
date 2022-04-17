@@ -1,11 +1,16 @@
 package de.andipopp.poodle.util;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TimeZone;
 import java.util.TreeSet;
+
+import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 
 public class TimeUtils {
 	
@@ -31,5 +36,19 @@ public class TimeUtils {
 			zoneIds.add(ZoneId.of(id));
 		}
 		return zoneIds;
+	}
+	
+	public static DateTimePicker updateDateTimePicker(DateTimePicker picker, ZoneId oldTimeZone, ZoneId newTimeZone) {
+		if (picker == null) return null;
+		ZonedDateTime current = picker.getValue().atZone(oldTimeZone);
+		picker.setValue(current.withZoneSameInstant(newTimeZone).toLocalDateTime());
+		return picker;
+	}
+	
+	public static LocalDateTime setDateTimePicker(DateTimePicker picker, Instant timestamp, ZoneId timeZone) {
+		if (picker == null || timestamp == null || timeZone == null) return null;
+		LocalDateTime local = ZonedDateTime.ofInstant(timestamp, timeZone).toLocalDateTime();
+		picker.setValue(local);
+		return local;
 	}
 }

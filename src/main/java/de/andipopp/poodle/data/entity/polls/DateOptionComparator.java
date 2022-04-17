@@ -6,11 +6,13 @@ public class DateOptionComparator implements Comparator<DateOption> {
 	
 	@Override
 	public int compare(DateOption arg0, DateOption arg1) {
+		int result = 0;
+		
 		//first check if UUID are the same
-		if (arg0.getId().equals(arg1.getId())) return 0;
+		if (arg0.getId() != null && arg0.getId().equals(arg1.getId())) return 0;
 		
 		//compare start date first
-		int result = arg0.getStart().compareTo(arg1.getStart());
+		result = arg0.getStart().compareTo(arg1.getStart());
 		if (result != 0) return result;
 		
 		//if equal, sort by end date
@@ -33,7 +35,9 @@ public class DateOptionComparator implements Comparator<DateOption> {
 		result = arg0aux.compareTo(arg1aux);
 		if (result != 0) return result;
 		
-		//else sort by RUID
+		//else sort by UUID
 		return arg0.getId().compareTo(arg1.getId());
+		
+		//TODO there are some more NullPointerExceptions to avoid
 	}
 }

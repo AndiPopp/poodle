@@ -66,3 +66,9 @@
 .menu-pretext-icon {
 	font-size: x-large;
 }
+
+.poll-option-form {
+	border: 1px solid var(--lumo-contrast-80pct);
+	background-color: var(--lumo-contrast-5pct);
+}
+
