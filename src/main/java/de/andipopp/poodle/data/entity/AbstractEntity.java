@@ -21,10 +21,10 @@ public abstract class AbstractEntity {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof AbstractAutoIdEntity)) {
+        if (!(obj instanceof AbstractEntity)) {
             return false; // null or other class
         }
-        AbstractAutoIdEntity other = (AbstractAutoIdEntity) obj;
+        AbstractEntity other = (AbstractEntity) obj;
 
         if (getId() != null) {
             return getId().equals(other.getId());
