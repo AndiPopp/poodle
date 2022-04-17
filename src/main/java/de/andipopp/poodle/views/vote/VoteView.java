@@ -2,10 +2,6 @@ package de.andipopp.poodle.views.vote;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.jsoup.Jsoup;
 
@@ -25,7 +21,6 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
@@ -260,24 +255,15 @@ public class VoteView extends PollView {
 		topRightContextMenu = new ContextMenu();
 		topRightContextMenu.removeAll();
 		
-//		MenuItem share = topRightContextMenu.addItem(" Share", e -> {});
-//		share.addComponentAsFirst(new LineAwesomeMenuIcon("la-share"));
-		
 		topRightContextMenu.addItem(new Html("<span onclick=\""
 				+ "share_" + UUIDUtils.uuidToBase64url(poll.getId()) +  "()" 
 				+ "\"><span class=\"las la-share menu-pretext-icon\"></span> Share"
 				+ "</span>"));
 		
 		if (currentUser != null && currentUser.equals(poll.getOwner())) {
-//			RouterLink linkToEdit = new RouterLink(" Edit", EditPollView.class, new RouteParameters(ID_PARAMETER_NAME, UUIDUtils.uuidToBase64url(poll.getId())));
-			MenuItem edit = topRightContextMenu.addItem(" Edit", e->{
-				Map<String, List<String>> params = new HashMap<>(1);
-				List<String> idList = new ArrayList<>(1);
-				idList.add(UUIDUtils.uuidToBase64url(poll.getId()));
-				params.put(ID_PARAMETER_NAME, idList);
-				UI.getCurrent().navigate("edit", new QueryParameters(params));
-			});
-//			MenuItem edit = topRightContextMenu.addItem(linkToEdit);
+			MenuItem edit = topRightContextMenu.addItem(" Edit", e -> 
+				UI.getCurrent().navigate("edit", getPoll().buildQueryParameters(true))
+			);
 			edit.addComponentAsFirst(new LineAwesomeMenuIcon("la-edit"));
 			
 			if (poll.isClosed()) {
@@ -299,7 +285,6 @@ public class VoteView extends PollView {
 				close.addComponentAsFirst(new LineAwesomeMenuIcon("la-award"));
 			}
 		}
-			
 		
 		switchToTableView = topRightContextMenu.addItem(" Table View", e -> {});
 		switchToTableView.addComponentAsFirst(new LineAwesomeMenuIcon("la-table"));

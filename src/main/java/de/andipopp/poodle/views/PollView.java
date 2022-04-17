@@ -24,10 +24,10 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 
 	private static final long serialVersionUID = 1L;
 	
-	public static final String ID_PARAMETER_NAME = "pollId";
-	
 	protected AbstractPoll<?,?> poll;
 
+	private String editKey;
+	
 	protected PollService pollService;
 	
 	protected User currentUser;
@@ -72,18 +72,32 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 		return currentUser;
 	}
 
+	/**
+	 * Getter for {@link #editKey}
+	 * @return the {@link #editKey}
+	 */
+	protected String getEditKey() {
+		return editKey;
+	}
+
 	protected void loadPoll(AbstractPoll<?,?> poll) {
 		this.poll = poll;
 	}
 	
 	@Override
 	public void beforeEnter(BeforeEnterEvent event) {
-		
 		Location location = event.getLocation();
 		QueryParameters queryParameters = location.getQueryParameters();
-		if (queryParameters.getParameters().containsKey(ID_PARAMETER_NAME)) {
+		
+		//load the edit key if present
+		if (queryParameters.getParameters().containsKey(AbstractPoll.EDIT_KEY_PARAMETER_NAME)) {
+			editKey = queryParameters.getParameters().get(AbstractPoll.EDIT_KEY_PARAMETER_NAME).get(0);
+		}
+		
+		//load the poll if we have an ID
+		if (queryParameters.getParameters().containsKey(AbstractPoll.ID_PARAMETER_NAME)) {
 			try {
-				String pollIdBase64url = queryParameters.getParameters().get(ID_PARAMETER_NAME).get(0);
+				String pollIdBase64url = queryParameters.getParameters().get(AbstractPoll.ID_PARAMETER_NAME).get(0);
 				UUID pollId = UUIDUtils.base64urlToUuid(pollIdBase64url);
 				Optional<AbstractPoll<?,?>> opt = pollService.get(pollId);
 				if (!opt.isEmpty()) {
@@ -93,6 +107,7 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 				//do nothing, keep the "not found"
 			}
 		}
+		
 	}
 	
 	protected static VerticalLayout notFound() {

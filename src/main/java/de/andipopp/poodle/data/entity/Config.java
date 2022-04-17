@@ -139,7 +139,25 @@ public class Config extends AbstractEntity {
 		this.defaultPollRententionDays = defaultPollRententionDays;
 	}
 
+	/**
+	 * Allow polls which do no have an owner
+	 */
+	private boolean allowOrphanPolls = false;
 
-	
+	/**
+	 * Getter for {@link #allowOrphanPolls}
+	 * @return the {@link #allowOrphanPolls}
+	 */
+	public boolean isAllowOrphanPolls() {
+		return allowOrphanPolls;
+	}
+
+	/**
+	 * Setter for {@link #allowOrphanPolls}
+	 * @param allowOrphanPolls the {@link #allowOrphanPolls} to set
+	 */
+	public void setAllowOrphanPolls(boolean allowOrphanPolls) {
+		this.allowOrphanPolls = allowOrphanPolls;
+	}
 	
 }

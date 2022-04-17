@@ -33,7 +33,6 @@ public class PollSettingsForm extends PollBindableForm {
 	 */
 	public PollSettingsForm(AbstractPoll<?, ?> poll) {
 		configureInputFields(poll);
-		this.setMaxWidth("800px");  //two column layout starts to look weird at certain width
 	}
 	
 	/**

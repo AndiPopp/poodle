@@ -80,6 +80,7 @@ public class DataGenerator {
     	poll.setTitle("Master of the Universe get-together");
     	poll.setDescription("He-Man will be there. So <a href=\"https://www.google.com\">google</a> yourself your finest magic sword and feline steed.");
     	poll.setLocation("Castle Greyskull (unless specified otherwise)");
+    	poll.generateEditKey();
     	poll.setOwner(user);
     	poll.setEnableIfNeedBe(true);
     	poll.addOption(new DateOption(
@@ -153,6 +154,7 @@ public class DataGenerator {
     	poll.setTitle("This is a really long title just to see what happens if we have a really long title and even longer titles");
     	poll.setDescription("Man this title is long");
     	poll.setOwner(user);
+    	poll.generateEditKey();
     	poll.addOption(new DateOption(
     			new GregorianCalendar(2022, 1-1, 1, 8, 0).getTime(), 
     			new GregorianCalendar(2022, 1-1, 1, 10, 0).getTime()
@@ -163,6 +165,7 @@ public class DataGenerator {
     	poll.setTitle("Only for admin's eyes");
     	poll.setDescription("Only the admin should see this");
     	poll.setOwner(admin);
+    	poll.generateEditKey();
     	poll.addOption(new DateOption(
     			new GregorianCalendar(2022, 1-1, 1, 8, 0).getTime(), 
     			new GregorianCalendar(2022, 1-1, 1, 10, 0).getTime()

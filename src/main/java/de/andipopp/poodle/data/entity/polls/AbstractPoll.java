@@ -1,14 +1,19 @@
 package de.andipopp.poodle.data.entity.polls;
 
+import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -21,9 +26,13 @@ import org.hibernate.annotations.LazyCollectionOption;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 
+import com.vaadin.flow.router.QueryParameters;
+
+import de.andipopp.poodle.data.Role;
 import de.andipopp.poodle.data.entity.AbstractAutoIdEntity;
 import de.andipopp.poodle.data.entity.Config;
 import de.andipopp.poodle.data.entity.User;
+import de.andipopp.poodle.util.UUIDUtils;
 
 @Entity(name = "Poll")
 public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> extends AbstractAutoIdEntity {
@@ -31,6 +40,28 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	/* ==========
 	 * = Fields =
 	 * ========== */
+	
+	/**
+	 * The query parameter name for the {@link #getId()}
+	 */
+	public static final String ID_PARAMETER_NAME = "pollId";
+	
+	/**
+	 * The query paramter name for the {@link #editKey}
+	 */
+	public static final String EDIT_KEY_PARAMETER_NAME = "editKey";
+	
+	/**
+	 * Secure RNG to generate {@link #editKey} values
+	 */
+	public static final SecureRandom RNG = new SecureRandom();
+	
+	/**
+	 * A key which has to be present for the UI to allow editing
+	 */
+	@Nullable
+	@Column(length = 16)
+	private String editKey;
 	
 	/**
 	 * The poll's title
@@ -75,6 +106,9 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	 */
 	private boolean enableAbstain;
 	
+	/**
+	 * If true, the poll is closed
+	 */
 	private boolean closed;
 	
 	@OneToMany(cascade = CascadeType.ALL, targetEntity=Vote.class, mappedBy = "parent",  orphanRemoval = true)
@@ -113,6 +147,31 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	/* ================================
 	 * = Getters, setters and similar =
 	 * ================================ */
+	
+	/**
+	 * Getter for {@link #editKey}
+	 * @return the {@link #editKey}
+	 */
+	public String getEditKey() {
+		return editKey;
+	}
+
+	/**
+	 * Setter for {@link #editKey}
+	 * @param editKey the {@link #editKey} to set
+	 */
+	public void setEditKey(String editKey) {
+		this.editKey = editKey;
+	}
+	
+	/**
+	 * Uses {@link #RNG} to generate a new random {@link #editKey}
+	 */
+	public void generateEditKey() {
+		byte[] bytes = new byte[12];
+		RNG.nextBytes(bytes);
+		setEditKey(UUIDUtils.enc.encodeToString(bytes));
+	}
 	
 	/**
 	 * @return the name
@@ -433,7 +492,48 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	 * = UI auxiliary methods =
 	 * ======================== */
 	
-//	public abstract Component buildListView();
+	/**
+	 * Check if a given user can edit this poll
+	 * @param user the user who wants to edit the poll
+	 * @return true if the user can edit the poll, false otherwise
+	 */
+	public boolean canEdit(User user) {
+		//admins may edit any polls
+		if (user != null && user.getRoles().contains(Role.ADMIN)) return true;
+		
+		//case for orphan polls
+		if (owner == null) {
+			//orphan polls can be edit by anyone with the edit key (which must be present), 
+			//if the settings allow it
+			return getEditKey() != null && Config.getCurrentConfig().isAllowOrphanPolls();
+		}
+		
+		//case for owned polls, only owner may edit
+		return user != null && owner.equals(user);
+	}
+	
+	/**
+	 * Construct http {@link QueryParameters} for this poll.
+	 * This always contains the {@link #getId()} as base64url. If flagged, it also contains the
+	 * {@link #editKey} as hex string
+	 * @param withEditKey if true, add the {@link #editKey} as hex string
+	 * @return the constructed query parameters
+	 */
+	public QueryParameters buildQueryParameters(boolean withEditKey) {
+		Map<String, List<String>> params = new HashMap<>(2);
+		//add the poll id as base 64
+		List<String> idList = new ArrayList<>(1);
+		idList.add(UUIDUtils.uuidToBase64url(getId()));
+		params.put(ID_PARAMETER_NAME, idList);
+		//add the edit key as hex string if specified
+		if (withEditKey && this.editKey != null) {
+			List<String> editKeyList = new ArrayList<>(1);
+			editKeyList.add(editKey);
+			params.put(EDIT_KEY_PARAMETER_NAME, editKeyList);
+		}
+		//return result
+		return new QueryParameters(params);
+	}
 	
 	/* =================
 	 * = Other Methods =
@@ -457,11 +557,5 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	public void clearSortedOptionsByPositiveAnswers() {;
 		sorted = null;
 	}
-
-//	public void debug_PrintVoteIds() {
-//		for(Vote<P,O> vote : votes) {
-//			System.out.println(vote.getId());
-//		}
-//	}
 	
 }

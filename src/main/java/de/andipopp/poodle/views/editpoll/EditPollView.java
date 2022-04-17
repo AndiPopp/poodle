@@ -1,16 +1,18 @@
 package de.andipopp.poodle.views.editpoll;
 
+import javax.annotation.security.PermitAll;
+
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.accordion.AccordionPanel;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
@@ -23,11 +25,16 @@ import de.andipopp.poodle.views.editpoll.date.DateOptionFormList;
 
 @PageTitle("Edit Poodle Poll")
 @Route(value = "edit", layout = MainLayout.class)
-@AnonymousAllowed
+@PermitAll
 public class EditPollView extends PollView {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Max width at which the two colum form layout looks appealing
+     */
+    private static final String MAX_WIDTH = "1000px";
+    
     //three steps in editing a poll
     
     private PollCoredataForm pollCoredataForm;
@@ -69,6 +76,7 @@ public class EditPollView extends PollView {
 	public EditPollView(UserService userService, PollService pollService) {
 		super(userService, pollService);
 		this.add(notFound());
+		this.setMaxWidth(MAX_WIDTH);
 		
 		//configure buttons
 		toStep2Button.addClassName("primary-text");
@@ -78,9 +86,15 @@ public class EditPollView extends PollView {
     }
 
 	@Override
-	protected void loadPoll(AbstractPoll<?, ?> poll) {
+	protected void loadPoll(AbstractPoll<?, ?> poll) {	
 		super.loadPoll(poll);
 		this.removeAll(); //remove the poll not found page
+		
+		//check access
+		if (!userHasAccess()) {
+			this.add(new Label("Access denied"));
+			return;
+		}
 		
 		//create the accordion
 		formAccordion = new Accordion();
@@ -127,6 +141,18 @@ public class EditPollView extends PollView {
 		
 		//load the data
 		bindAndLoad();
+	}
+	
+	/**
+	 * Checks if the user has access to edit this poll.
+	 * For this, the poll itself must allow {@link AbstractPoll#canEdit(de.andipopp.poodle.data.entity.User)}
+	 * and if the poll has an {@link AbstractPoll#getEditKey()} it must match this form's (read from query
+	 * parameters).
+	 * @return
+	 */
+	private boolean userHasAccess() {
+		if (getPoll() == null) return false; //What are you doing here? There is no poll to edit!
+		return poll.canEdit(getCurrentUser()) && (poll.getEditKey() == null || (getEditKey() != null && poll.getEditKey().equals(getEditKey())));
 	}
 	
 	private void bindAndLoad() {
