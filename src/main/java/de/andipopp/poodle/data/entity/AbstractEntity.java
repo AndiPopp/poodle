@@ -5,7 +5,7 @@ import java.util.UUID;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public abstract class AbstractEntity {
+public abstract class AbstractEntity implements HasUuid {
 
     public abstract UUID getId();
 

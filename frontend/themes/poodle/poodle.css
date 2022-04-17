@@ -72,3 +72,8 @@
 	background-color: var(--lumo-contrast-5pct);
 }
 
+.poll-option-form-delete {
+	border: 1px solid var(--lumo-error-text-color);
+	background-color: var(--lumo-error-color-10pct);
+}
+

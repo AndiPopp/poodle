@@ -73,11 +73,11 @@ public class DateOptionForm extends AbstractOptionForm{
 		binder.bind(location, DateOption::getLocation, DateOption::setLocation);
 		binder.forField(startPicker)
 			.withConverter(getList().getConverter())
-			.asRequired("Need a start date")
+			.asRequired()
 			.bind(DateOption::getStart, DateOption::setStart);
 		binder.forField(endPicker)
 			.withConverter(getList().getConverter())
-			.asRequired("Need and end date")
+			.asRequired()
 			.withValidator(endDate -> validateEndDate(endDate), "End date must be after start date")
 			.bind(DateOption::getEnd, DateOption::setEnd);
 	}
@@ -126,11 +126,22 @@ public class DateOptionForm extends AbstractOptionForm{
 		TimeUtils.updateDateTimePicker(endPicker, oldTimeZone, newTimeZone);
 	}
 	
+	
+	
 	/* =================
 	 * = Data Handling =
 	 * ================= */
 	
+	@Override
+	protected void updateComponents() {
+		super.updateComponents();
+		if (location != null) location.setEnabled(!isDelete());
+		if (location != null) startPicker.setEnabled(!isDelete());
+		if (location != null) endPicker.setEnabled(!isDelete());
+	}
+
 	public void loadData() {
+		configureDebugLabel();
 		binder.readBean(getOption());
 //		TimeUtils.setDateTimePicker(startPicker, getOption().getStart().toInstant(), getList().getTimezone());
 //		TimeUtils.setDateTimePicker(endPicker, getOption().getEnd().toInstant(), getList().getTimezone());

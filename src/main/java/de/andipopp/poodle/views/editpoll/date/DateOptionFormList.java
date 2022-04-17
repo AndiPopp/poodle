@@ -32,6 +32,7 @@ public class DateOptionFormList extends AbstractOptionFormList<DateOptionForm> {
 		for(DateOption option : getPoll().getOptions()) {
 			DateOptionForm form = new DateOptionForm(option, this);
 			form.buildAll();
+			form.loadData();
 			getOptionForms().add(form);
 			this.add(form);
 		}

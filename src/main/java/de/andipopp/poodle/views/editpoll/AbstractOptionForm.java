@@ -30,6 +30,11 @@ public abstract class AbstractOptionForm extends VerticalLayout {
 	private static final String CSS_CLASS_NAME = "poll-option-form";
 	
 	/**
+	 * A constant to define the CSS class name for components whose options are to be deleted
+	 */
+	private static final String DELETE_CSS_CLASS_NAME = "poll-option-form-delete"; //TODO there should be a better way to do this
+	
+	/**
 	 * The option edited by this form
 	 */
 	private final AbstractOption<?, ?> option; 
@@ -64,6 +69,11 @@ public abstract class AbstractOptionForm extends VerticalLayout {
 	protected Button deleteButton = new Button("Delete");
 	
 	/**
+	 * Label to print debug information
+	 */
+	private DebugLabel debugLabel = new DebugLabel();
+	
+	/**
 	 * An auxiliary flag to mark an option as to delete.
 	 * Used by {@link #deleteOption()}.
 	 */
@@ -82,7 +92,7 @@ public abstract class AbstractOptionForm extends VerticalLayout {
 		//configure style
 		addClassName(CSS_CLASS_NAME);
 		
-		//configure the delete button
+		//configure the components
 		deleteButton.addClickListener(e -> deleteOption());
 		updateComponents();
 	}
@@ -95,7 +105,14 @@ public abstract class AbstractOptionForm extends VerticalLayout {
 		this.removeAll();
 		buildForm();
 		buildButtonBar();
-		this.add(form, buttonBar);
+	
+		//wrap the bottom bar into a layout with the debug label
+		HorizontalLayout buttonBarWrapper = new HorizontalLayout(buttonBar, debugLabel);
+		buttonBarWrapper.setPadding(false);
+		buttonBarWrapper.setJustifyContentMode(JustifyContentMode.BETWEEN);
+		buttonBarWrapper.setDefaultVerticalComponentAlignment(Alignment.END);
+		buttonBarWrapper.setWidthFull();
+		this.add(form, buttonBarWrapper);
 	}
 	
 	/**
@@ -136,12 +153,23 @@ public abstract class AbstractOptionForm extends VerticalLayout {
 		return list;
 	}
 	
+	/**
+	 * Getter for {@link #delete}
+	 * @return the {@link #delete}
+	 */
+	public boolean isDelete() {
+		return delete;
+	}
 	
 	/* =================
 	 * = Data Handling =
 	 * ================= */
 
 	public abstract void loadData();
+	
+	public void configureDebugLabel() {
+		debugLabel.setText(option);
+	}
 	
 	/* ================
 	 * = Button Event =
@@ -155,27 +183,29 @@ public abstract class AbstractOptionForm extends VerticalLayout {
 	 */
 	private void deleteOption() {
 		if (option.getId() == null) {
+			fireEvent(new RemoveOptionFormEvent(this));
+		} else {
 			delete = !delete;
 			updateComponents();
-		} else {
-			fireEvent(new RemoveOptionFormEvent(this));
 		}
 	}
 
 	/**
 	 * Update the components according to {@link #delete}
 	 */
-	private void updateComponents() {
+	protected void updateComponents() {
 		if (delete) {
 			deleteButton.setText("Undelete");
 			deleteButton.removeThemeVariants(ButtonVariant.LUMO_ERROR);
 			deleteButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
 			title.setEnabled(false);
+			this.addClassName(DELETE_CSS_CLASS_NAME);
 		} else {
 			deleteButton.setText("Delete");
 			deleteButton.removeThemeVariants(ButtonVariant.LUMO_SUCCESS);
 			deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
 			title.setEnabled(true);
+			this.removeClassName(DELETE_CSS_CLASS_NAME);
 		}
 	}
 	

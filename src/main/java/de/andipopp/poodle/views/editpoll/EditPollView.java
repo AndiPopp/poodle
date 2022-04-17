@@ -2,7 +2,10 @@ package de.andipopp.poodle.views.editpoll;
 
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.accordion.AccordionPanel;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
@@ -45,13 +48,33 @@ public class EditPollView extends PollView {
     
     private Accordion formAccordion;
     
-    //specific binder for each possible type of poll
+    //buttons to navigate between the accordion panels and modify the poll
+    
+    private Button deletePollButton = new Button("Delete Poll");
+    
+    private Button toStep2Button = new Button("Next Step");
+    
+    private Button toStep3Button = new Button("Next Step");
+    
+    private Button savePollButton = new Button("Save Poll");
+    
+    //specific binder for each possible type of poll to bind the poll's direct data
     Binder<DatePoll> datePollBinder = new BeanValidationBinder<>(DatePoll.class);
     
-    
-	public EditPollView(UserService userServer, PollService pollService) {
-		super(userServer, pollService);
+    /**
+     * Constructor to remember the services
+     * @param userService the user service
+     * @param pollService the poll serivice
+     */
+	public EditPollView(UserService userService, PollService pollService) {
+		super(userService, pollService);
 		this.add(notFound());
+		
+		//configure buttons
+		toStep2Button.addClassName("primary-text");
+		toStep3Button.addClassName("primary-text");
+		deletePollButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+		savePollButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     }
 
 	@Override
@@ -64,13 +87,19 @@ public class EditPollView extends PollView {
 		formAccordion.setWidthFull();
 		add(formAccordion);
 		
-		//build core elements
+		//build core elements and wrap them with their buttons
 		pollCoredataForm = new PollCoredataForm(this.poll);
-		pollCoredataFormPanel = new AccordionPanel("Step 1: Setup Poll", pollCoredataForm);
+		VerticalLayout pollCoredataFormWrapper = new VerticalLayout(pollCoredataForm, toStep2Button);
+		pollCoredataFormWrapper.setPadding(false);
+		pollCoredataFormWrapper.setDefaultHorizontalComponentAlignment(Alignment.END);
+		pollCoredataFormPanel = new AccordionPanel("Step 1: Setup Poll", pollCoredataFormWrapper);
 		formAccordion.add(pollCoredataFormPanel);
 		
 		pollSettingsForm = new PollSettingsForm(this.poll);
-		pollSettingsFormPanel = new AccordionPanel("Step 2: Poll Settings", pollSettingsForm);
+		VerticalLayout pollSettingsFormWrapper = new VerticalLayout(pollSettingsForm, toStep3Button);
+		pollSettingsFormWrapper.setPadding(false);
+		pollSettingsFormWrapper.setDefaultHorizontalComponentAlignment(Alignment.END);
+		pollSettingsFormPanel = new AccordionPanel("Step 2: Poll Settings", pollSettingsFormWrapper);
 		formAccordion.add(pollSettingsFormPanel);
 		
 		if (poll instanceof DatePoll) 
@@ -79,6 +108,22 @@ public class EditPollView extends PollView {
 		optionFormList.setPadding(false);
 		optionFormListPanel = new AccordionPanel("Step 3: Define Options", optionFormList);
 		formAccordion.add(optionFormListPanel);
+		
+		//add the final buttons
+		
+		HorizontalLayout deleteButtonPanel = new HorizontalLayout();
+		if (poll.getId() != null) { //we have a poll which is stored, so it can be deleted
+			deleteButtonPanel.add(deletePollButton);
+			deleteButtonPanel.add(new DebugLabel(this.poll));
+		}
+		deleteButtonPanel.setDefaultVerticalComponentAlignment(Alignment.BASELINE);
+		HorizontalLayout buttonBar = new HorizontalLayout(
+				deleteButtonPanel,
+				savePollButton
+		);
+		buttonBar.setJustifyContentMode(JustifyContentMode.BETWEEN);
+		buttonBar.setWidthFull();
+		this.add(buttonBar);
 		
 		//load the data
 		bindAndLoad();

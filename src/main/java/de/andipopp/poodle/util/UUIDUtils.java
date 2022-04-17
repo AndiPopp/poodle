@@ -12,6 +12,38 @@ import java.util.UUID;
 public class UUIDUtils {
 
 	/**
+	 * Convenience list for the five parts of the UUID string representation
+	 * @author Andi Popp
+	 *
+	 */
+	public enum Part {
+		/**
+		 * The first part, 8 characters
+		 */
+		PART1,
+		
+		/**
+		 * The second part, 4 characters
+		 */
+		PART2,
+		
+		/**
+		 * The third part, 4 characters, first character is UUID version
+		 */
+		PART3, 
+		
+		/**
+		 * The fourth part, 4 characters, first character encodes UUID variant
+		 */
+		PART4,
+		
+		/**
+		 * The last part, 12 characters
+		 */
+		PART5
+	}
+	
+	/**
 	 * The Base64url encoder
 	 */
 	public static final Base64.Encoder enc = Base64.getUrlEncoder();
@@ -82,4 +114,30 @@ public class UUIDUtils {
 			throw new NotAUuidException("Not a UUID: "+base64url, e);
 		}
 	}	
+	
+	/**
+	 * Get one of the parts of the a UUID's string representation.
+	 * This can be used to show debug information where space is scarce and the collision 
+	 * resistance of the full UUID is not needed.
+	 * @param id the UUID
+	 * @param part the part to get
+	 * @return the specified part of the UUID, null if either argument is null
+	 */
+	public static String getPart(UUID id, Part part) {
+		if (id == null) return null;
+		switch (part) {
+		case PART1:
+			return id.toString().substring(0, 8);
+		case PART2:
+			return id.toString().substring(9, 13);
+		case PART3:
+			return id.toString().substring(14, 18);
+		case PART4:
+			return id.toString().substring(19, 23);
+		case PART5:
+			return id.toString().substring(24, 36);
+		default:
+			return null;
+		}
+	}
 }
