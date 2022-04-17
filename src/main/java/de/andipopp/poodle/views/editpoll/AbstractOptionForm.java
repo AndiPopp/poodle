@@ -5,6 +5,7 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -74,6 +75,11 @@ public abstract class AbstractOptionForm extends VerticalLayout {
 	private DebugLabel debugLabel = new DebugLabel();
 	
 	/**
+	 * Label indicating the option will be deleted once 'Save Poll' is clicked
+	 */
+	private Label deleteOverlay = new Label("Will be deleted on 'Save Poll'");
+	
+	/**
 	 * An auxiliary flag to mark an option as to delete.
 	 * Used by {@link #deleteOption()}.
 	 */
@@ -94,7 +100,11 @@ public abstract class AbstractOptionForm extends VerticalLayout {
 		
 		//configure the components
 		deleteButton.addClickListener(e -> deleteOption());
+		deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
 		updateComponents();
+		
+		deleteOverlay.addClassName("poll-option-delete-overlay");
+		deleteOverlay.setVisible(false);
 	}
 
 	/**
@@ -112,7 +122,7 @@ public abstract class AbstractOptionForm extends VerticalLayout {
 		buttonBarWrapper.setJustifyContentMode(JustifyContentMode.BETWEEN);
 		buttonBarWrapper.setDefaultVerticalComponentAlignment(Alignment.END);
 		buttonBarWrapper.setWidthFull();
-		this.add(form, buttonBarWrapper);
+		this.add(form, buttonBarWrapper, deleteOverlay);
 	}
 	
 	/**
@@ -194,18 +204,16 @@ public abstract class AbstractOptionForm extends VerticalLayout {
 	 * Update the components according to {@link #delete}
 	 */
 	protected void updateComponents() {
+		deleteOverlay.setVisible(delete);
+		title.setEnabled(!delete);
 		if (delete) {
 			deleteButton.setText("Undelete");
-			deleteButton.removeThemeVariants(ButtonVariant.LUMO_ERROR);
-			deleteButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
-			title.setEnabled(false);
+			deleteButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 			this.addClassName(DELETE_CSS_CLASS_NAME);
 		} else {
 			deleteButton.setText("Delete");
-			deleteButton.removeThemeVariants(ButtonVariant.LUMO_SUCCESS);
-			deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
-			title.setEnabled(true);
 			this.removeClassName(DELETE_CSS_CLASS_NAME);
+			deleteButton.removeThemeVariants(ButtonVariant.LUMO_PRIMARY);
 		}
 	}
 	
@@ -231,7 +239,7 @@ public abstract class AbstractOptionForm extends VerticalLayout {
 
 	/**
 	 * This event signals to the parent component, that the source {@link AbstractOptionForm}
-	 * can immeditly removed, typically because it contains a newly created option which was
+	 * can immediately removed, typically because it contains a newly created option which was
 	 * marked to be removed via the {@link AbstractOptionForm#deleteButton}.
 	 * @author Andi Popp
 	 *

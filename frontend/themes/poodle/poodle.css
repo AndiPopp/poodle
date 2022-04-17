@@ -70,10 +70,22 @@
 .poll-option-form {
 	border: 1px solid var(--lumo-contrast-80pct);
 	background-color: var(--lumo-contrast-5pct);
+	position: relative;
 }
 
 .poll-option-form-delete {
 	border: 1px solid var(--lumo-error-text-color);
 	background-color: var(--lumo-error-color-10pct);
+	position: relative;
+}
+
+.poll-option-delete-overlay {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	color: var(--lumo-error-text-color);
+	font-weight: bold;
+	font-size: xx-large;
 }
 

@@ -67,11 +67,13 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	 * The poll's title
 	 */
 	@NotEmpty
+	@NotNull
 	private String title;
 	
 	/**
 	 * An optional poll description
 	 */
+	@Nullable
 	private String description;
 	
 	/**
@@ -90,6 +92,7 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	 * The date by which this poll is to be deleted
 	 * @return
 	 */
+	@NotNull
 	private LocalDate deleteDate;
 	
 	@OneToMany(cascade = CascadeType.ALL, targetEntity=AbstractOption.class, mappedBy = "parent", orphanRemoval = true)

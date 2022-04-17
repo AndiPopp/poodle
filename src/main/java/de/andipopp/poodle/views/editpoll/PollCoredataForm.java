@@ -51,14 +51,23 @@ public class PollCoredataForm extends PollBindableForm{
 	public void configureInputFields(AbstractPoll<?, ?> poll) {
 		removeAll();
 		
-		//Start with title and description
-		add(title, description);
-		
-		//If we have a date poll, add the location before the delete date
-		if (poll instanceof DatePoll) add(location);
-		
-		//Finish with the delete date
-		add(deleteDate);
+		if (poll instanceof DatePoll) configureForDatePoll((DatePoll) poll);
+	}
+	
+	/**
+	 * Configure the form for a {@link DatePoll}
+	 * @param poll the poll to configure
+	 */
+	private void configureForDatePoll(DatePoll poll) {
+		setResponsiveSteps(
+			new ResponsiveStep("0", 1),
+			new ResponsiveStep("640px", 4)
+		);
+		add(title, location, description, deleteDate);
+		setColspan(title, 2);
+		setColspan(location, 2);
+		setColspan(description, 3);
+		setColspan(deleteDate, 1);
 	}
 	
 }

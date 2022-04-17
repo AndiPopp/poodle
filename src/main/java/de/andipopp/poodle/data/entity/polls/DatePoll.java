@@ -2,6 +2,7 @@ package de.andipopp.poodle.data.entity.polls;
 
 import java.util.Iterator;
 
+import javax.annotation.Nullable;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
@@ -25,6 +26,7 @@ public class DatePoll extends AbstractPoll<DatePoll, DateOption> {
 	/**
 	 * An optional location
 	 */
+	@Nullable
 	private String location;
 	
 	/**

@@ -76,11 +76,12 @@ public class EditPollView extends PollView {
 	public EditPollView(UserService userService, PollService pollService) {
 		super(userService, pollService);
 		this.add(notFound());
-		this.setMaxWidth(MAX_WIDTH);
 		
 		//configure buttons
 		toStep2Button.addClassName("primary-text");
+		toStep2Button.addClickListener(e -> pollSettingsFormPanel.setOpened(true));
 		toStep3Button.addClassName("primary-text");
+		toStep3Button.addClickListener(e -> optionFormListPanel.setOpened(true));
 		deletePollButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
 		savePollButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     }
@@ -89,6 +90,14 @@ public class EditPollView extends PollView {
 	protected void loadPoll(AbstractPoll<?, ?> poll) {	
 		super.loadPoll(poll);
 		this.removeAll(); //remove the poll not found page
+		
+		VerticalLayout content = new VerticalLayout();
+		content.setPadding(false);
+		content.setMaxWidth(MAX_WIDTH);
+		HorizontalLayout contentWrapper = new HorizontalLayout(content);
+		contentWrapper.setJustifyContentMode(JustifyContentMode.CENTER);
+		contentWrapper.setWidthFull();
+		this.add(contentWrapper);
 		
 		//check access
 		if (!userHasAccess()) {
@@ -99,7 +108,7 @@ public class EditPollView extends PollView {
 		//create the accordion
 		formAccordion = new Accordion();
 		formAccordion.setWidthFull();
-		add(formAccordion);
+		content.add(formAccordion);
 		
 		//build core elements and wrap them with their buttons
 		pollCoredataForm = new PollCoredataForm(this.poll);
@@ -137,7 +146,7 @@ public class EditPollView extends PollView {
 		);
 		buttonBar.setJustifyContentMode(JustifyContentMode.BETWEEN);
 		buttonBar.setWidthFull();
-		this.add(buttonBar);
+		content.add(buttonBar);
 		
 		//load the data
 		bindAndLoad();

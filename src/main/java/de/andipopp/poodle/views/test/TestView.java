@@ -34,8 +34,9 @@ public class TestView extends VerticalLayout {
 		}
 		
 		this.add(testBox("320px"));
+		this.add(testBox("480px"));
 		this.add(testBox("640px"));
-		this.add(testBox("840px"));
+		this.add(testBox("800px"));
 		this.add(testBox("1080px"));
 	}
 	
