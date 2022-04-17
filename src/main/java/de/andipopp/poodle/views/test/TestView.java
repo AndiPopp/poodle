@@ -1,6 +1,8 @@
-package de.andipopp.poodle.views.viewpoll;
+package de.andipopp.poodle.views.test;
 
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -14,7 +16,7 @@ import de.andipopp.poodle.views.MainLayout;
 @Route(value = "view-poll", layout = MainLayout.class)
 //@RouteAlias(value = "", layout = MainLayout.class)
 @AnonymousAllowed
-public class ViewPollView extends VerticalLayout {
+public class TestView extends VerticalLayout {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -23,15 +25,26 @@ public class ViewPollView extends VerticalLayout {
 	/**
 	 * @param pollService
 	 */
-	public ViewPollView(PollService pollService) {
+	public TestView(PollService pollService) {
 		super();
 		this.pollService = pollService;
 		
 		for(AbstractPoll<?,?> poll : pollService.findAll()) {
 			add(new Paragraph(poll.toString()));
 		}
+		
+		this.add(testBox("320px"));
+		this.add(testBox("640px"));
+		this.add(testBox("840px"));
+		this.add(testBox("1080px"));
 	}
 	
+	private HorizontalLayout testBox(String width) {
+		HorizontalLayout horizontalLayout = new HorizontalLayout(new Label(width));
+		horizontalLayout.setWidth(width);
+		horizontalLayout.getStyle().set("border", "2px dotted FireBrick");
+		return horizontalLayout;
+	}
     
     
 //    public ViewPollView() {
