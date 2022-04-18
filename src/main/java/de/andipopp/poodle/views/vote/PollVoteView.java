@@ -46,7 +46,7 @@ import de.andipopp.poodle.views.vote.date.DatePollListView;
  * @author Andi Popp
  *
  */
-public class VoteView extends PollView {
+public class PollVoteView extends PollView {
 		
 	private static final long serialVersionUID = 1L;
 
@@ -76,7 +76,7 @@ public class VoteView extends PollView {
 	
 	PollListView<?, ?> listView;
 	
-	public VoteView(AuthenticatedUser authenticatedUser, PollService pollService, VoteService voteService) {
+	public PollVoteView(AuthenticatedUser authenticatedUser, PollService pollService, VoteService voteService) {
 		super(authenticatedUser, pollService);
 		//hookup the vote service
 		this.voteService = voteService;
