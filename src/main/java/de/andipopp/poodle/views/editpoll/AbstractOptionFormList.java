@@ -2,11 +2,14 @@ package de.andipopp.poodle.views.editpoll;
 
 import java.util.List;
 
+import com.vaadin.flow.component.HasValue.ValueChangeEvent;
+import com.vaadin.flow.component.HasValue.ValueChangeListener;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
+import de.andipopp.poodle.views.HasValueFields;
 
-public abstract class AbstractOptionFormList<F extends AbstractOptionForm> extends VerticalLayout {
+public abstract class AbstractOptionFormList<F extends AbstractOptionForm> extends VerticalLayout implements HasValueFields {
 
 	private static final long serialVersionUID = 1L;
 
@@ -47,6 +50,11 @@ public abstract class AbstractOptionFormList<F extends AbstractOptionForm> exten
 		this.optionForms = optionForms;
 	}
 	
-	
+	@Override
+	public void addValueChangeListenerToFields(ValueChangeListener<ValueChangeEvent<?>> listener) {
+		for(AbstractOptionForm form : getOptionForms()) {
+			form.addValueChangeListenerToFields(listener);
+		}
+	}
 	
 }

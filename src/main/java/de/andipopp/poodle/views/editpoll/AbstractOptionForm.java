@@ -2,6 +2,8 @@ package de.andipopp.poodle.views.editpoll;
 
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.HasValue.ValueChangeEvent;
+import com.vaadin.flow.component.HasValue.ValueChangeListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -12,13 +14,14 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.shared.Registration;
 
 import de.andipopp.poodle.data.entity.polls.AbstractOption;
+import de.andipopp.poodle.views.HasValueFields;
 
 /**
  * A basic layout for editing {@link AbstractOption}s.
  * @author Andi Popp
  *
  */
-public abstract class AbstractOptionForm extends VerticalLayout {
+public abstract class AbstractOptionForm extends VerticalLayout implements HasValueFields {
 
 	/**
 	 * Default serial version UID
@@ -193,9 +196,9 @@ public abstract class AbstractOptionForm extends VerticalLayout {
 		debugLabel.setText(option);
 	}
 	
-	/* ================
-	 * = Button Event =
-	 * ================ */
+	/* ==========
+	 * = Events =
+	 * ========== */
 	
 	/**
 	 * Delete the option associated with this form.
@@ -227,6 +230,11 @@ public abstract class AbstractOptionForm extends VerticalLayout {
 			this.removeClassName(DELETE_CSS_CLASS_NAME);
 			deleteButton.removeThemeVariants(ButtonVariant.LUMO_PRIMARY);
 		}
+	}
+	
+	@Override
+	public void addValueChangeListenerToFields(ValueChangeListener<ValueChangeEvent<?>> listener) {
+		HasValueFields.addValueChangeListenerToOnBlurTextField(title, listener);
 	}
 	
 	/* ================

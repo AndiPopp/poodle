@@ -14,6 +14,8 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.BeforeLeaveEvent;
+import com.vaadin.flow.router.BeforeLeaveObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
@@ -27,7 +29,7 @@ import de.andipopp.poodle.views.MainLayout;
 @Route(value = "view-poll", layout = MainLayout.class)
 //@RouteAlias(value = "", layout = MainLayout.class)
 @AnonymousAllowed
-public class TestView extends VerticalLayout {
+public class TestView extends VerticalLayout implements BeforeLeaveObserver {
 
 	private static final long serialVersionUID = 1L;
 
@@ -91,5 +93,11 @@ public class TestView extends VerticalLayout {
 			+ "LOCATION:Mo's bar - back room\n"
 			+ "END:VEVENT\n"
 			+ "END:VCALENDAR";
+
+	@Override
+	public void beforeLeave(BeforeLeaveEvent event) {
+		System.out.println("Before leave is triggered in TestView");
+		
+	}
 
 }

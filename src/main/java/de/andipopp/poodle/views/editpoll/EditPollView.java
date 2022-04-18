@@ -2,11 +2,14 @@ package de.andipopp.poodle.views.editpoll;
 
 import javax.annotation.security.PermitAll;
 
+import com.vaadin.flow.component.HasValue.ValueChangeEvent;
+import com.vaadin.flow.component.HasValue.ValueChangeListener;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.accordion.AccordionPanel;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.dialog.DialogVariant;
 import com.vaadin.flow.component.html.Label;
@@ -18,6 +21,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
+import com.vaadin.flow.router.BeforeLeaveEvent;
+import com.vaadin.flow.router.BeforeLeaveEvent.ContinueNavigationAction;
+import com.vaadin.flow.router.BeforeLeaveObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
@@ -36,7 +42,7 @@ import de.andipopp.poodle.views.mypolls.MyPollsView;
 @PageTitle("Edit Poodle Poll")
 @Route(value = "edit", layout = MainLayout.class)
 @PermitAll
-public class EditPollView extends PollView {
+public class EditPollView extends PollView implements ValueChangeListener<ValueChangeEvent<?>>, BeforeLeaveObserver  {
 
     public static final String CREATE_POLL_KEY = "createPoll";
 
@@ -83,6 +89,11 @@ public class EditPollView extends PollView {
     Binder<DatePoll> datePollBinder;
     
     /**
+     * Remember if there are any changes in the poll to warn the user if the leave 
+     */
+    private boolean hasChanges = false;
+    
+    /**
      * Constructor to remember the services
      * @param userService the user service
      * @param pollService the poll service
@@ -107,7 +118,7 @@ public class EditPollView extends PollView {
 
 
 	@Override
-	protected void loadPoll(AbstractPoll<?, ?> poll) {	
+	protected void loadPoll(AbstractPoll<?, ?> poll) {	//TODO this methods is quite bulky and needs some restructuring
 		super.loadPoll(poll);
 		this.removeAll(); //remove the poll not found page
 		
@@ -149,6 +160,7 @@ public class EditPollView extends PollView {
 			optionFormList = new DateOptionFormList((DatePoll) this.poll, VaadinUtils.guessTimeZoneFromVaadinRequest()); //TODO get timezone from user settings
 		optionFormList.buildList();
 		optionFormList.setPadding(false);
+
 		optionFormListPanel = new AccordionPanel("Step 3: Define Options", optionFormList);
 		formAccordion.add(optionFormListPanel);
 		
@@ -174,6 +186,13 @@ public class EditPollView extends PollView {
 		
 		//load the data
 		bindAndLoad();
+		
+		//reset the changes
+		hasChanges = false;
+		
+		pollCoredataForm.addValueChangeListenerToFields(this);
+		pollSettingsForm.addValueChangeListenerToFields(this);
+		optionFormList.addValueChangeListenerToFields(this);
 	}
 	
 	@Override
@@ -370,6 +389,24 @@ public class EditPollView extends PollView {
 		Notification.show("Unexpected error: Unkown poll type")
 			.addThemeVariants(NotificationVariant.LUMO_ERROR);
 		return false;
+	}
+
+	@Override
+	public void valueChanged(ValueChangeEvent<?> event) {
+		this.hasChanges = true;
+	}
+
+	@Override
+	public void beforeLeave(BeforeLeaveEvent event) {
+		System.out.println("Before leave is triggered in EditPollView");
+		
+		if (this.hasChanges) {
+			ContinueNavigationAction action = event.postpone();
+			ConfirmDialog confirmDialog = new ConfirmDialog(null, "Your poll has unsaved changes.", "Leave anyway?", e -> action.proceed());
+			confirmDialog.setCancelable(true);
+			confirmDialog.open();
+		}
+		
 	}
 	
 }

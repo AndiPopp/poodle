@@ -1,5 +1,7 @@
 package de.andipopp.poodle.views.editpoll;
 
+import com.vaadin.flow.component.HasValue.ValueChangeEvent;
+import com.vaadin.flow.component.HasValue.ValueChangeListener;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.data.binder.Binder;
@@ -44,6 +46,12 @@ public class PollSettingsForm extends PollBindableForm {
 		
 		//Currently we only have these settings
 		add(enableIfNeedBe, enableAbstain);
+	}
+
+	@Override
+	public void addValueChangeListenerToFields(ValueChangeListener<ValueChangeEvent<?>> listener) {
+		enableAbstain.addValueChangeListener(listener);
+		enableIfNeedBe.addValueChangeListener(listener);
 	}
 	
 }

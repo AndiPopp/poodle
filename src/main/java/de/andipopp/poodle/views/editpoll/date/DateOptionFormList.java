@@ -91,6 +91,4 @@ public class DateOptionFormList extends AbstractOptionFormList<DateOptionForm> {
 			}
 		}
 	}
-	
-	
 }

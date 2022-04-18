@@ -3,6 +3,8 @@ package de.andipopp.poodle.views.editpoll.date;
 import java.time.ZoneId;
 import java.util.Date;
 
+import com.vaadin.flow.component.HasValue.ValueChangeEvent;
+import com.vaadin.flow.component.HasValue.ValueChangeListener;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
@@ -10,6 +12,7 @@ import com.vaadin.flow.data.binder.Binder;
 
 import de.andipopp.poodle.data.entity.polls.DateOption;
 import de.andipopp.poodle.util.TimeUtils;
+import de.andipopp.poodle.views.HasValueFields;
 import de.andipopp.poodle.views.editpoll.AbstractOptionForm;
 
 /**
@@ -19,7 +22,7 @@ import de.andipopp.poodle.views.editpoll.AbstractOptionForm;
  * @author Andi Popp
  *
  */
-public class DateOptionForm extends AbstractOptionForm{
+public class DateOptionForm extends AbstractOptionForm {
 
 	/**
 	 * Serial version UID
@@ -150,6 +153,14 @@ public class DateOptionForm extends AbstractOptionForm{
 
 	public void writeIfValid() {
 		binder.writeBeanIfValid(getOption());
+	}
+
+	@Override
+	public void addValueChangeListenerToFields(ValueChangeListener<ValueChangeEvent<?>> listener) {
+		super.addValueChangeListenerToFields(listener);
+		HasValueFields.addValueChangeListenerToOnBlurTextField(location, listener);
+		startPicker.addValueChangeListener(listener);
+		endPicker.addValueChangeListener(listener);
 	}
 
 }

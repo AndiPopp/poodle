@@ -4,13 +4,14 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Span;
 
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
+import de.andipopp.poodle.views.HasValueFields;
 
 /**
  * A form with input field which can be bound to an {@link AbstractPoll}.
  * @author Andi Popp
  *
  */
-public abstract class PollBindableForm extends FormLayout {
+public abstract class PollBindableForm extends FormLayout implements HasValueFields {
 
 	private static final long serialVersionUID = 1L;
 
@@ -38,5 +39,4 @@ public abstract class PollBindableForm extends FormLayout {
 	 * @param poll
 	 */
 	public abstract void configureInputFields(AbstractPoll<?, ?> poll);
-	
 }

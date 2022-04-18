@@ -1,5 +1,7 @@
 package de.andipopp.poodle.views.editpoll;
 
+import com.vaadin.flow.component.HasValue.ValueChangeEvent;
+import com.vaadin.flow.component.HasValue.ValueChangeListener;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -7,6 +9,7 @@ import com.vaadin.flow.data.binder.Binder;
 
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
+import de.andipopp.poodle.views.HasValueFields;
 
 /**
  * A type of {@link FormLayout} to manage core data for all types of {@link AbstractPoll}s.
@@ -52,6 +55,8 @@ public class PollCoredataForm extends PollBindableForm{
 		removeAll();
 		
 		if (poll instanceof DatePoll) configureForDatePoll((DatePoll) poll);
+		
+
 	}
 	
 	/**
@@ -69,5 +74,14 @@ public class PollCoredataForm extends PollBindableForm{
 		setColspan(description, 3);
 		setColspan(deleteDate, 1);
 	}
+	
+	public void addValueChangeListenerToFields(ValueChangeListener<ValueChangeEvent<?>> listener) {
+		HasValueFields.addValueChangeListenerToOnBlurTextField(title, listener);
+		HasValueFields.addValueChangeListenerToOnBlurTextField(location, listener);
+		HasValueFields.addValueChangeListenerToOnBlurTextField(description, listener);
+		deleteDate.addValueChangeListener(listener);
+	}
+	
+
 	
 }

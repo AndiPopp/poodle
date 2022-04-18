@@ -330,5 +330,5 @@ public class VoteView extends PollView {
 //			this.getStyle().set("border", "2px dotted DarkOrange") ; //for debug purposes
 		}
 		
-	}  
+	}
 }
