@@ -11,6 +11,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.dialog.DialogVariant;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -76,8 +77,10 @@ public class EditPollView extends PollView {
     
     private Button savePollButton = new Button("Save Poll");
     
+    private Button gotoVoteViewButton = new Button("View Poll");
+    
     //specific binder for each possible type of poll to bind the poll's direct data
-    Binder<DatePoll> datePollBinder = new BeanValidationBinder<>(DatePoll.class);
+    Binder<DatePoll> datePollBinder;
     
     /**
      * Constructor to remember the services
@@ -97,6 +100,8 @@ public class EditPollView extends PollView {
 		deletePollButton.addClickListener(e -> confirmDeletePoll());
 		savePollButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 		savePollButton.addClickListener(e -> updatePoll());
+		gotoVoteViewButton.addClassName("primary-text");
+		gotoVoteViewButton.addClickListener(e -> UI.getCurrent().navigate("poll", poll.buildQueryParameters(false)));
     }
 
 
@@ -150,15 +155,19 @@ public class EditPollView extends PollView {
 		//add the final buttons
 		
 		HorizontalLayout deleteButtonPanel = new HorizontalLayout();
-		if (poll.getId() != null) { //we have a poll which is stored, so it can be deleted
-			deleteButtonPanel.add(deletePollButton);
-			deleteButtonPanel.add(new DebugLabel(this.poll));
-		}
+		DebugLabel debugLabel = new DebugLabel(this.poll);
+		deleteButtonPanel.add(deletePollButton, debugLabel);
 		deleteButtonPanel.setDefaultVerticalComponentAlignment(Alignment.BASELINE);
+		
 		HorizontalLayout buttonBar = new HorizontalLayout(
-				deleteButtonPanel,
-				savePollButton
+				new HorizontalLayout(deleteButtonPanel),
+				new HorizontalLayout(gotoVoteViewButton, savePollButton)
 		);
+		
+		deletePollButton.setVisible(poll != null && poll.getId() != null);
+		debugLabel.setVisible(poll != null && poll.getId() != null);
+		gotoVoteViewButton.setVisible(poll != null && poll.getId() != null);
+		
 		buttonBar.setJustifyContentMode(JustifyContentMode.BETWEEN);
 		buttonBar.setWidthFull();
 		content.add(buttonBar);
@@ -217,6 +226,8 @@ public class EditPollView extends PollView {
 	
 	private void bindAndLoad() {
 		if (this.poll instanceof DatePoll) {
+			datePollBinder = new BeanValidationBinder<>(DatePoll.class);
+			
 			//Bind the deleteBy date first, so we can configure a validator ...
 			;
 			datePollBinder.forField(pollCoredataForm.deleteDate)
@@ -289,13 +300,26 @@ public class EditPollView extends PollView {
 	}
 
 	private void updatePoll() {
+		//validate the input fields
 		if (!allValid()) {
 			Notification.show("Invalid inputs detected. Please fix the marked issues before saving")
 				.addThemeVariants(NotificationVariant.LUMO_ERROR);
 			return;
 		}
 		
+		//write the input fields into the poll and option beans
 		writeAllIfValid();
+		
+		//delete and connect the options to the poll
+		if (!deleteAndConnectOptionsToPoll()) return;
+		
+		//write to backend
+		loadPoll(pollService.update(poll));
+		
+		Notification succ = Notification.show("Poll saved!");
+		succ.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+		succ.setPosition(Position.BOTTOM_CENTER);
+		
 	}
 	
 	/**
@@ -328,6 +352,24 @@ public class EditPollView extends PollView {
 		for(AbstractOptionForm optionForm : optionFormList.getOptionForms()) {
 			optionForm.writeIfValidAndNotDeleteFlagged();
 		}
+	}
+	
+	/**
+	 * Delete flagged options from poll and add new options to poll
+	 */
+	private boolean deleteAndConnectOptionsToPoll() {
+		if (poll instanceof DatePoll && optionFormList instanceof DateOptionFormList) {
+			((DateOptionFormList) optionFormList).deleteAndConnect((DatePoll) poll);
+			return true;
+		}else if(poll instanceof DatePoll) {
+			Notification.show("Unexpected error: Poll type and list type do not match")
+				.addThemeVariants(NotificationVariant.LUMO_ERROR);
+			return false;
+		}
+		
+		Notification.show("Unexpected error: Unkown poll type")
+			.addThemeVariants(NotificationVariant.LUMO_ERROR);
+		return false;
 	}
 	
 }

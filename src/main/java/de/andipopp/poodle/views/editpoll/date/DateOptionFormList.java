@@ -76,9 +76,21 @@ public class DateOptionFormList extends AbstractOptionFormList<DateOptionForm> {
 	public VariableLocalDateTimeToDateConverter getConverter() {
 		return converter;
 	}
-
-
 	
+	/* =================
+	 * = Data Handling =
+	 * ================= */
+
+
+	public void deleteAndConnect(DatePoll poll) {
+		for(DateOptionForm form : getOptionForms()) {
+			if (form.isDelete()) {
+				poll.removeOption(form.getOption());
+			} else if (!poll.getOptions().contains(form.getOption())) {
+				poll.addOption(form.getOption());
+			}
+		}
+	}
 	
 	
 }

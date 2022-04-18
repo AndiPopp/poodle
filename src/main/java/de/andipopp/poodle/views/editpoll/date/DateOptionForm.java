@@ -151,4 +151,5 @@ public class DateOptionForm extends AbstractOptionForm{
 	public void writeIfValid() {
 		binder.writeBeanIfValid(getOption());
 	}
+
 }
