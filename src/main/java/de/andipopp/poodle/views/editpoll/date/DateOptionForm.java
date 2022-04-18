@@ -5,6 +5,7 @@ import java.util.Date;
 
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 
 import de.andipopp.poodle.data.entity.polls.DateOption;
@@ -30,7 +31,7 @@ public class DateOptionForm extends AbstractOptionForm{
 	/**
 	 * Binder to handle the text fields, which do not need time zone support
 	 */
-	private Binder<DateOption> binder = new Binder<>(DateOption.class);
+	private Binder<DateOption> binder = new BeanValidationBinder<>(DateOption.class);
 	
 	/**
 	 * Input field for {@link DateOption#getLocation()}
@@ -69,8 +70,6 @@ public class DateOptionForm extends AbstractOptionForm{
 		title.setRequired(false);
 		
 		//prepare the binder
-		binder.bind(title, DateOption::getTitle, DateOption::setTitle);
-		binder.bind(location, DateOption::getLocation, DateOption::setLocation);
 		binder.forField(startPicker)
 			.withConverter(getList().getConverter())
 			.asRequired()
@@ -80,6 +79,8 @@ public class DateOptionForm extends AbstractOptionForm{
 			.asRequired()
 			.withValidator(endDate -> validateEndDate(endDate), "End date must be after start date")
 			.bind(DateOption::getEnd, DateOption::setEnd);
+		//bind the rest of the fields
+		binder.bindInstanceFields(this);
 	}
 	
 	private boolean validateEndDate(Date endDate) {
@@ -126,8 +127,6 @@ public class DateOptionForm extends AbstractOptionForm{
 		TimeUtils.updateDateTimePicker(endPicker, oldTimeZone, newTimeZone);
 	}
 	
-	
-	
 	/* =================
 	 * = Data Handling =
 	 * ================= */
@@ -143,13 +142,13 @@ public class DateOptionForm extends AbstractOptionForm{
 	public void loadData() {
 		configureDebugLabel();
 		binder.readBean(getOption());
-//		TimeUtils.setDateTimePicker(startPicker, getOption().getStart().toInstant(), getList().getTimezone());
-//		TimeUtils.setDateTimePicker(endPicker, getOption().getEnd().toInstant(), getList().getTimezone());
 	}
 	
-	public void validateInputs() {
-		binder.validate().isOk();
-
+	public boolean validate() {
+		return binder.validate().isOk();
 	}
 
+	public void writeIfValid() {
+		binder.writeBeanIfValid(getOption());
+	}
 }

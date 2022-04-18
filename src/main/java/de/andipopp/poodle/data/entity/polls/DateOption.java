@@ -7,8 +7,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 
+import javax.annotation.Nullable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import biweekly.component.VEvent;
 import de.andipopp.poodle.data.entity.User;
@@ -34,8 +37,16 @@ public class DateOption extends AbstractOption<DatePoll, DateOption> {
 	private Date end;
 	
 	/**
+	 * Max length for {@link #location}
+	 */
+	public static final int MAX_LOCATION_LENGTH = 63;
+	
+	/**
 	 * Specific location for this option (can be null)
 	 */
+	@Nullable
+	@Column(length = MAX_LOCATION_LENGTH)
+	@Size(max = MAX_LOCATION_LENGTH)
 	private String location;
 
 	/* ================

@@ -177,6 +177,18 @@ public abstract class AbstractOptionForm extends VerticalLayout {
 
 	public abstract void loadData();
 	
+	public boolean validateNonDeleteFlagged() {
+		return delete || validate();
+	}
+	
+	public abstract boolean validate();
+	
+	public void writeIfValidAndNotDeleteFlagged() {
+		if (!delete) writeIfValid();
+	}
+	
+	public abstract void writeIfValid();
+	
 	public void configureDebugLabel() {
 		debugLabel.setText(option);
 	}

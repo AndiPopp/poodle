@@ -20,6 +20,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -64,16 +65,30 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	private String editKey;
 	
 	/**
+	 * Max length of the {@link #title}
+	 */
+	public static final int MAX_TITLE_LENGTH = 127;
+	
+	/**
 	 * The poll's title
 	 */
 	@NotEmpty
 	@NotNull
+	@Column(length = MAX_TITLE_LENGTH)
+	@Size(max = MAX_TITLE_LENGTH)
 	private String title;
+	
+	/**
+	 * Max length of the {@link #description}
+	 */
+	public static final int MAX_DESCRIPTION_LENGTH = 511;
 	
 	/**
 	 * An optional poll description
 	 */
 	@Nullable
+	@Column(length = MAX_DESCRIPTION_LENGTH) 
+	@Size(max = MAX_DESCRIPTION_LENGTH)
 	private String description;
 	
 	/**

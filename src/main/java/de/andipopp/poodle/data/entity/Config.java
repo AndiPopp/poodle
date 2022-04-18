@@ -146,6 +146,35 @@ public class Config extends AbstractEntity {
 	}
 
 	/**
+	 * The minimum number of days from the current day {@link AbstractPoll#setDeleteDate(LocalDate)} will accept
+	 */
+	private int minPollRetentionDays = 7;
+	
+	/**
+	 * Getter for {@link #minPollRetentionDays}
+	 * @return the {@link #minPollRetentionDays}
+	 */
+	public int getMinPollRetentionDays() {
+		return minPollRetentionDays;
+	}
+
+	/**
+	 * Setter for {@link #minPollRetentionDays}
+	 * @param minPollRetentionDays the {@link #minPollRetentionDays} to set
+	 */
+	public void setMinPollRetentionDays(int minPollRetentionDays) {
+		this.minPollRetentionDays = minPollRetentionDays;
+	}
+
+	/**
+	 * Convenience function calculating the latest days for poll retention based on {@link #maxPollRetentionDays}
+	 * @return the latest date for poll retention
+	 */
+	public LocalDate getEarliestPollRetentionDate() {
+		return LocalDate.now().plusDays(minPollRetentionDays);
+	}
+	
+	/**
 	 * The maximum number of days from the current day {@link AbstractPoll#setDeleteDate()} will accept
 	 */
 	private int maxPollRetentionDays = 500;
@@ -167,7 +196,8 @@ public class Config extends AbstractEntity {
 	}
 	
 	public boolean checkDeleteDate(LocalDate deleteDate) {
-		return ChronoUnit.DAYS.between(LocalDate.now(), deleteDate) <= maxPollRetentionDays;
+		long daysBetween = ChronoUnit.DAYS.between(LocalDate.now(), deleteDate);
+		return daysBetween <= maxPollRetentionDays && daysBetween >= minPollRetentionDays;
 	}
 	
 	/**

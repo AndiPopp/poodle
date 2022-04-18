@@ -7,9 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -35,8 +37,15 @@ public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends Abst
 	private List<Answer<P,O>> answers;
 	
 	/**
+	 * Max length of the {@link #title}
+	 */
+	public static final int MAX_TITLE_LENGTH = 63;
+	
+	/**
 	 * An optional human readable title
 	 */
+	@Column(length = MAX_TITLE_LENGTH)
+	@Size(max = MAX_TITLE_LENGTH)
 	private String title;
 
 	/**

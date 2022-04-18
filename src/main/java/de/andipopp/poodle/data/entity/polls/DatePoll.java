@@ -3,8 +3,10 @@ package de.andipopp.poodle.data.entity.polls;
 import java.util.Iterator;
 
 import javax.annotation.Nullable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
@@ -26,17 +28,22 @@ public class DatePoll extends AbstractPoll<DatePoll, DateOption> {
 	public static final String TYPE_NAME = "DatePoll";
 	
 	/**
+	 * Max length for {@link #location}
+	 */
+	public static final int MAX_LOCATION_LENGTH = 255;
+	
+	/**
 	 * An optional location
 	 */
 	@Nullable
+	@Column(length = MAX_LOCATION_LENGTH)
+	@Size(max = MAX_LOCATION_LENGTH)
 	private String location;
 	
 	/**
-	 * Construct new poll with random RUID
+	 * Construct new poll with random UUID
 	 */
-	public DatePoll() {
-		initEmpty();
-	}
+	public DatePoll() {}
 
 	/**
 	 * @param title
@@ -53,11 +60,6 @@ public class DatePoll extends AbstractPoll<DatePoll, DateOption> {
 	 */
 	public DatePoll(User owner) {
 		super(owner);
-		initEmpty();
-	}
-
-	private void initEmpty() {
-		
 	}
 	
 	/**

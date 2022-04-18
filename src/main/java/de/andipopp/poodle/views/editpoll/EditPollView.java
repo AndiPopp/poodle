@@ -16,6 +16,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
@@ -95,7 +96,10 @@ public class EditPollView extends PollView {
 		deletePollButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
 		deletePollButton.addClickListener(e -> confirmDeletePoll());
 		savePollButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+		savePollButton.addClickListener(e -> updatePoll());
     }
+
+
 
 	@Override
 	protected void loadPoll(AbstractPoll<?, ?> poll) {	
@@ -219,7 +223,7 @@ public class EditPollView extends PollView {
 				.asRequired("Must specify a delete date")
 				.withValidator(
 					deleteDate -> Config.getCurrent().checkDeleteDate(deleteDate),
-					"Delete date must be within " + Config.getCurrent().getMaxPollRetentionDays() + " days (latest " + Config.getCurrent().getLatestPollRetentionDate()+ ")"
+					"Delete date must be within " +Config.getCurrent().getMinPollRetentionDays() + " to " + Config.getCurrent().getMaxPollRetentionDays() + " days (" + Config.getCurrent().getEarliestPollRetentionDate() + " to " + Config.getCurrent().getLatestPollRetentionDate()+ ")"
 				)
 				.bind("deleteDate");
 			//... bind the rest with bindInstanceFields, it will ignore the delete date (https://vaadin.com/docs/latest/flow/binding-data/components-binder-beans)
@@ -284,5 +288,46 @@ public class EditPollView extends PollView {
 		}
 	}
 
+	private void updatePoll() {
+		if (!allValid()) {
+			Notification.show("Invalid inputs detected. Please fix the marked issues before saving")
+				.addThemeVariants(NotificationVariant.LUMO_ERROR);
+			return;
+		}
+		
+		writeAllIfValid();
+	}
+	
+	/**
+	 * Check if all {@link Binder}s return true for {@link BinderValidationStatus#isOk()}.
+	 * This includes the type specific binder for the poll itself as well as the binders
+	 * for each option
+	 * @return true if {@link BinderValidationStatus#isOk()} returns true for all {@link Binder}s, false otherwise
+	 */
+	private boolean allValid() {
+		boolean result = true;
+		
+		//check the poll specific binders first
+		if (poll instanceof DatePoll) result = result & datePollBinder.validate().isOk();
+		
+		//check the options
+		for(AbstractOptionForm optionForm : optionFormList.getOptionForms()) {
+			result = result & optionForm.validateNonDeleteFlagged();
+		}
+		
+		return result;
+	}
 
+	/**
+	 * Write all bound input fields if they are valid.
+	 * Should be used after checking {@link #allValid()}.
+	 */
+	private void writeAllIfValid() {
+		if (poll instanceof DatePoll) datePollBinder.writeBeanIfValid((DatePoll) poll);
+		
+		for(AbstractOptionForm optionForm : optionFormList.getOptionForms()) {
+			optionForm.writeIfValidAndNotDeleteFlagged();
+		}
+	}
+	
 }
