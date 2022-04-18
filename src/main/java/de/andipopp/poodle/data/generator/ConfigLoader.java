@@ -23,7 +23,7 @@ public class ConfigLoader {
 			Logger logger = LoggerFactory.getLogger(getClass());
 			ConfigLoader.configService = configService;
 			logger.info("Config service hooked up. Has "+configService.count()+" configs");
-			Config.setCurrentConfig(configService.getDefaultConfig());
+			Config.setCurrent(configService.getDefaultConfig());
 		};
 	}
 }

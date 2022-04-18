@@ -7,8 +7,11 @@ import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import org.jsoup.safety.Safelist;
+
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.data.generator.ConfigLoader;
+import de.andipopp.poodle.util.JSoupUtils;
 
 @Entity
 public class Config extends AbstractEntity {
@@ -26,29 +29,29 @@ public class Config extends AbstractEntity {
 	/**
 	 * The currently active config
 	 */
-	private static Config currentConfig;
+	private static Config current;
 	
 	/**
-	 * Getter for {@link #currentConfig}
-	 * @return the {@link #currentConfig}
+	 * Getter for {@link #current}
+	 * @return the {@link #current}
 	 */
 	public static Config getCurrent() {
-		if (currentConfig == null) {
+		if (current == null) {
 			if (ConfigLoader.configService != null) {
-				setCurrentConfig(ConfigLoader.configService.getDefaultConfig());
+				setCurrent(ConfigLoader.configService.getDefaultConfig());
 			} else {
 				return new Config();
 			}
 		}
-		return currentConfig;
+		return current;
 	}
 
 	/**
-	 * Setter for {@link #currentConfig}
-	 * @param currentConfig the {@link #currentConfig} to set
+	 * Setter for {@link #current}
+	 * @param currentConfig the {@link #current} to set
 	 */
-	public static void setCurrentConfig(Config currentConfig) {
-		Config.currentConfig = currentConfig;
+	public static void setCurrent(Config currentConfig) {
+		Config.current = currentConfig;
 	}
 	
 	//TODO a version of setCurrentConfig which tries to load a config from backend
@@ -99,6 +102,49 @@ public class Config extends AbstractEntity {
 	 * = Dynamic members =
 	 * ================== */
 	
+	/**
+	 * The title displayed at the welcome screen for unregistered users
+	 */
+	private String welcomeTitle = "Welcome to Poodle";
+	
+	/**
+	 * Getter for {@link #welcomeTitle}
+	 * @return the {@link #welcomeTitle}
+	 */
+	public String getWelcomeTitle() {
+		return welcomeTitle;
+	}
+
+	/**
+	 * Setter for {@link #welcomeTitle}
+	 * @param welcomeTitle the {@link #welcomeTitle} to set
+	 */
+	public void setWelcomeTitle(String welcomeTitle) {
+		this.welcomeTitle = welcomeTitle;
+	}
+
+	/**
+	 * The message displayed below the {@link #welcomeTitle} at the welcome screen for unregistered users.
+	 * Can contain {@link Safelist#basicWithImages()} HTML
+	 */
+	private String welcomeMessage = "Login to manage your polls.";
+	
+	/**
+	 * Getter for {@link #welcomeMessage}
+	 * @return the {@link #welcomeMessage}
+	 */
+	public String getWelcomeMessage() {
+		return welcomeMessage; 
+	}
+
+	/**
+	 * Setter for {@link #welcomeMessage}
+	 * @param welcomeMessage the {@link #welcomeMessage} to set
+	 */
+	public void setWelcomeMessage(String welcomeMessage) {
+		this.welcomeMessage = JSoupUtils.cleanBasicWithImages(welcomeMessage);
+	}
+
 	/**
 	 * The maximum number of days from the current day {@link AbstractPoll#setDeleteDate()} will accept
 	 */

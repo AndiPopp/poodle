@@ -27,7 +27,6 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
 import de.andipopp.poodle.data.service.PollService;
-import de.andipopp.poodle.data.service.UserService;
 import de.andipopp.poodle.data.service.VoteService;
 import de.andipopp.poodle.security.AuthenticatedUser;
 import de.andipopp.poodle.util.HtmlUtils;
