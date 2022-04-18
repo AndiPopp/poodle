@@ -65,7 +65,7 @@ public class DatePollForm extends FormLayout {
 		DecimalFormat fmt = new DecimalFormat("#0");
 		fmt.setPositivePrefix("+");
 		timeZone.setItemLabelGenerator(z -> z.getDisplayName(TextStyle.NARROW, Locale.US) + " (UTC" + z.getRules().getOffset(Instant.now())+")");
-		deleteDate.setMax(LocalDate.now().plusDays(Config.getCurrentConfig().getMaxPollRetentionDays()));
+		deleteDate.setMax(LocalDate.now().plusDays(Config.getCurrent().getMaxPollRetentionDays()));
 		
 		binder.bindInstanceFields(this);
 		

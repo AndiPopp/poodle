@@ -1,5 +1,8 @@
 package de.andipopp.poodle.views.editpoll;
 
+import java.time.LocalDate;
+import java.time.Period;
+
 import javax.annotation.security.PermitAll;
 
 import com.vaadin.flow.component.accordion.Accordion;
@@ -14,6 +17,7 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
+import de.andipopp.poodle.data.entity.Config;
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
 import de.andipopp.poodle.data.service.PollService;
@@ -166,6 +170,16 @@ public class EditPollView extends PollView {
 	
 	private void bindAndLoad() {
 		if (this.poll instanceof DatePoll) {
+			//Bind the deleteBy date first, so we can configure a validator ...
+			;
+			datePollBinder.forField(pollCoredataForm.deleteDate)
+				.asRequired("Must specify a delete date")
+				.withValidator(
+					deleteDate -> Config.getCurrent().checkDeleteDate(deleteDate),
+					"Delete date must be within " + Config.getCurrent().getMaxPollRetentionDays() + " days (latest " + Config.getCurrent().getLatestPollRetentionDate()+ ")"
+				)
+				.bind("deleteDate");
+			//... bind the rest with bindInstanceFields, it will ignore the delete date (https://vaadin.com/docs/latest/flow/binding-data/components-binder-beans)
 			datePollBinder.bindInstanceFields(pollCoredataForm);
 			datePollBinder.bindInstanceFields(pollSettingsForm);
 			datePollBinder.readBean((DatePoll) this.poll);

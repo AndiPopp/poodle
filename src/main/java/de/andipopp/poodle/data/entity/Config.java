@@ -1,5 +1,8 @@
 package de.andipopp.poodle.data.entity;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 import javax.persistence.Entity;
@@ -30,7 +33,7 @@ public class Config extends AbstractEntity {
 	 * Getter for {@link #currentConfig}
 	 * @return the {@link #currentConfig}
 	 */
-	public static Config getCurrentConfig() {
+	public static Config getCurrent() {
 		if (currentConfig == null) {
 			if (ConfigLoader.configService != null) {
 				setCurrentConfig(ConfigLoader.configService.getDefaultConfig());
@@ -110,6 +113,18 @@ public class Config extends AbstractEntity {
 		return maxPollRetentionDays;
 	}
 
+	/**
+	 * Convenience function calculating the latest days for poll retention based on {@link #maxPollRetentionDays}
+	 * @return the latest date for poll retention
+	 */
+	public LocalDate getLatestPollRetentionDate() {
+		return LocalDate.now().plusDays(maxPollRetentionDays);
+	}
+	
+	public boolean checkDeleteDate(LocalDate deleteDate) {
+		return ChronoUnit.DAYS.between(LocalDate.now(), deleteDate) <= maxPollRetentionDays;
+	}
+	
 	/**
 	 * Setter for {@link #maxPollRetentionDays}
 	 * @param maxPollRetentionDays the {@link #maxPollRetentionDays} to set

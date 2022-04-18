@@ -128,7 +128,7 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	public AbstractPoll() {
 		this.options = new ArrayList<O>();
 		this.createDate = Instant.now();
-		this.deleteDate = LocalDate.now().plusDays(Config.getCurrentConfig().getDefaultPollRententionDays());
+		this.deleteDate = LocalDate.now().plusDays(Config.getCurrent().getDefaultPollRententionDays());
 		this.votes = new ArrayList<>();
 	}
 	
@@ -241,7 +241,7 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	 * @param deleteDate the {@link #deleteDate} to set
 	 */
 	public void setDeleteDate(LocalDate deleteDate) {
-		LocalDate max = LocalDate.now().plusDays(Config.getCurrentConfig().getMaxPollRetentionDays());
+		LocalDate max = LocalDate.now().plusDays(Config.getCurrent().getMaxPollRetentionDays());
 		if (deleteDate.compareTo(max) > 0) {
 			this.deleteDate = max;
 		}else {
@@ -508,7 +508,7 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 		if (owner == null) {
 			//orphan polls can be edit by anyone with the edit key (which must be present), 
 			//if the settings allow it
-			return getEditKey() != null && Config.getCurrentConfig().isAllowOrphanPolls();
+			return getEditKey() != null && Config.getCurrent().isAllowOrphanPolls();
 		}
 		
 		//case for owned polls, only owner may edit

@@ -9,12 +9,15 @@ import java.util.Locale;
 import org.apache.commons.io.IOUtils;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.InputStreamFactory;
@@ -23,14 +26,17 @@ import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.server.WrappedSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
+import de.andipopp.poodle.views.mypolls.MyPollsView;
+
 @PageTitle("Welcome to Poodle")
 @Route(value = "", layout = MainLayout.class)
 @AnonymousAllowed
-public class WelcomeView extends VerticalLayout {
+public class WelcomeView extends VerticalLayout implements BeforeEnterObserver {
 
     private static final long serialVersionUID = 1L;
 
 	public WelcomeView() {
+		
         setSpacing(false);
 
 //        Image img = new Image("images/empty-plant.png", "placeholder plant");
@@ -81,6 +87,15 @@ public class WelcomeView extends VerticalLayout {
 			+ "LOCATION:Mo's bar - back room\n"
 			+ "END:VEVENT\n"
 			+ "END:VCALENDAR";
+
+	@Override
+	public void beforeEnter(BeforeEnterEvent event) {
+		if (VaadinRequest.getCurrent().getUserPrincipal().getName() != null) {
+			UI.getCurrent().navigate(MyPollsView.class);
+			event.rerouteTo(MyPollsView.class);
+			
+		}
+	}
 	
 //	private Component listHttpHeaders() {
 //		VerticalLayout result = new VerticalLayout();
