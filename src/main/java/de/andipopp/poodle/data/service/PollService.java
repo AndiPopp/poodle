@@ -31,6 +31,10 @@ public class PollService {
         return repository.save(entity);
     }
 
+    public void delete(AbstractPoll<?, ?> poll) {
+    	repository.delete(poll);
+    }
+    
     public void delete(UUID id) {
         repository.deleteById(id);
     }

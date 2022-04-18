@@ -2,11 +2,16 @@ package de.andipopp.poodle.views.editpoll;
 
 import javax.annotation.security.PermitAll;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.accordion.AccordionPanel;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.dialog.DialogVariant;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
@@ -18,12 +23,12 @@ import de.andipopp.poodle.data.entity.Config;
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
 import de.andipopp.poodle.data.service.PollService;
-import de.andipopp.poodle.data.service.UserService;
 import de.andipopp.poodle.security.AuthenticatedUser;
 import de.andipopp.poodle.util.VaadinUtils;
 import de.andipopp.poodle.views.MainLayout;
 import de.andipopp.poodle.views.PollView;
 import de.andipopp.poodle.views.editpoll.date.DateOptionFormList;
+import de.andipopp.poodle.views.mypolls.MyPollsView;
 
 @PageTitle("Edit Poodle Poll")
 @Route(value = "edit", layout = MainLayout.class)
@@ -85,6 +90,7 @@ public class EditPollView extends PollView {
 		toStep3Button.addClassName("primary-text");
 		toStep3Button.addClickListener(e -> optionFormListPanel.setOpened(true));
 		deletePollButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+		deletePollButton.addClickListener(e -> confirmDeletePoll());
 		savePollButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     }
 
@@ -184,8 +190,50 @@ public class EditPollView extends PollView {
 		}
 	}
 	
+	/**
+	 * Show a confirmation dialog for the user to confirm the poll deletion
+	 */
+	private void confirmDeletePoll() {
+		Button ok = new Button("OK");
+		ok.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
+		
+		Button cancel = new Button("Canel");
+		cancel.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+		HorizontalLayout buttons = new HorizontalLayout(cancel, ok);
+		buttons.setJustifyContentMode(JustifyContentMode.BETWEEN);
+		buttons.setWidthFull();
+		buttons.setMinWidth("240px"); //to keep ok and cancel button far enough apart
+		Label warning = new Label("This can not be undone!");
+		warning.addClassName("warning-text");
+		VerticalLayout dialogLayout = new VerticalLayout(new Label("Delete poll '"+poll.getTitle()+"'?"), warning, buttons);
+		dialogLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+		dialogLayout.addClassName("dialog-error");
+		Dialog deleteConfirmDialog = new Dialog(dialogLayout);
+		deleteConfirmDialog.addThemeVariants(DialogVariant.LUMO_NO_PADDING);
+		deleteConfirmDialog.setModal(true);
+		
+		cancel.addClickListener(e -> deleteConfirmDialog.close());
+		ok.addClickListener(e -> {
+			if (deletePoll()) deleteConfirmDialog.close();
+		});
+		
+		deleteConfirmDialog.open();
+	}
 	
-	
-	
+	/**
+	 * Actually delete the poll.
+	 * Should be called from {@link #confirmDeletePoll()}
+	 */
+	private boolean deletePoll() {
+		//double-check that the user has access
+		if (!userHasAccess()) {
+			Notification.show("Access denied").addThemeVariants(NotificationVariant.LUMO_ERROR);
+			return false;
+		} else {
+			pollService.delete(getPoll());
+			UI.getCurrent().navigate(MyPollsView.class);
+			return true;
+		}
+	}
 
 }

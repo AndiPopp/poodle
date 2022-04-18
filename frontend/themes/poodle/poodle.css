@@ -10,6 +10,15 @@
 
 /* Classes */
 
+.dialog-error {
+	background-color: var(--lumo-error-color-10pct);
+}
+
+.warning-text {
+	font-weight: bolder;
+	color: var(--lumo-error-text-color);
+}
+
 .vote-count-inline{
 	font-weight: bold;
 	-webkit-text-stroke: .5px black;
