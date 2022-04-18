@@ -21,6 +21,7 @@ import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.security.AuthenticatedUser;
+import de.andipopp.poodle.views.editpoll.NewPollView;
 import de.andipopp.poodle.views.mypolls.MyPollsView;
 import de.andipopp.poodle.views.test.TestView;
 import de.andipopp.poodle.views.usersettings.UserSettingsView;
@@ -135,7 +136,7 @@ public class MainLayout extends AppLayout {
 
     private MenuItemInfo[] createMenuItems() {
         return new MenuItemInfo[]{ //
-                new MenuItemInfo("Test View", "la la-vial", TestView.class), //
+                new MenuItemInfo("New Poll", "la la-plus-circle", NewPollView.class), //
 
                 new MenuItemInfo("View Polls", "la la-poll-h", ViewPollsView.class), //
 
@@ -143,6 +144,7 @@ public class MainLayout extends AppLayout {
 
                 new MenuItemInfo("User Settings", "la la-user-edit", UserSettingsView.class), //
 
+                new MenuItemInfo("Test View", "la la-vial", TestView.class), //
         };
     }
 

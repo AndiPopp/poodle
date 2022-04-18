@@ -3,9 +3,6 @@ package de.andipopp.poodle.views;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
@@ -18,6 +15,7 @@ import de.andipopp.poodle.data.service.PollService;
 import de.andipopp.poodle.security.AuthenticatedUser;
 import de.andipopp.poodle.util.NotAUuidException;
 import de.andipopp.poodle.util.UUIDUtils;
+import de.andipopp.poodle.views.editpoll.ErrorMessage;
 
 public class PollView extends VerticalLayout implements BeforeEnterObserver {
 
@@ -30,6 +28,8 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 	protected PollService pollService;
 	
 	protected User currentUser;
+	
+	protected QueryParameters queryParameters;
 	
 	public PollView(AuthenticatedUser authenticatedUser, PollService pollService) {
 		//remember the current user
@@ -85,6 +85,10 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 	public void beforeEnter(BeforeEnterEvent event) {
 		Location location = event.getLocation();
 		QueryParameters queryParameters = location.getQueryParameters();
+		this.queryParameters = queryParameters;
+		
+		//hand the parameters over to possible sub-class parsing. If the result is true stop here.
+		if (parseQueryParameters(queryParameters)) return;
 		
 		//load the edit key if present
 		if (queryParameters.getParameters().containsKey(AbstractPoll.EDIT_KEY_PARAMETER_NAME)) {
@@ -107,22 +111,18 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 		
 	}
 	
-	protected static VerticalLayout notFound() {
-		VerticalLayout notFound = new VerticalLayout();
-		notFound.setSpacing(false);
-		
-	    Image img = new Image("images/empty-plant.png", "placeholder plant");
-	    img.setWidth("200px");
-	    notFound.add(img);
+	/**
+	 * This method tries to make sense of the query parameters. It if did it will return true.
+	 * This method can be overloaded by sub-classes to intervene before the default behavior
+	 * of {@link #beforeEnter(BeforeEnterEvent)} by returning true. The default will return false. 
+	 * @return true if the method parsed the parameters, false otherwise
+	 */
+	protected boolean parseQueryParameters(QueryParameters queryParameters) {
+		return false;
+	}
 	
-	    notFound.add(new H2("Poll not found"));
-	    notFound.add(new Paragraph("Sorry, the poll could not be found. Do you have the correct URL?"));
-	    notFound.setSizeFull();
-	    notFound.setJustifyContentMode(JustifyContentMode.CENTER);
-	    notFound.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-	    notFound.getStyle().set("text-align", "center");
-	    
-	    return notFound;
+	protected static VerticalLayout notFound() {
+		return new ErrorMessage("Poll not found", "Sorry, the poll could not be found. Do you have the correct URL?");
 	}
 
 }

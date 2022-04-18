@@ -23,6 +23,8 @@ import de.andipopp.poodle.util.UUIDUtils;
 @Entity
 public class DatePoll extends AbstractPoll<DatePoll, DateOption> {
 	
+	public static final String TYPE_NAME = "DatePoll";
+	
 	/**
 	 * An optional location
 	 */

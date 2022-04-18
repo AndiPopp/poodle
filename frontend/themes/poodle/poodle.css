@@ -98,3 +98,34 @@
 	font-size: xx-large;
 }
 
+.text-box-button {
+	border: 1px solid var(--lumo-contrast-90pct);
+	border-radius: 15px;
+	background-color: var(--lumo-contrast-5pct);
+	cursor: pointer;
+}
+
+.text-box-button-text.title {
+	font-size: x-large;
+	font-weight: bold;
+}
+
+@media all and (max-width: 480px) {
+  	.text-box-button-text.description {
+		font-size: smaller;
+	}
+	
+	.text-box-button-text.title {
+		font-size: large;	
+	}
+}
+
+
+
+
+
+
+
+
+
+

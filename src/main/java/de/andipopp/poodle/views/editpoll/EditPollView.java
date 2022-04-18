@@ -17,6 +17,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
 
 import de.andipopp.poodle.data.entity.Config;
@@ -35,7 +36,9 @@ import de.andipopp.poodle.views.mypolls.MyPollsView;
 @PermitAll
 public class EditPollView extends PollView {
 
-    private static final long serialVersionUID = 1L;
+    public static final String CREATE_POLL_KEY = "createPoll";
+
+	private static final long serialVersionUID = 1L;
 
     /**
      * Max width at which the two colum form layout looks appealing
@@ -160,6 +163,42 @@ public class EditPollView extends PollView {
 		bindAndLoad();
 	}
 	
+	@Override
+	protected boolean parseQueryParameters(QueryParameters queryParameters) {
+		//We check if we find the parameter to build a new poll
+		if (queryParameters.getParameters().containsKey(CREATE_POLL_KEY)) {
+			String pollType;
+			if (queryParameters.getParameters().get(CREATE_POLL_KEY).size() > 0) {
+				pollType = queryParameters.getParameters().get(CREATE_POLL_KEY).get(0);
+			} else {
+				pollType = "";
+			}
+			
+			AbstractPoll<?, ?> newPoll = null;
+			switch (pollType) {
+			case DatePoll.TYPE_NAME:
+				newPoll = new DatePoll();
+				break;
+			default:
+				showTypeNotFound(pollType);
+				break;
+			}
+			
+			if (newPoll != null) {
+				newPoll.setOwner(currentUser);
+				loadPoll(newPoll);
+			}
+			
+			//we handled the parameters here
+			return true;
+		} else {
+			//let PollView parse the query parameters
+			return false;
+		}
+	}
+	
+	
+
 	/**
 	 * Checks if the user has access to edit this poll.
 	 * For this, the poll itself must allow {@link AbstractPoll#canEdit(de.andipopp.poodle.data.entity.User)}
@@ -189,6 +228,15 @@ public class EditPollView extends PollView {
 			datePollBinder.readBean((DatePoll) this.poll);
 		}
 	}
+	
+	private void showTypeNotFound(String type) {
+		this.removeAll();
+		this.add(new ErrorMessage("Unknown Poll Type","The poll type '"+type+"' can not be interpreted as a valid poll type"));
+	}
+	
+	/* =========================
+	 * = User triggered events =
+	 * ========================= */
 	
 	/**
 	 * Show a confirmation dialog for the user to confirm the poll deletion
@@ -235,5 +283,6 @@ public class EditPollView extends PollView {
 			return true;
 		}
 	}
+
 
 }
