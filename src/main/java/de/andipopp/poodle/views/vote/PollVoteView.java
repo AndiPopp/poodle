@@ -32,9 +32,9 @@ import de.andipopp.poodle.security.AuthenticatedUser;
 import de.andipopp.poodle.util.HtmlUtils;
 import de.andipopp.poodle.util.JSoupUtils;
 import de.andipopp.poodle.util.UUIDUtils;
-import de.andipopp.poodle.views.LineAwesomeMenuIcon;
 import de.andipopp.poodle.views.MainLayout;
 import de.andipopp.poodle.views.PollView;
+import de.andipopp.poodle.views.components.LineAwesomeMenuIcon;
 import de.andipopp.poodle.views.vote.date.DatePollListView;
 
 

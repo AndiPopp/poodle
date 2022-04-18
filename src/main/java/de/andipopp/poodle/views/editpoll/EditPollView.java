@@ -9,7 +9,6 @@ import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.accordion.AccordionPanel;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.dialog.DialogVariant;
 import com.vaadin.flow.component.html.Label;
@@ -36,6 +35,7 @@ import de.andipopp.poodle.security.AuthenticatedUser;
 import de.andipopp.poodle.util.VaadinUtils;
 import de.andipopp.poodle.views.MainLayout;
 import de.andipopp.poodle.views.PollView;
+import de.andipopp.poodle.views.components.DebugLabel;
 import de.andipopp.poodle.views.editpoll.date.DateOptionFormList;
 import de.andipopp.poodle.views.mypolls.MyPollsView;
 
@@ -402,9 +402,6 @@ public class EditPollView extends PollView implements ValueChangeListener<ValueC
 		
 		if (this.hasChanges) {
 			ContinueNavigationAction action = event.postpone();
-			ConfirmDialog confirmDialog = new ConfirmDialog(null, "Your poll has unsaved changes.", "Leave anyway?", e -> action.proceed());
-			confirmDialog.setCancelable(true);
-			confirmDialog.open();
 		}
 		
 	}

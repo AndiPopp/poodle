@@ -9,7 +9,7 @@ import com.vaadin.flow.data.binder.Binder;
 
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
-import de.andipopp.poodle.views.HasValueFields;
+import de.andipopp.poodle.views.components.HasValueFields;
 
 /**
  * A type of {@link FormLayout} to manage core data for all types of {@link AbstractPoll}s.

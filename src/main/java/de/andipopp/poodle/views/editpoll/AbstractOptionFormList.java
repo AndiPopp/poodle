@@ -7,7 +7,7 @@ import com.vaadin.flow.component.HasValue.ValueChangeListener;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
-import de.andipopp.poodle.views.HasValueFields;
+import de.andipopp.poodle.views.components.HasValueFields;
 
 public abstract class AbstractOptionFormList<F extends AbstractOptionForm> extends VerticalLayout implements HasValueFields {
 

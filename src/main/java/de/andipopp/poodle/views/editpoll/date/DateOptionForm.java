@@ -12,7 +12,7 @@ import com.vaadin.flow.data.binder.Binder;
 
 import de.andipopp.poodle.data.entity.polls.DateOption;
 import de.andipopp.poodle.util.TimeUtils;
-import de.andipopp.poodle.views.HasValueFields;
+import de.andipopp.poodle.views.components.HasValueFields;
 import de.andipopp.poodle.views.editpoll.AbstractOptionForm;
 
 /**

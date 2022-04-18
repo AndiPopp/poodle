@@ -1,4 +1,4 @@
-package de.andipopp.poodle.views;
+package de.andipopp.poodle.views.components;
 
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
@@ -7,6 +7,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+
+import de.andipopp.poodle.views.MainLayout;
 
 @PageTitle("Empty View")
 @Route(value = "empty", layout = MainLayout.class)

@@ -14,7 +14,8 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.shared.Registration;
 
 import de.andipopp.poodle.data.entity.polls.AbstractOption;
-import de.andipopp.poodle.views.HasValueFields;
+import de.andipopp.poodle.views.components.DebugLabel;
+import de.andipopp.poodle.views.components.HasValueFields;
 
 /**
  * A basic layout for editing {@link AbstractOption}s.

@@ -1,4 +1,4 @@
-package de.andipopp.poodle.views;
+package de.andipopp.poodle.views.components;
 
 import com.vaadin.flow.component.HasValue.ValueChangeEvent;
 import com.vaadin.flow.component.HasValue.ValueChangeListener;

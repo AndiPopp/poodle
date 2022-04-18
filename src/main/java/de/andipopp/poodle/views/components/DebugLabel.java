@@ -1,4 +1,4 @@
-package de.andipopp.poodle.views.editpoll;
+package de.andipopp.poodle.views.components;
 
 import com.vaadin.flow.component.html.Label;
 
