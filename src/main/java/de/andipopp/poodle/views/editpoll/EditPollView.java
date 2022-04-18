@@ -1,8 +1,5 @@
 package de.andipopp.poodle.views.editpoll;
 
-import java.time.LocalDate;
-import java.time.Period;
-
 import javax.annotation.security.PermitAll;
 
 import com.vaadin.flow.component.accordion.Accordion;
@@ -22,6 +19,7 @@ import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
 import de.andipopp.poodle.data.service.PollService;
 import de.andipopp.poodle.data.service.UserService;
+import de.andipopp.poodle.security.AuthenticatedUser;
 import de.andipopp.poodle.util.VaadinUtils;
 import de.andipopp.poodle.views.MainLayout;
 import de.andipopp.poodle.views.PollView;
@@ -75,10 +73,10 @@ public class EditPollView extends PollView {
     /**
      * Constructor to remember the services
      * @param userService the user service
-     * @param pollService the poll serivice
+     * @param pollService the poll service
      */
-	public EditPollView(UserService userService, PollService pollService) {
-		super(userService, pollService);
+	public EditPollView(AuthenticatedUser authenticatedUser, PollService pollService) {
+		super(authenticatedUser, pollService);
 		this.add(notFound());
 		
 		//configure buttons

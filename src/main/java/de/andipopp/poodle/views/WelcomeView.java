@@ -26,6 +26,7 @@ import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.server.WrappedSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
+import de.andipopp.poodle.security.AuthenticatedUser;
 import de.andipopp.poodle.views.mypolls.MyPollsView;
 
 @PageTitle("Welcome to Poodle")
@@ -35,7 +36,11 @@ public class WelcomeView extends VerticalLayout implements BeforeEnterObserver {
 
     private static final long serialVersionUID = 1L;
 
-	public WelcomeView() {
+    AuthenticatedUser authenticatedUser;
+    
+	public WelcomeView(AuthenticatedUser authenticatedUser) {
+		
+		this.authenticatedUser = authenticatedUser;
 		
         setSpacing(false);
 
@@ -90,7 +95,7 @@ public class WelcomeView extends VerticalLayout implements BeforeEnterObserver {
 
 	@Override
 	public void beforeEnter(BeforeEnterEvent event) {
-		if (VaadinRequest.getCurrent().getUserPrincipal().getName() != null) {
+		if (!authenticatedUser.get().isEmpty()) {
 			UI.getCurrent().navigate(MyPollsView.class);
 			event.rerouteTo(MyPollsView.class);
 			

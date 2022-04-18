@@ -29,6 +29,7 @@ import de.andipopp.poodle.data.entity.polls.DatePoll;
 import de.andipopp.poodle.data.service.PollService;
 import de.andipopp.poodle.data.service.UserService;
 import de.andipopp.poodle.data.service.VoteService;
+import de.andipopp.poodle.security.AuthenticatedUser;
 import de.andipopp.poodle.util.HtmlUtils;
 import de.andipopp.poodle.util.JSoupUtils;
 import de.andipopp.poodle.util.UUIDUtils;
@@ -76,8 +77,8 @@ public class VoteView extends PollView {
 	
 	PollListView<?, ?> listView;
 	
-	public VoteView(UserService userService, PollService pollService, VoteService voteService) {
-		super(userService, pollService);
+	public VoteView(AuthenticatedUser authenticatedUser, PollService pollService, VoteService voteService) {
+		super(authenticatedUser, pollService);
 		//hookup the vote service
 		this.voteService = voteService;
 		

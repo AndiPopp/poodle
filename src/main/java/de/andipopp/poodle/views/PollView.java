@@ -11,12 +11,11 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Location;
 import com.vaadin.flow.router.QueryParameters;
-import com.vaadin.flow.server.VaadinRequest;
 
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.data.service.PollService;
-import de.andipopp.poodle.data.service.UserService;
+import de.andipopp.poodle.security.AuthenticatedUser;
 import de.andipopp.poodle.util.NotAUuidException;
 import de.andipopp.poodle.util.UUIDUtils;
 
@@ -32,14 +31,12 @@ public class PollView extends VerticalLayout implements BeforeEnterObserver {
 	
 	protected User currentUser;
 	
-	
-	public PollView(UserService userService, PollService pollService) {
+	public PollView(AuthenticatedUser authenticatedUser, PollService pollService) {
 		//remember the current user
-		if (VaadinRequest.getCurrent().getUserPrincipal()!=null) {
-			String userName = VaadinRequest.getCurrent().getUserPrincipal().getName(); 
-			this.currentUser = userService.get(userName);
+		if (authenticatedUser.get().isEmpty()) {
+			currentUser = null;
 		}else {
-			this.currentUser = null;
+			currentUser = authenticatedUser.get().get();
 		}
 		
     	//hook up the poll service 
