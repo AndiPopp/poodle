@@ -35,6 +35,7 @@ import de.andipopp.poodle.security.AuthenticatedUser;
 import de.andipopp.poodle.util.VaadinUtils;
 import de.andipopp.poodle.views.MainLayout;
 import de.andipopp.poodle.views.PollView;
+import de.andipopp.poodle.views.components.ConfirmationDialog;
 import de.andipopp.poodle.views.components.DebugLabel;
 import de.andipopp.poodle.views.editpoll.date.DateOptionFormList;
 import de.andipopp.poodle.views.mypolls.MyPollsView;
@@ -402,6 +403,9 @@ public class EditPollView extends PollView implements ValueChangeListener<ValueC
 		
 		if (this.hasChanges) {
 			ContinueNavigationAction action = event.postpone();
+			ConfirmationDialog dialog = new ConfirmationDialog("Poll has unsaved changes.", "Leave anyway?");
+			dialog.addOkListener(e -> action.proceed());
+			dialog.open();
 		}
 		
 	}

@@ -29,7 +29,7 @@ import de.andipopp.poodle.views.MainLayout;
 @Route(value = "view-poll", layout = MainLayout.class)
 //@RouteAlias(value = "", layout = MainLayout.class)
 @AnonymousAllowed
-public class TestView extends VerticalLayout implements BeforeLeaveObserver {
+public class TestView extends VerticalLayout {
 
 	private static final long serialVersionUID = 1L;
 
@@ -94,10 +94,5 @@ public class TestView extends VerticalLayout implements BeforeLeaveObserver {
 			+ "END:VEVENT\n"
 			+ "END:VCALENDAR";
 
-	@Override
-	public void beforeLeave(BeforeLeaveEvent event) {
-		System.out.println("Before leave is triggered in TestView");
-		
-	}
 
 }
