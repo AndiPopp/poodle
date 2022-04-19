@@ -17,7 +17,7 @@ import de.andipopp.poodle.util.TimeUtils;
  * a default {@link ItemLabelGenerator}, a max width of 50% and a label saying "Time Zone".</p>
  * 
  * <p>It also comes with a value change listener which will store each selected value in a cookie via
- * {@link TimeUtils#rememberTimeZoneInCookie(ZoneId)}, so it can be retrieved via 
+ * {@link TimeUtils#rememberZoneIdInCookie(ZoneId)}, so it can be retrieved via 
  * {@link TimeUtils#getUserTimeZone(de.andipopp.poodle.data.entity.User)}. Not that the latter will
  * always prefer specific user settings over the value stored in the cookie.</p>
  * @author Andi Popp
@@ -33,7 +33,7 @@ public class ZoneIdComboBox extends ComboBox<ZoneId>{
 		setLabel("Time Zone");
 		setItemLabelGenerator(z -> z.getDisplayName(TextStyle.NARROW, Locale.US) + " " + z.getRules().getOffset(Instant.now()));
 		setMaxWidth("50%");
-		this.addValueChangeListener(e -> TimeUtils.rememberTimeZoneInCookie(e.getValue()));
+		this.addValueChangeListener(e -> TimeUtils.rememberZoneIdInCookie(e.getValue()));
 	}
 
 	/**

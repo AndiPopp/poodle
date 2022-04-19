@@ -39,6 +39,10 @@ public class TestView extends VerticalLayout {
         WrappedSession session = VaadinRequest.getCurrent().getWrappedSession();
         add(new Paragraph(session.getId()));
         
+        for (String name : session.getAttributeNames()) {
+        	System.out.println(name);
+        }
+        
         StreamResource res = new StreamResource("Test.ics", () -> testIcsAsInputStream());
         res.setContentType("text/calendar");
         
