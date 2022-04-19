@@ -2,13 +2,9 @@ package de.andipopp.poodle.views.test;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
-import java.util.Locale;
 
 import org.apache.commons.io.IOUtils;
 
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Paragraph;
@@ -55,18 +51,6 @@ public class TestView extends VerticalLayout {
 		horizontalLayout.setWidth(width);
 		horizontalLayout.getStyle().set("border", "2px dotted FireBrick");
 		return horizontalLayout;
-	}
-
-	private Component listHttpHeaders() {
-		VerticalLayout result = new VerticalLayout();
-		for(Iterator<String> it = VaadinRequest.getCurrent().getHeaderNames().asIterator(); it.hasNext();) {
-			String name = it.next();
-			result.add(new Paragraph(name + ": " + VaadinRequest.getCurrent().getHeader(name)));
-		}
-		Locale locale = VaadinRequest.getCurrent().getLocale();
-		result.add(new Paragraph("Locale: "+getLocale()));
-		result.add(new Paragraph(new GregorianCalendar(locale).getTimeZone().getID()));
-		return result;
 	}
 	
 	private InputStream testIcsAsInputStream() {
