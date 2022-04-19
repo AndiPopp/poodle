@@ -12,7 +12,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.views.components.HasValueFields;
 
-public abstract class AbstractOptionFormList<F extends AbstractOptionForm> extends VerticalLayout implements HasValueFields {
+public abstract class AbstractOptionFormList<F extends AbstractOptionForm> extends VerticalLayout 
+		implements HasValueFields {
 
 	private final AbstractPoll<?, ?> poll;
 	
@@ -73,8 +74,18 @@ public abstract class AbstractOptionFormList<F extends AbstractOptionForm> exten
 	 * @param form the option form to add
 	 */
 	public void addForm(F form) {
+		form.addRemoveOptionFormEventListener(e -> removeForm(form));
 		optionForms.add(form);
 		this.add(form);
+	}
+	
+	/**
+	 * Remove a form from this layout
+	 * @param form the form to remove
+	 */
+	public void removeForm(F form) {
+		optionForms.remove(form);
+		this.remove(form);
 	}
 	
 	/**

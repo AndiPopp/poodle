@@ -250,13 +250,6 @@ public abstract class AbstractOptionForm extends VerticalLayout implements HasVa
 	}
 	
 	/**
-	 * Add a listener for this
-	 */
-	public <T extends ComponentEvent<?>> Registration addListener(Class<T> eventType, ComponentEventListener<T> listener) { 
-		  return getEventBus().addListener(eventType, listener);
-	}
-
-	/**
 	 * This event signals to the parent component, that the source {@link AbstractOptionForm}
 	 * can immediately removed, typically because it contains a newly created option which was
 	 * marked to be removed via the {@link AbstractOptionForm#deleteButton}.

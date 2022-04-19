@@ -3,7 +3,6 @@ package de.andipopp.poodle.views.editpoll.date;
 import java.time.ZoneId;
 import java.util.ArrayList;
 
-import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 
@@ -11,9 +10,8 @@ import de.andipopp.poodle.data.entity.polls.DateOption;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
 import de.andipopp.poodle.util.VaadinUtils;
 import de.andipopp.poodle.views.editpoll.AbstractOptionFormList;
-import de.andipopp.poodle.views.editpoll.date.DateOptionForm.AddDateOptionEvent;
 
-public class DateOptionFormList extends AbstractOptionFormList<DateOptionForm> implements ComponentEventListener<AddDateOptionEvent> {
+public class DateOptionFormList extends AbstractOptionFormList<DateOptionForm> {
 	
 	private ZoneId timezone;
 	
@@ -95,7 +93,10 @@ public class DateOptionFormList extends AbstractOptionFormList<DateOptionForm> i
 		DateOptionForm form = new DateOptionForm(option, this);
 		form.buildAll();
 		form.loadData();
-		form.addAddDateOptionEventListener(this);
+		form.addAddDateOptionEventListener(event -> {
+			if (event.getOption() != null) addDateOption(event.getOption());
+			else Notification.show("Enter dates before cloning").addThemeVariants(NotificationVariant.LUMO_ERROR);
+		});
 		getOptionForms().add(form);
 		addForm(form);
 	}
@@ -103,15 +104,5 @@ public class DateOptionFormList extends AbstractOptionFormList<DateOptionForm> i
 	@Override
 	public void addEmptyForm() {
 		addDateOption(new DateOption());
-	}
-
-	/* ==========
-	 * = Events =
-	 * ========== */
-	
-	@Override
-	public void onComponentEvent(AddDateOptionEvent event) {
-		if (event.getOption() != null) addDateOption(event.getOption());
-		else Notification.show("Enter dates before cloning").addThemeVariants(NotificationVariant.LUMO_ERROR);
 	}
 }
