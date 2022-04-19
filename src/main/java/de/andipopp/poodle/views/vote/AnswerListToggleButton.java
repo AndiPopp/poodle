@@ -8,8 +8,6 @@ import de.andipopp.poodle.util.InvalidException;
 
 public class AnswerListToggleButton extends Image{
 
-	private static final long serialVersionUID = 1L;
-	
 	/**
 	 * The answers whose value is to be changed
 	 */

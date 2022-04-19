@@ -12,8 +12,6 @@ import de.andipopp.poodle.views.editpoll.AbstractOptionFormList;
 import de.andipopp.poodle.views.editpoll.date.DateOptionForm.AddDateOptionEvent;
 
 public class DateOptionFormList extends AbstractOptionFormList<DateOptionForm> implements ComponentEventListener<AddDateOptionEvent> {
-
-	private static final long serialVersionUID = 1L;
 	
 	private ZoneId timezone;
 	

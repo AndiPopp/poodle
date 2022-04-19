@@ -4,8 +4,6 @@ import com.vaadin.flow.component.html.Image;
 
 public class OptionSelectToggleButton extends Image {
 
-	private static final long serialVersionUID = 1L;
-
 	OptionListItem parent;
 	
 	boolean winner;

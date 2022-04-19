@@ -22,8 +22,6 @@ import de.andipopp.poodle.views.vote.PollListView;
 
 public class DatePollListView extends PollListView<DatePoll, DateOption> {
 
-	private static final long serialVersionUID = 1L;
-
 	private ZoneId zoneId;
 
 	private ComboBox<ZoneId> zoneIdSelector;

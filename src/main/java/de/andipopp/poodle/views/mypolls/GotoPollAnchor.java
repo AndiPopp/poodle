@@ -7,8 +7,6 @@ import de.andipopp.poodle.util.HtmlUtils;
 
 public class GotoPollAnchor extends Anchor{
 
-	private static final long serialVersionUID = 1L;
-	
 	AbstractPoll<?,?> poll;
 
 	/**

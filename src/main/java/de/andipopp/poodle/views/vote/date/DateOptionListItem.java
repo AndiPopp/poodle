@@ -24,11 +24,6 @@ import de.andipopp.poodle.views.vote.OptionListItem;
  */
 public class DateOptionListItem extends OptionListItem {
 
-	/**
-	 * Serial Version UID
-	 */
-	private static final long serialVersionUID = 1L;
-
 	ZoneId zoneId = ZoneId.systemDefault();
 	
 	/**

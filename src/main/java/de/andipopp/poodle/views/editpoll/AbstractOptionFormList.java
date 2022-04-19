@@ -11,8 +11,6 @@ import de.andipopp.poodle.views.components.HasValueFields;
 
 public abstract class AbstractOptionFormList<F extends AbstractOptionForm> extends VerticalLayout implements HasValueFields {
 
-	private static final long serialVersionUID = 1L;
-
 	private final AbstractPoll<?, ?> poll;
 	
 	private List<F> optionForms;

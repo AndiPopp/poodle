@@ -17,8 +17,6 @@ import de.andipopp.poodle.data.entity.polls.AbstractPoll;
  */
 public class PollSettingsForm extends PollBindableForm {
 
-	private static final long serialVersionUID = 1L;
-	
 	/**
 	 * Input field for {@link AbstractPoll#isEnableIfNeedBe()}
 	 */

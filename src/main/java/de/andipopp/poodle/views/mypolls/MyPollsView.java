@@ -32,8 +32,6 @@ import de.andipopp.poodle.views.MainLayout;
 @PermitAll
 public class MyPollsView extends HorizontalLayout {
 
-	private static final long serialVersionUID = 1L;
-
 	private static final String STATE_COMBOBOX_EITHER = "Open/Closed";
 	
 	private static final String STATE_COMBOBOX_OPEN = "Open";

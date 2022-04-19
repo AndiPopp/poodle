@@ -30,7 +30,6 @@ import de.andipopp.poodle.util.InvalidException;
 
 public abstract class PollListView<P extends AbstractPoll<P, O>, O extends AbstractOption<P, O>> extends VerticalLayout {
 
-	private static final long serialVersionUID = 1L;
 
 	protected PollService pollService;
 	
@@ -432,8 +431,6 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 	}
 	
 	public static class ViewChangeEvent extends ComponentEvent<PollListView<?, ?>>{
-
-		private static final long serialVersionUID = 1L;
 		
 		public ViewChangeEvent(PollListView<?, ?> source) {
 			super(source, false);

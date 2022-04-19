@@ -28,11 +28,6 @@ import de.andipopp.poodle.views.editpoll.AbstractOptionForm;
  *
  */
 public class DateOptionForm extends AbstractOptionForm {
-
-	/**
-	 * Serial version UID
-	 */
-	private static final long serialVersionUID = 1L;
 	
 	//DateOption specific components
 	

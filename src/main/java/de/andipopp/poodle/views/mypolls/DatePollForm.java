@@ -34,8 +34,6 @@ import de.andipopp.poodle.util.TimeUtils;
  */
 public class DatePollForm extends FormLayout {
 
-	private static final long serialVersionUID = 1L;
-
 	Binder<DatePoll> binder = new BeanValidationBinder<>(DatePoll.class);
 	
 	DatePoll poll;

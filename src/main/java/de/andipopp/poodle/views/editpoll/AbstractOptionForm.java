@@ -23,11 +23,6 @@ import de.andipopp.poodle.views.components.HasValueFields;
  *
  */
 public abstract class AbstractOptionForm extends VerticalLayout implements HasValueFields {
-
-	/**
-	 * Default serial version UID
-	 */
-	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * A constant to define the CSS class name for this component
@@ -269,11 +264,6 @@ public abstract class AbstractOptionForm extends VerticalLayout implements HasVa
 	 *
 	 */
 	public static class RemoveOptionFormEvent extends ComponentEvent<AbstractOptionForm> {
-
-		/**
-		 * Default serial version UID
-		 */
-		private static final long serialVersionUID = 1L;
 		
 		/**
 		 * Create a new Event with the given source

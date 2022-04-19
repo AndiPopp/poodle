@@ -20,8 +20,6 @@ import de.andipopp.poodle.views.components.HasValueFields;
  */
 public class PollCoredataForm extends PollBindableForm{
 
-	private static final long serialVersionUID = 1L;
-	
 	/**
 	 * Input field for {@link AbstractPoll#getTitle()}
 	 */

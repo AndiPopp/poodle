@@ -8,8 +8,6 @@ import com.vaadin.flow.router.Route;
 @PageTitle("Login")
 @Route(value = "login")
 public class LoginView extends LoginOverlay {
-	
-    private static final long serialVersionUID = 1L;
 
 	public LoginView() {
         setAction("login");

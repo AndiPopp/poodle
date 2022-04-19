@@ -19,8 +19,6 @@ import de.andipopp.poodle.views.editpoll.ErrorMessage;
 
 public class PollView extends VerticalLayout implements BeforeEnterObserver {
 
-	private static final long serialVersionUID = 1L;
-	
 	protected AbstractPoll<?,?> poll;
 
 	private String editKey;

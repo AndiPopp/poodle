@@ -47,8 +47,6 @@ public class EditPollView extends PollView implements ValueChangeListener<ValueC
 
     public static final String CREATE_POLL_KEY = "createPoll";
 
-	private static final long serialVersionUID = 1L;
-
     /**
      * Max width at which the two colum form layout looks appealing
      */

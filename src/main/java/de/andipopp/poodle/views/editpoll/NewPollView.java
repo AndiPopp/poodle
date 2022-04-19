@@ -25,8 +25,6 @@ import de.andipopp.poodle.views.MainLayout;
 @PermitAll
 public class NewPollView extends HorizontalLayout {
 
-	private static final long serialVersionUID = 1L;
-
 	private static final String MAX_WIDTH = "800px";
 	
 	private PollSelectorBox simplePollSelector = new PollSelectorBox(
@@ -71,8 +69,6 @@ public class NewPollView extends HorizontalLayout {
 	 */
 	private static class PollSelectorBox extends VerticalLayout{
 
-		private static final long serialVersionUID = 1L;
-		
 		PollSelectorBox(String iconName, String typeName, String description) {
 			this.addClassName("text-box-button");
 			

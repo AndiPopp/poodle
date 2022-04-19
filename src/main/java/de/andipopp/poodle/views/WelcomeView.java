@@ -20,8 +20,6 @@ import de.andipopp.poodle.views.mypolls.MyPollsView;
 @AnonymousAllowed
 public class WelcomeView extends VerticalLayout implements BeforeEnterObserver {
 
-    private static final long serialVersionUID = 1L;
-
     AuthenticatedUser authenticatedUser;
     
 	public WelcomeView(AuthenticatedUser authenticatedUser) {

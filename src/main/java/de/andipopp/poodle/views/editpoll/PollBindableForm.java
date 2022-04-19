@@ -12,9 +12,7 @@ import de.andipopp.poodle.views.components.HasValueFields;
  *
  */
 public abstract class PollBindableForm extends FormLayout implements HasValueFields {
-
-	private static final long serialVersionUID = 1L;
-
+	
 	/**
 	 * Empty constructor, shows a placeholder when form is not configured
 	 */

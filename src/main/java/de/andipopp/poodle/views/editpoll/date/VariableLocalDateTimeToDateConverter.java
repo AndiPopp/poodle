@@ -14,11 +14,6 @@ import com.vaadin.flow.data.converter.LocalDateTimeToDateConverter;
  *
  */
 public class VariableLocalDateTimeToDateConverter implements Converter<LocalDateTime, Date> {
-
-	/**
-	 * Default serial version UID
-	 */
-	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * The list to take the time zone from

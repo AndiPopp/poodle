@@ -15,8 +15,6 @@ import de.andipopp.poodle.views.MainLayout;
 @AnonymousAllowed
 public class EmptyView extends VerticalLayout {
 
-    private static final long serialVersionUID = 1L;
-
 	public EmptyView() {
         setSpacing(false);
 

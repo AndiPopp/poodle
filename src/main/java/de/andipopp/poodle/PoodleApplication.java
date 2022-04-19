@@ -23,11 +23,6 @@ import com.vaadin.flow.theme.Theme;
 public class PoodleApplication extends SpringBootServletInitializer implements AppShellConfigurator {
 
 	/**
-	 * The serial version UID
-	 */
-	private static final long serialVersionUID = 1L;
-
-	/**
 	 * App name
 	 */
 	public static final String name = "Poodle";

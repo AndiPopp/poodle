@@ -21,8 +21,6 @@ import de.andipopp.poodle.data.entity.polls.Vote;
 import de.andipopp.poodle.util.InvalidException;
 
 public class OptionListItem extends HorizontalLayout {
-
-	private static final long serialVersionUID = 1L;
 	
 	private AbstractOption<?,?> option;
 	
@@ -251,8 +249,7 @@ public class OptionListItem extends HorizontalLayout {
 	}
 	
 	private class AnswerBlock extends HorizontalLayout{
-		private static final long serialVersionUID = 1L;
-		
+
 		int count;
 		
 		AnswerBlock(AnswerType answerType, String imageSrc, String imageAlt) {

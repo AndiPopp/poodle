@@ -9,10 +9,6 @@ package de.andipopp.poodle.util;
  *
  */
 public class NotAUuidException extends Exception {
-	/**
-	 * Serial version UID
-	 */
-	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Construct a new {@link NotAUuidException} with a message and a cause

@@ -7,8 +7,6 @@ import de.andipopp.poodle.views.MainLayout;
 
 public class EditPollIcon extends Span {
 
-	private static final long serialVersionUID = 1L;
-	
 	private AbstractPoll<?,?> poll;
 
 	/**

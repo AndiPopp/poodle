@@ -8,8 +8,6 @@ import de.andipopp.poodle.util.UUIDUtils.Part;
 
 public class DebugLabel extends Label{
 
-	private static final long serialVersionUID = 1L;
-
 	public DebugLabel() {
 		super();
 		configureStyle();

@@ -47,8 +47,6 @@ import de.andipopp.poodle.views.vote.date.DatePollListView;
  *
  */
 public class PollVoteView extends PollView {
-		
-	private static final long serialVersionUID = 1L;
 
 	private VoteService voteService;
 
@@ -304,8 +302,6 @@ public class PollVoteView extends PollView {
 	}
 	
 	private static class HorizontalInfoContainer extends HorizontalLayout {
-
-		private static final long serialVersionUID = 1L;
 
 		/**
 		 * 

@@ -2,8 +2,6 @@ package de.andipopp.poodle.util;
 
 public class InvalidException extends Exception {
 
-	private static final long serialVersionUID = 1L;
-
 	/**
 	 * 
 	 */
