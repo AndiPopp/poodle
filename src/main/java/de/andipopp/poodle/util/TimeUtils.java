@@ -12,6 +12,9 @@ import java.util.TreeSet;
 
 import javax.servlet.http.Cookie;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
+
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.server.VaadinService;
@@ -74,6 +77,11 @@ public class TimeUtils {
 	}
 	
 	public static void rememberTimeZoneInCookie(ZoneId timeZone) {
-		VaadinService.getCurrentResponse().addCookie(new Cookie(TIME_ZONE_COOKIE_NAME, timeZone.getId()));
+		ResponseCookie timeZoneCookie = ResponseCookie.from(TIME_ZONE_COOKIE_NAME, timeZone.getId())
+			.httpOnly(true)
+			.maxAge(Integer.MAX_VALUE)
+			.sameSite("Lax")
+			.build();
+		VaadinService.getCurrentResponse().setHeader(HttpHeaders.SET_COOKIE, timeZoneCookie.toString());
 	}
 }

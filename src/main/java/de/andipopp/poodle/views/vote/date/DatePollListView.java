@@ -12,7 +12,7 @@ import de.andipopp.poodle.data.entity.polls.DateOption;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
 import de.andipopp.poodle.data.service.PollService;
 import de.andipopp.poodle.data.service.VoteService;
-import de.andipopp.poodle.util.VaadinUtils;
+import de.andipopp.poodle.util.TimeUtils;
 import de.andipopp.poodle.views.components.ZoneIdComboBox;
 import de.andipopp.poodle.views.vote.PollListView;
 
@@ -25,12 +25,7 @@ public class DatePollListView extends PollListView<DatePoll, DateOption> {
 	public DatePollListView(DatePoll poll, User user, VoteService voteService, PollService pollService) {
 		super(poll, user, voteService, pollService);
 		
-		if (user != null && user.getTimeZone() != null) {
-			this.zoneId = user.getTimeZone();
-		} else {
-			this.zoneId = VaadinUtils.guessTimeZoneFromVaadinRequest(); 
-		}
-		zoneIdSelector = new ZoneIdComboBox(zoneId);
+		zoneIdSelector = new ZoneIdComboBox(TimeUtils.getUserTimeZone(getUser()));
 		zoneIdSelector.addValueChangeListener(e -> {
 			zoneId = zoneIdSelector.getValue();
 			buildAll();
