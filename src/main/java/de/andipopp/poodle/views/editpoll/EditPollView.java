@@ -32,7 +32,7 @@ import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
 import de.andipopp.poodle.data.service.PollService;
 import de.andipopp.poodle.security.AuthenticatedUser;
-import de.andipopp.poodle.util.VaadinUtils;
+import de.andipopp.poodle.util.TimeUtils;
 import de.andipopp.poodle.views.MainLayout;
 import de.andipopp.poodle.views.PollView;
 import de.andipopp.poodle.views.components.ConfirmationDialog;
@@ -156,7 +156,7 @@ public class EditPollView extends PollView implements ValueChangeListener<ValueC
 		formAccordion.add(pollSettingsFormPanel);
 		
 		if (poll instanceof DatePoll) 
-			optionFormList = new DateOptionFormList((DatePoll) this.poll, VaadinUtils.guessTimeZoneFromVaadinRequest()); //TODO get timezone from user settings
+			optionFormList = new DateOptionFormList((DatePoll) this.poll, TimeUtils.getUserTimeZone(getCurrentUser()));
 		optionFormList.buildList();
 		optionFormList.setPadding(false);
 
@@ -185,7 +185,7 @@ public class EditPollView extends PollView implements ValueChangeListener<ValueC
 		content.add(buttonBar);
 		
 		//load the data
-		bindAndLoad();
+		bindAndLoad(); 
 		
 		//reset the changes
 		hasChanges = false;
@@ -332,7 +332,7 @@ public class EditPollView extends PollView implements ValueChangeListener<ValueC
 		//delete and connect the options to the poll
 		if (!deleteAndConnectOptionsToPoll()) return;
 		
-		//write to backend
+		//write to back-end and load the result (which will also rest the hasChanges flag)
 		loadPoll(pollService.update(poll));
 		
 		Notification succ = Notification.show("Poll saved!");

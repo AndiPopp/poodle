@@ -13,8 +13,24 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.views.components.HasValueFields;
 
-public abstract class AbstractOptionFormList<F extends AbstractOptionForm> extends VerticalLayout 
-		implements HasValueFields {
+/**
+ * Abstract version of a list of {@link AbstractOptionForm}s to edit an {@link AbstractPoll}'s options.
+ * The specific poll is remembered by the field {@link #poll}.
+ * 
+ * <p>This is a {@link VerticalLayout} component which displays each {@link AbstractOptionForm}, but it
+ * also has a list {@link #optionForms} to store its children.</p>
+ * 
+ * <p>This class provides a basic layout and common features for all types of {@link AbstractPoll}s. 
+ * Specific features need to be defined by concrete sub-classes</p>
+ * 
+ * <p>Since data handling is very specific to the actual type of {@link AbstractPoll}, it is entirely
+ * left to the implementing sub-classes.</p>
+ * 
+ * @author Andi Popp
+ *
+ * @param <F> The type of {@link AbstractOptionForm}
+ */
+public abstract class AbstractOptionFormList<F extends AbstractOptionForm> extends VerticalLayout implements HasValueFields {
 
 	private final AbstractPoll<?, ?> poll;
 	
@@ -25,7 +41,8 @@ public abstract class AbstractOptionFormList<F extends AbstractOptionForm> exten
 	protected MenuBar listMenuBar = new MenuBar();
 	
 	/**
-	 * @param poll
+	 * Construct a new form list for the given poll
+	 * @param poll the poll whose options are edited by this form
 	 */
 	public AbstractOptionFormList(AbstractPoll<?, ?> poll) {
 		this.poll = poll;
@@ -41,6 +58,11 @@ public abstract class AbstractOptionFormList<F extends AbstractOptionForm> exten
 		addNewOption.addClickListener(e -> addEmptyForm());
 	}
 	
+	/**
+	 * Build the list, i.e. fill {@link #optionForms} and add contents to this layout.
+	 * This must be implemented by concrete sub-classes, since the type of form will determine
+	 * how the list should look.
+	 */
 	protected abstract void buildList();
 	
 	/**

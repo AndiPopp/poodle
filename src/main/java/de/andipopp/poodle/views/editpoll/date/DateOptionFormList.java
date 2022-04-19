@@ -1,10 +1,13 @@
 package de.andipopp.poodle.views.editpoll.date;
 
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 
 import com.vaadin.flow.component.combobox.ComboBoxVariant;
 import com.vaadin.flow.component.contextmenu.MenuItem;
+import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 
@@ -14,16 +17,48 @@ import de.andipopp.poodle.data.entity.polls.DatePoll;
 import de.andipopp.poodle.views.components.ZoneIdComboBox;
 import de.andipopp.poodle.views.editpoll.AbstractOptionFormList;
 
+/**
+ * Concrete implementation of {@link AbstractOptionFormList} for {@link DateOption}s.
+ * 
+ * <p>It provides the time zone support needed for {@link DateOption}s via the {@link #timezone}
+ * field and the {@link #timezoneSelector} input component. For data handling in the children's
+ * ({@link #getOptionForms()}) {@link DateTimePicker}s, this class also provides a {@link #converter}.</p>
+ * 
+ * <p>This class also provides a feature to sort the {@link #getOptionForms()} with a 
+ * {@link CalendarEventComparator} triggered by an entry in {@link AbstractOptionFormList#listMenuBar}. 
+ * Both new interactive elements are directly added in the constructor 
+ * {@link #DateOptionFormList(DatePoll, ZoneId)}.</p>
+ * 
+ * <p>As a concrete implementation of {@link AbstractOptionFormList}, this class does some of the
+ * data handling for the {@link #getPoll()} bean by updating the connections between the 
+ * {@link DateOption}s in the {@link #getOptionForms()} and the bean according to user input in
+ * the method {@link #deleteAndConnect(DatePoll)}.</p>
+ * 
+ * @author Andi Popp
+ *
+ */
 public class DateOptionFormList extends AbstractOptionFormList<DateOptionForm> {
 	
+	/**
+	 * The current time zone
+	 */
 	private ZoneId timezone;
 	
+	/**
+	 * A combobox to change the time {@link #timezone}
+	 */
 	private ZoneIdComboBox timezoneSelector;
 	
+	/**
+	 * A converte for {@link LocalDate} to {@link Date} using the current value of {@link #timezone}
+	 */
 	private VariableLocalDateTimeToDateConverter converter;
 	
-	MenuItem sortOptions;
-	
+	/**
+	 * Construct a new date option form list for a given date poll and a given time zone
+	 * @param poll the poll bean (cf. {@link #getPoll()})
+	 * @param timezone value for {@link #timezone}
+	 */
 	public DateOptionFormList(DatePoll poll, ZoneId timezone) {
 		super(poll);
 		this.timezone = timezone;
@@ -35,8 +70,8 @@ public class DateOptionFormList extends AbstractOptionFormList<DateOptionForm> {
 		this.converter = new VariableLocalDateTimeToDateConverter(this);
 		toolbar.add(timezoneSelector);
 		
-		sortOptions = listMenuBar.addItem("Sort Options");
-		this.sortOptions.addClickListener(e -> sortList());
+		MenuItem sortOptions = listMenuBar.addItem("Sort Options");
+		sortOptions.addClickListener(e -> sortList());
 		
 		this.setFlexGrow(1, listMenuBar);
 	}
@@ -67,7 +102,8 @@ public class DateOptionFormList extends AbstractOptionFormList<DateOptionForm> {
 	}
 	
 	/**
-	 * Setter for {@link #timezone}
+	 * Setter for {@link #timezone}.
+	 * Ensures the {@link DateTimePicker}s of the {@link #getOptionForms()} are updated accordingly.
 	 * @param timezone the {@link #timezone} to set
 	 */
 	public void setTimezone(ZoneId timezone) {

@@ -10,7 +10,13 @@ import java.util.SortedSet;
 import java.util.TimeZone;
 import java.util.TreeSet;
 
+import javax.servlet.http.Cookie;
+
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
+import com.vaadin.flow.server.VaadinRequest;
+import com.vaadin.flow.server.VaadinService;
+
+import de.andipopp.poodle.data.entity.User;
 
 public class TimeUtils {
 	
@@ -50,5 +56,24 @@ public class TimeUtils {
 		LocalDateTime local = ZonedDateTime.ofInstant(timestamp, timeZone).toLocalDateTime();
 		picker.setValue(local);
 		return local;
+	}
+	
+	public static final String TIME_ZONE_COOKIE_NAME = "TimeZone";
+	
+	public static ZoneId getUserTimeZone(User user) {
+		//first check if we can get the time zone from the user settings
+		if (user != null && user.getTimeZone() != null) return user.getTimeZone();
+		
+		//if not, see if we have a time zone cookie
+		for(Cookie cookie : VaadinRequest.getCurrent().getCookies()) {
+			if (cookie.getName().equals(TIME_ZONE_COOKIE_NAME)) return ZoneId.of(cookie.getValue());
+		}
+		
+		//if everything else fails, we guess from the Locale
+		return VaadinUtils.guessTimeZoneFromVaadinRequest();
+	}
+	
+	public static void rememberTimeZoneInCookie(ZoneId timeZone) {
+		VaadinService.getCurrentResponse().addCookie(new Cookie(TIME_ZONE_COOKIE_NAME, timeZone.getId()));
 	}
 }
