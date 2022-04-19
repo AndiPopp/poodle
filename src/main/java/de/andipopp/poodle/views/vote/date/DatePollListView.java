@@ -1,14 +1,10 @@
 package de.andipopp.poodle.views.vote.date;
 
-import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
-import java.util.Locale;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.H4;
 
 import de.andipopp.poodle.data.entity.User;
@@ -16,15 +12,15 @@ import de.andipopp.poodle.data.entity.polls.DateOption;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
 import de.andipopp.poodle.data.service.PollService;
 import de.andipopp.poodle.data.service.VoteService;
-import de.andipopp.poodle.util.TimeUtils;
 import de.andipopp.poodle.util.VaadinUtils;
+import de.andipopp.poodle.views.components.ZoneIdComboBox;
 import de.andipopp.poodle.views.vote.PollListView;
 
 public class DatePollListView extends PollListView<DatePoll, DateOption> {
 
 	private ZoneId zoneId;
 
-	private ComboBox<ZoneId> zoneIdSelector;
+	private ZoneIdComboBox zoneIdSelector;
 	
 	public DatePollListView(DatePoll poll, User user, VoteService voteService, PollService pollService) {
 		super(poll, user, voteService, pollService);
@@ -34,17 +30,11 @@ public class DatePollListView extends PollListView<DatePoll, DateOption> {
 		} else {
 			this.zoneId = VaadinUtils.guessTimeZoneFromVaadinRequest(); 
 		}
-		zoneIdSelector = new ComboBox<>();
-		zoneIdSelector.setItems(TimeUtils.getSupportedZoneIdsInAlphabeticalOrder());
-		zoneIdSelector.setValue(zoneId);
-		zoneIdSelector.setLabel("Time Zone");
+		zoneIdSelector = new ZoneIdComboBox(zoneId);
 		zoneIdSelector.addValueChangeListener(e -> {
 			zoneId = zoneIdSelector.getValue();
 			buildAll();
 		});
-		zoneIdSelector.setMaxWidth("50%");
-		zoneIdSelector.setItemLabelGenerator(z -> z.getDisplayName(TextStyle.NARROW, Locale.US) + " " + z.getRules().getOffset(Instant.now()));
-		
 		header.add(zoneIdSelector);
 		if (getPoll().isClosed()) header.add(getPoll().winnerIcalAnchor());
 	}
@@ -92,7 +82,5 @@ public class DatePollListView extends PollListView<DatePoll, DateOption> {
 				configureItemAndaddToList(item);
 			}
 		}
-	}	
-	
-	
+	}
 }

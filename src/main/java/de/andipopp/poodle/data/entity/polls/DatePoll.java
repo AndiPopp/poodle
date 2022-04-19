@@ -1,6 +1,7 @@
 package de.andipopp.poodle.data.entity.polls;
 
 import java.util.Iterator;
+import java.util.List;
 
 import javax.annotation.Nullable;
 import javax.persistence.Column;
@@ -134,8 +135,9 @@ public class DatePoll extends AbstractPoll<DatePoll, DateOption> {
 	 * = Other methods =
 	 * ================= */
 	
-	public void sortOptions() {
-		getOptions().sort(new DateOptionComparator());
+	public List<DateOption> sortOptions() {
+		getOptions().sort(new CalendarEventComparator());
+		return getOptions();
 	}
 	
 	public ICalendar winnserToIcal() {

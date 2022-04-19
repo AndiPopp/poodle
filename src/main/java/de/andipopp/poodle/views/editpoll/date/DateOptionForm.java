@@ -2,6 +2,7 @@ package de.andipopp.poodle.views.editpoll.date;
 
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.UUID;
 
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -16,6 +17,7 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.shared.Registration;
 
+import de.andipopp.poodle.data.entity.polls.CalendarEvent;
 import de.andipopp.poodle.data.entity.polls.DateOption;
 import de.andipopp.poodle.util.TimeUtils;
 import de.andipopp.poodle.views.components.HasValueFields;
@@ -28,7 +30,7 @@ import de.andipopp.poodle.views.editpoll.AbstractOptionForm;
  * @author Andi Popp
  *
  */
-public class DateOptionForm extends AbstractOptionForm {
+public class DateOptionForm extends AbstractOptionForm implements CalendarEvent{
 	
 	//DateOption specific components
 	
@@ -233,4 +235,33 @@ public class DateOptionForm extends AbstractOptionForm {
 		
 		return option;
 	}
+
+	@Override
+	public UUID getUuid() {
+		return getOption().getId();
+	}
+
+	@Override
+	public Date getStart() {
+		if (startPicker == null || startPicker.getValue() == null) return null;
+		return Date.from(startPicker.getValue().atZone(getList().getTimezone()).toInstant());
+	}
+
+	@Override
+	public Date getEnd() {
+		if (endPicker == null || endPicker.getValue() == null) return null;
+		return Date.from(endPicker.getValue().atZone(getList().getTimezone()).toInstant());
+	}
+
+	@Override
+	public String getTitle() {
+		return title.getValue();
+	}
+
+	@Override
+	public String getLocation() {
+		return location.getValue();
+	}
+
+
 }

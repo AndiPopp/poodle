@@ -7,6 +7,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
+import java.util.UUID;
 
 import javax.annotation.Nullable;
 import javax.persistence.Column;
@@ -25,7 +26,7 @@ import de.andipopp.poodle.views.vote.date.DateOptionListItem;
  *
  */
 @Entity
-public class DateOption extends AbstractOption<DatePoll, DateOption> {
+public class DateOption extends AbstractOption<DatePoll, DateOption> implements CalendarEvent {
 
 	/**
 	 * The start date for this option
@@ -291,6 +292,11 @@ public class DateOption extends AbstractOption<DatePoll, DateOption> {
 		} catch (NullPointerException e) {
 			return null;
 		}
+	}
+
+	@Override
+	public UUID getUuid() {
+		return getId();
 	}
 	
 }
