@@ -57,9 +57,10 @@ public abstract class AbstractOptionForm extends VerticalLayout implements HasVa
 	protected FormLayout form = new FormLayout();
 	
 	/**
-	 * Bottom bar for interactive elements
+	 * Footer
 	 */
-	protected HorizontalLayout buttonBar = new HorizontalLayout();
+	protected HorizontalLayout footer = new HorizontalLayout();
+
 	
 	//Inner components
 	
@@ -112,21 +113,16 @@ public abstract class AbstractOptionForm extends VerticalLayout implements HasVa
 	}
 
 	/**
-	 * Builds the complete layout by calling {@link #buildForm()} and {@link #buildButtonBar()}.
+	 * Builds the complete layout by calling {@link #buildForm()} and {@link #buildFooter()}.
 	 * Can be overloaded or super-called by concrete subclasses.
 	 */
 	public void buildAll() {
 		this.removeAll();
 		buildForm();
-		buildButtonBar();
-	
+		buildFooter();
+		
 		//wrap the bottom bar into a layout with the debug label
-		HorizontalLayout buttonBarWrapper = new HorizontalLayout(buttonBar, debugLabel);
-		buttonBarWrapper.setPadding(false);
-		buttonBarWrapper.setJustifyContentMode(JustifyContentMode.BETWEEN);
-		buttonBarWrapper.setDefaultVerticalComponentAlignment(Alignment.END);
-		buttonBarWrapper.setWidthFull();
-		this.add(form, buttonBarWrapper, deleteOverlay);
+		this.add(form, footer, deleteOverlay);
 	}
 	
 	/**
@@ -139,12 +135,19 @@ public abstract class AbstractOptionForm extends VerticalLayout implements HasVa
 	}
 	
 	/**
-	 * Builds the {@link #buttonBar}.
+	 * Builds the {@link #footer}.
 	 * Can be overloaded by concrete subclasses to add more components.
 	 */
-	protected void buildButtonBar() {
-		buttonBar.removeAll();
-		buttonBar.add(deleteButton);
+	protected void buildFooter() {
+		footer.setJustifyContentMode(JustifyContentMode.BETWEEN);
+		footer.setWidthFull(); //important so that any MenuBars in the footer overflow correctly
+		footer.removeAll(); 
+		
+		HorizontalLayout deleteButtonBarWrapper = new HorizontalLayout(deleteButton, debugLabel);
+		deleteButtonBarWrapper.setPadding(false);
+		deleteButtonBarWrapper.setDefaultVerticalComponentAlignment(Alignment.BASELINE);
+
+		footer.add(deleteButtonBarWrapper);
 	}
 	
 	/* =======================

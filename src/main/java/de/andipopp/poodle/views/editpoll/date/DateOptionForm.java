@@ -3,12 +3,17 @@ package de.andipopp.poodle.views.editpoll.date;
 import java.time.ZoneId;
 import java.util.Date;
 
+import com.vaadin.flow.component.ComponentEvent;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.HasValue.ValueChangeEvent;
 import com.vaadin.flow.component.HasValue.ValueChangeListener;
+import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
+import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.shared.Registration;
 
 import de.andipopp.poodle.data.entity.polls.DateOption;
 import de.andipopp.poodle.util.TimeUtils;
@@ -53,6 +58,12 @@ public class DateOptionForm extends AbstractOptionForm {
 	 */
 	DateTimePicker endPicker = new DateTimePicker("End Date");
 	
+	
+	/**
+	 * Menu bar offering more features on the right footer
+	 */
+	MenuBar rightFooterMenu = new MenuBar();
+	
 	/* =============================
 	 * = Constructors and Builders =
 	 * ============================= */
@@ -70,7 +81,10 @@ public class DateOptionForm extends AbstractOptionForm {
 		endPicker.setRequiredIndicatorVisible(true);
 		startPicker.setRequiredIndicatorVisible(true);
 		location.setRequired(false);
+		location.setVisible(false);
 		title.setRequired(false);
+		title.setVisible(false);
+		configureRightFooterMenu();
 		
 		//prepare the binder
 		binder.forField(startPicker)
@@ -86,6 +100,23 @@ public class DateOptionForm extends AbstractOptionForm {
 		binder.bindInstanceFields(this);
 	}
 	
+	private void configureRightFooterMenu() {
+		rightFooterMenu.setMinWidth("var(--lumo-size-m)"); // <-- ! needed to change min-width from `auto` so it could shrink !
+		MenuItem showMore = rightFooterMenu.addItem("Show More");
+		showMore.addClickListener(e -> {
+			location.setVisible(!location.isVisible());
+			title.setVisible(location.isVisible());
+			if (location.isVisible()) showMore.setText("Show Less");
+			else showMore.setText("Show More");
+		});
+		MenuItem clone = rightFooterMenu.addItem("Clone");
+		clone.addClickListener(e -> fireEvent(new AddDateOptionEvent(this, getOption().clone(0))));
+		MenuItem clonePlus1D = rightFooterMenu.addItem("Clone+1day");
+		clonePlus1D.addClickListener(e -> fireEvent(new AddDateOptionEvent(this, getOption().clone(1))));
+		MenuItem clonePlus1W = rightFooterMenu.addItem("Clone+1week");
+		clonePlus1W.addClickListener(e -> fireEvent(new AddDateOptionEvent(this, getOption().clone(7))));
+	}
+	
 	private boolean validateEndDate(Date endDate) {
 		Date start = Date.from(startPicker.getValue().atZone(getList().getTimezone()).toInstant());
 		return start.before(endDate);
@@ -98,10 +129,13 @@ public class DateOptionForm extends AbstractOptionForm {
 	}
 	
 	@Override
-	protected void buildButtonBar() {
-		super.buildButtonBar();
+	protected void buildFooter() {
+		super.buildFooter();
+		footer.add(rightFooterMenu);
+//		footer.setFlexGrow(1, rightFooterMenu); // <- this allows the menu to regrow, but it also makes it use up more space than it needs and screws with the BETWEEN justification
 	}
 
+	
 	/* =======================
 	 * = Getters and Setters =
 	 * ======================= */
@@ -163,4 +197,29 @@ public class DateOptionForm extends AbstractOptionForm {
 		endPicker.addValueChangeListener(listener);
 	}
 
+	/* ==========
+	 * = Events =
+	 * ========== */
+	
+	public Registration addAddDateOptionEventListener(ComponentEventListener<AddDateOptionEvent> listener) { 
+		return getEventBus().addListener(AddDateOptionEvent.class, listener);
+	}
+	
+	public static class AddDateOptionEvent extends ComponentEvent<DateOptionForm>{
+
+		private DateOption option;
+
+		public AddDateOptionEvent(DateOptionForm source, DateOption option) {
+			super(source, false);
+			this.option = option;
+		}
+
+		/**
+		 * Getter for {@link #option}
+		 * @return the {@link #option}
+		 */
+		public DateOption getOption() {
+			return option;
+		}	
+	}
 }

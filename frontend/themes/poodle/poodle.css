@@ -118,6 +118,10 @@
 	.text-box-button-text.title {
 		font-size: large;	
 	}
+	
+	.vanish-below-480px {
+		display: none;
+	}
 }
 
 

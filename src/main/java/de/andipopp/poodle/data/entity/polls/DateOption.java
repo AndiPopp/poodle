@@ -266,6 +266,13 @@ public class DateOption extends AbstractOption<DatePoll, DateOption> {
 		return result + "\r\n" + "EndOfDateOption";
 	}
 
-	
+	public DateOption clone(int dayOffSet) {
+		return new DateOption(
+				this.getTitle(), //Title
+				Date.from(getStart().toInstant().plusSeconds(dayOffSet*24*60*60)), //Start
+				Date.from(getEnd().toInstant().plusSeconds(dayOffSet*24*60*60)), //End
+				this.getLocation() //Location
+		);
+	}
 	
 }

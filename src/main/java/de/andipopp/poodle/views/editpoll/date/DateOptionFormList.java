@@ -3,12 +3,15 @@ package de.andipopp.poodle.views.editpoll.date;
 import java.time.ZoneId;
 import java.util.ArrayList;
 
+import com.vaadin.flow.component.ComponentEventListener;
+
 import de.andipopp.poodle.data.entity.polls.DateOption;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
 import de.andipopp.poodle.util.VaadinUtils;
 import de.andipopp.poodle.views.editpoll.AbstractOptionFormList;
+import de.andipopp.poodle.views.editpoll.date.DateOptionForm.AddDateOptionEvent;
 
-public class DateOptionFormList extends AbstractOptionFormList<DateOptionForm> {
+public class DateOptionFormList extends AbstractOptionFormList<DateOptionForm> implements ComponentEventListener<AddDateOptionEvent> {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -30,11 +33,7 @@ public class DateOptionFormList extends AbstractOptionFormList<DateOptionForm> {
 	protected void buildList() {
 		setOptionForms(new ArrayList<>());
 		for(DateOption option : getPoll().getOptions()) {
-			DateOptionForm form = new DateOptionForm(option, this);
-			form.buildAll();
-			form.loadData();
-			getOptionForms().add(form);
-			this.add(form);
+			addDateOption(option);
 		}
 	}
 	
@@ -90,5 +89,28 @@ public class DateOptionFormList extends AbstractOptionFormList<DateOptionForm> {
 				poll.addOption(form.getOption());
 			}
 		}
+	}
+
+	public void addDateOption(DateOption option) {
+		DateOptionForm form = new DateOptionForm(option, this);
+		form.buildAll();
+		form.loadData();
+		form.addAddDateOptionEventListener(this);
+		getOptionForms().add(form);
+		addForm(form);
+	}
+	
+	@Override
+	public void addEmptyForm() {
+		addDateOption(new DateOption());
+	}
+
+	/* ==========
+	 * = Events =
+	 * ========== */
+	
+	@Override
+	public void onComponentEvent(AddDateOptionEvent event) {
+		addDateOption(event.getOption());
 	}
 }

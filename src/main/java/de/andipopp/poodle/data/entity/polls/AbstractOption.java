@@ -229,5 +229,4 @@ public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends Abst
 		}
 		return list;
 	}
-	
 }

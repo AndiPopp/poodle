@@ -57,4 +57,17 @@ public abstract class AbstractOptionFormList<F extends AbstractOptionForm> exten
 		}
 	}
 	
+	/**
+	 * Add a new option form to this list
+	 * @param form the option form to add
+	 */
+	public void addForm(F form) {
+		optionForms.add(form);
+		this.add(form);
+	}
+	
+	/**
+	 * Add a new form with a complete new option
+	 */
+	public abstract void addEmptyForm();
 }

@@ -169,6 +169,7 @@ public class EditPollView extends PollView implements ValueChangeListener<ValueC
 		
 		HorizontalLayout deleteButtonPanel = new HorizontalLayout();
 		DebugLabel debugLabel = new DebugLabel(this.poll);
+		
 		deleteButtonPanel.add(deletePollButton, debugLabel);
 		deleteButtonPanel.setDefaultVerticalComponentAlignment(Alignment.BASELINE);
 		
@@ -399,8 +400,6 @@ public class EditPollView extends PollView implements ValueChangeListener<ValueC
 
 	@Override
 	public void beforeLeave(BeforeLeaveEvent event) {
-		System.out.println("Before leave is triggered in EditPollView");
-		
 		if (this.hasChanges) {
 			ContinueNavigationAction action = event.postpone();
 			ConfirmationDialog dialog = new ConfirmationDialog("Poll has unsaved changes.", "Leave anyway?");

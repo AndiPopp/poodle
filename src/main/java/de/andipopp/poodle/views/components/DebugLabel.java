@@ -17,6 +17,7 @@ public class DebugLabel extends Label{
 
 	public DebugLabel(HasUuid object) {
 		this();
+		this.addClassName("vanish-below-480px");
 		setText(object);
 	}
 	
