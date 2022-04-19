@@ -10,6 +10,7 @@ import com.vaadin.flow.component.HasValue.ValueChangeListener;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.menubar.MenuBar;
+import com.vaadin.flow.component.menubar.MenuBarVariant;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
@@ -97,6 +98,7 @@ public class DateOptionForm extends AbstractOptionForm {
 	
 	private void configureRightFooterMenu() {
 		rightFooterMenu.setMinWidth("var(--lumo-size-m)"); // <-- ! needed to change min-width from `auto` so it could shrink !
+		rightFooterMenu.addThemeVariants(MenuBarVariant.LUMO_SMALL);
 		MenuItem showMore = rightFooterMenu.addItem("Show More");
 		showMore.addClickListener(e -> {
 			location.setVisible(!location.isVisible());
@@ -105,11 +107,11 @@ public class DateOptionForm extends AbstractOptionForm {
 			else showMore.setText("Show More");
 		});
 		MenuItem clone = rightFooterMenu.addItem("Clone");
-		clone.addClickListener(e -> fireEvent(new AddDateOptionEvent(this, getOption().clone(0))));
+		clone.addClickListener(e -> fireEvent(new AddDateOptionEvent(this, createFromFields(0))));
 		MenuItem clonePlus1D = rightFooterMenu.addItem("Clone+1day");
-		clonePlus1D.addClickListener(e -> fireEvent(new AddDateOptionEvent(this, getOption().clone(1))));
+		clonePlus1D.addClickListener(e -> fireEvent(new AddDateOptionEvent(this, createFromFields(1))));
 		MenuItem clonePlus1W = rightFooterMenu.addItem("Clone+1week");
-		clonePlus1W.addClickListener(e -> fireEvent(new AddDateOptionEvent(this, getOption().clone(7))));
+		clonePlus1W.addClickListener(e -> fireEvent(new AddDateOptionEvent(this, createFromFields(7))));
 	}
 	
 	private boolean validateEndDate(Date endDate) {
@@ -216,5 +218,19 @@ public class DateOptionForm extends AbstractOptionForm {
 		public DateOption getOption() {
 			return option;
 		}	
+	}
+	
+	/* =================
+	 * = Other Methods =
+	 * ================= */
+	
+	public DateOption createFromFields(int dayOffset) {
+		if (startPicker.getValue() == null || endPicker.getValue() == null) return null;
+		DateOption option = new DateOption(startPicker.getValue().plusDays(dayOffset), endPicker.getValue().plusDays(dayOffset), getList().getTimezone());
+		
+		if (!title.getValue().isBlank()) option.setTitle(title.getValue());
+		if (!location.getValue().isBlank()) option.setLocation(location.getValue());
+		
+		return option;
 	}
 }

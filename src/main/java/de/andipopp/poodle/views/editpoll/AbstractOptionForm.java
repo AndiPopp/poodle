@@ -100,7 +100,7 @@ public abstract class AbstractOptionForm extends VerticalLayout implements HasVa
 		
 		//configure the components
 		deleteButton.addClickListener(e -> deleteOption());
-		deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+		deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_SMALL);
 		updateComponents();
 		
 		deleteOverlay.addClassName("poll-option-delete-overlay");

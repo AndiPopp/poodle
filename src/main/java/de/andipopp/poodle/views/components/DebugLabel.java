@@ -9,13 +9,12 @@ import de.andipopp.poodle.util.UUIDUtils.Part;
 public class DebugLabel extends Label{
 
 	public DebugLabel() {
-		super();
+		this.addClassName("vanish-below-480px");
 		configureStyle();
 	}
 
 	public DebugLabel(HasUuid object) {
 		this();
-		this.addClassName("vanish-below-480px");
 		setText(object);
 	}
 	
@@ -28,6 +27,7 @@ public class DebugLabel extends Label{
 		if (object != null && object.getId() != null) setText("id2: "+UUIDUtils.getPart(object.getId(), Part.PART2));
 		else if(object != null) setText("new");
 		else setText("null");
+		
 	}
 	
 }

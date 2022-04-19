@@ -4,6 +4,9 @@ import java.util.List;
 
 import com.vaadin.flow.component.HasValue.ValueChangeEvent;
 import com.vaadin.flow.component.HasValue.ValueChangeListener;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
@@ -15,11 +18,21 @@ public abstract class AbstractOptionFormList<F extends AbstractOptionForm> exten
 	
 	private List<F> optionForms;
 
+	private HorizontalLayout toolbar = new HorizontalLayout();
+	
+	private Button addOptionButton = new Button("Add Option");
+	
 	/**
 	 * @param poll
 	 */
 	public AbstractOptionFormList(AbstractPoll<?, ?> poll) {
 		this.poll = poll;
+		toolbar.setDefaultVerticalComponentAlignment(Alignment.END);
+		toolbar.add(addOptionButton);
+		this.add(toolbar);
+		addOptionButton.addClickListener(e -> addEmptyForm());
+		addOptionButton.addClassName("primary-text");
+		addOptionButton.addThemeVariants(ButtonVariant.LUMO_SMALL);
 	}
 	
 	protected abstract void buildList();

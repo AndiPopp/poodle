@@ -1,6 +1,7 @@
 package de.andipopp.poodle.data.entity.polls;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -89,6 +90,19 @@ public class DateOption extends AbstractOption<DatePoll, DateOption> {
 	 */
 	public DateOption(@NotNull Date start, @NotNull Date end) {
 		this(null, start, end, null);
+	}
+	
+	/**
+	 * Construct new DateOption without title or location with local date timess and a time zone
+	 * @param start local date-time for {@link #start}
+	 * @param end local date-time for {@link #end}
+	 * @param timeZone the time zone to translate the local date-times to instants
+	 */
+	public DateOption(@NotNull LocalDateTime start, @NotNull LocalDateTime end, @NotNull ZoneId timeZone) {
+		this(
+			Date.from(start.atZone(timeZone).toInstant()),
+			Date.from(end.atZone(timeZone).toInstant())
+		);
 	}
 	
 	/* ======================
@@ -267,12 +281,16 @@ public class DateOption extends AbstractOption<DatePoll, DateOption> {
 	}
 
 	public DateOption clone(int dayOffSet) {
-		return new DateOption(
-				this.getTitle(), //Title
-				Date.from(getStart().toInstant().plusSeconds(dayOffSet*24*60*60)), //Start
-				Date.from(getEnd().toInstant().plusSeconds(dayOffSet*24*60*60)), //End
-				this.getLocation() //Location
-		);
+		try {
+			return new DateOption(
+					this.getTitle(), //Title
+					Date.from(getStart().toInstant().plusSeconds(dayOffSet*24*60*60)), //Start
+					Date.from(getEnd().toInstant().plusSeconds(dayOffSet*24*60*60)), //End
+					this.getLocation() //Location
+			);
+		} catch (NullPointerException e) {
+			return null;
+		}
 	}
 	
 }

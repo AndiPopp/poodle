@@ -4,6 +4,8 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 
 import de.andipopp.poodle.data.entity.polls.DateOption;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
@@ -109,6 +111,7 @@ public class DateOptionFormList extends AbstractOptionFormList<DateOptionForm> i
 	
 	@Override
 	public void onComponentEvent(AddDateOptionEvent event) {
-		addDateOption(event.getOption());
+		if (event.getOption() != null) addDateOption(event.getOption());
+		else Notification.show("Enter dates before cloning").addThemeVariants(NotificationVariant.LUMO_ERROR);
 	}
 }
