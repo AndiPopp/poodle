@@ -228,8 +228,6 @@ public class EditPollView extends PollView implements ValueChangeListener<ValueC
 			return false;
 		}
 	}
-	
-	
 
 	/**
 	 * Checks if the user has access to edit this poll.

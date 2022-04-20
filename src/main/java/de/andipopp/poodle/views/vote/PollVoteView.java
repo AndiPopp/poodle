@@ -39,7 +39,7 @@ import de.andipopp.poodle.views.vote.date.DateOptionsVoteListView;
 @Route(value = "poll", layout = MainLayout.class)
 @AnonymousAllowed
 /**
- * The core view to vote in a poll.
+ * View to participate (i.e. mostly vote) in a specific poll.
  * @author Andi Popp
  *
  */
