@@ -41,7 +41,7 @@ public class DateOption extends AbstractOption<DatePoll, DateOption> implements 
 	/**
 	 * Max length for {@link #location}
 	 */
-	public static final int MAX_LOCATION_LENGTH = 63;
+	public static final int MAX_LOCATION_LENGTH = 80;
 	
 	/**
 	 * Specific location for this option (can be null)

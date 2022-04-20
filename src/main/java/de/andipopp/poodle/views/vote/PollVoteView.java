@@ -14,13 +14,12 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.contextmenu.MenuItem;
-import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.H6;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
@@ -37,8 +36,6 @@ import de.andipopp.poodle.views.PollView;
 import de.andipopp.poodle.views.components.LineAwesomeMenuIcon;
 import de.andipopp.poodle.views.vote.date.DatePollListView;
 
-
-@PageTitle("Poodle Poll")
 @Route(value = "poll", layout = MainLayout.class)
 @AnonymousAllowed
 /**
@@ -46,7 +43,7 @@ import de.andipopp.poodle.views.vote.date.DatePollListView;
  * @author Andi Popp
  *
  */
-public class PollVoteView extends PollView {
+public class PollVoteView extends PollView implements HasDynamicTitle {
 
 	private VoteService voteService;
 
@@ -103,7 +100,7 @@ public class PollVoteView extends PollView {
 		this.pollContent.setPadding(false);
 		this.pollContent.add(metaInfBlock());
 		this.pollContent.setSpacing(false);
-//		this.pollContent.getStyle().set("border", "2px dotted FireBrick"); //for debug purposes
+		this.pollContent.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 		
 		if (poll instanceof DatePoll) {
 			listView = new DatePollListView((DatePoll) poll, getCurrentUser(), voteService, pollService); 
@@ -139,11 +136,10 @@ public class PollVoteView extends PollView {
 		metaInfBlock.setPadding(false);
 		metaInfBlock.setDefaultHorizontalComponentAlignment(Alignment.START);
 		metaInfBlock.add(configureHeader());
-		metaInfBlock.add(configureSubtitle());
+		
 		metaInfBlock.add(configureInfo());
 		metaInfBlock.add(HtmlUtils.pollShareScript(getPoll()));
-//		metaInfBlock.getStyle().set("border", "2px dotted Red"); //for debug purposes
-		return metaInfBlock; //new HorizontalLayout(metaInfBlock);
+		return metaInfBlock; 
 	}
 	
 	private Component configureHeader() {
@@ -151,34 +147,24 @@ public class PollVoteView extends PollView {
 		header.setWidthFull();
 		header.setDefaultVerticalComponentAlignment(Alignment.START);
 		Avatar ownerAvatar = poll.getOwner().getAvatarCopy();
-		ownerAvatar.addThemeVariants(AvatarVariant.LUMO_XLARGE);
+		ownerAvatar.addThemeVariants(AvatarVariant.LUMO_SMALL);
 		ownerAvatar.getStyle().set("border", "3px solid black") ;
 		this.content.add(ownerAvatar);
-		H3 title = new H3(poll.getTitle());
-		title.getStyle().set("display", "inline");
-		title.getStyle().set("margin-top", "0ex");
-		title.getStyle().set("margin-bottom", "0ex");
-//		title.getStyle().set("border", "2px dotted Red") ; //for debug purposes
-		title.setWidthFull();
-		HorizontalLayout avatarAndTitleWrapper = new HorizontalLayout(ownerAvatar, title);
+		HorizontalLayout avatarAndTitleWrapper = new HorizontalLayout(ownerAvatar, configureSubtitle());
 		avatarAndTitleWrapper.setDefaultVerticalComponentAlignment(Alignment.CENTER);
 		avatarAndTitleWrapper.setWidthFull();
-//		avatarAndTitleWrapper.getStyle().set("border", "2px dotted DarkOrange") ; //for debug purpose
-		header.add(avatarAndTitleWrapper);
-//		header.getStyle().set("border", "2px dotted Green") ; //for debug purposes
 
-		
+		header.add(avatarAndTitleWrapper);
+
 		//build the menu button:	
 		topRightMenu = new Button();
 		topRightMenu.addClassName("primary-text");
 		topRightMenu.setIcon(new Icon(VaadinIcon.MENU));
 		topRightMenu.addThemeVariants(ButtonVariant.LUMO_ICON);
 		
-		
 		HorizontalLayout headerMenuButtonWrapper = new HorizontalLayout(topRightMenu);
 		headerMenuButtonWrapper.setHeightFull();
 		headerMenuButtonWrapper.setDefaultVerticalComponentAlignment(Alignment.START);
-//		headerMenuButtonWrapper.getStyle().set("border", "2px dotted FireBrick") ; //for debug purposes
 		header.add(headerMenuButtonWrapper);
 		return header;
 	}
@@ -191,7 +177,6 @@ public class PollVoteView extends PollView {
 		text +=  " and retained until "+poll.getDeleteDate();
 		subtitle.setText(text);
 		subtitle.getStyle().set("margin-top", "0ex");
-//		subtitle.getStyle()
 		return subtitle;
 	}
 	
@@ -214,7 +199,6 @@ public class PollVoteView extends PollView {
 		};
 		info.setSpacing(false);
 		info.setPadding(false);
-//		info.getStyle().set("border", "2px dotted Green") ; //for debug purposes
 		return info;
 	}
 	
@@ -326,5 +310,12 @@ public class PollVoteView extends PollView {
 //			this.getStyle().set("border", "2px dotted DarkOrange") ; //for debug purposes
 		}
 		
+	}
+
+	@Override
+	public String getPageTitle() {
+		String title = "Poll not found";
+		if (poll != null && poll.getTitle() != null) title = poll.getTitle();
+		return title;
 	}
 }

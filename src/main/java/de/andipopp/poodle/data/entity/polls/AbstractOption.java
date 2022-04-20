@@ -39,7 +39,7 @@ public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends Abst
 	/**
 	 * Max length of the {@link #title}
 	 */
-	public static final int MAX_TITLE_LENGTH = 63;
+	public static final int MAX_TITLE_LENGTH = 80;
 	
 	/**
 	 * An optional human readable title

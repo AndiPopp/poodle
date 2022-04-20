@@ -77,7 +77,7 @@ public class DataGenerator {
     		User user, 
     		User admin) {
     	DatePoll poll = new DatePoll();
-    	poll.setTitle("Master of the Universe get-together");
+    	poll.setTitle("Masters of the Universe get-together");
     	poll.setDescription("He-Man will be there. So <a href=\"https://www.google.com\">google</a> yourself your finest magic sword and feline steed.");
     	poll.setLocation("Castle Greyskull (unless specified otherwise)");
     	poll.generateEditKey();
@@ -151,8 +151,10 @@ public class DataGenerator {
     	pollRepository.save(poll);
     	
     	poll = new DatePoll();
-    	poll.setTitle("This is a really long title just to see what happens if we have a really long title and even longer titles");
-    	poll.setDescription("Man this title is long");
+    	poll.setTitle("This is a really long title just to see what happens when we actually hit the 80");
+    	poll.setDescription("Lorem ipsum dolor sit amet, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. \n"
+    			+ "</br>"
+    			+ "Duis autem vel eum iriure dolor in hendrerit in vulputate velit esset, vel illum dolore eu feugiat nulla facilisis ");
     	poll.setOwner(user);
     	poll.generateEditKey();
     	poll.addOption(new DateOption(

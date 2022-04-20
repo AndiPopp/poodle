@@ -67,7 +67,7 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	/**
 	 * Max length of the {@link #title}
 	 */
-	public static final int MAX_TITLE_LENGTH = 127;
+	public static final int MAX_TITLE_LENGTH = 80;
 	
 	/**
 	 * The poll's title
@@ -81,7 +81,7 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	/**
 	 * Max length of the {@link #description}
 	 */
-	public static final int MAX_DESCRIPTION_LENGTH = 511;
+	public static final int MAX_DESCRIPTION_LENGTH = 1000;
 	
 	/**
 	 * An optional poll description

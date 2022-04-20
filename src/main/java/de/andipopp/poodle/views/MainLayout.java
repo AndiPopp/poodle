@@ -1,5 +1,7 @@
 package de.andipopp.poodle.views;
 
+import java.util.Optional;
+
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -16,9 +18,12 @@ import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.html.Nav;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.html.UnorderedList;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
+
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.security.AuthenticatedUser;
 import de.andipopp.poodle.views.editpoll.NewPollView;
@@ -26,7 +31,6 @@ import de.andipopp.poodle.views.mypolls.MyPollsView;
 import de.andipopp.poodle.views.test.TestView;
 import de.andipopp.poodle.views.usersettings.UserSettingsView;
 import de.andipopp.poodle.views.viewpolls.ViewPollsView;
-import java.util.Optional;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -89,14 +93,17 @@ public class MainLayout extends AppLayout {
 
     private Component createHeaderContent() {
         DrawerToggle toggle = new DrawerToggle();
-        toggle.addClassNames("view-toggle");
+        toggle.addClassNames("view-toggle", "vanish-above-800px");
         toggle.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
         toggle.getElement().setAttribute("aria-label", "Menu toggle");
-
+        
         viewTitle = new H1();
         viewTitle.addClassNames("view-title");
-
-        Header header = new Header(toggle, viewTitle);
+        HorizontalLayout titleWrapper = new HorizontalLayout(viewTitle); // a little bit of center because of the drawer toggle, maybe a spacers with flex grow to the wrapper?
+        titleWrapper.setWidthFull();
+        titleWrapper.addClassName("title-wrapper");
+//        titleWrapper.setJustifyContentMode(JustifyContentMode.CENTER);
+        Header header = new Header(toggle, titleWrapper);
         header.addClassNames("view-header");
         return header;
     }
@@ -180,7 +187,11 @@ public class MainLayout extends AppLayout {
     }
 
     private String getCurrentPageTitle() {
-        PageTitle title = getContent().getClass().getAnnotation(PageTitle.class);
-        return title == null ? "" : title.value();
+    	if (getContent() instanceof HasDynamicTitle) {
+    		return ((HasDynamicTitle) getContent()).getPageTitle();
+    	} else {
+	        PageTitle title = getContent().getClass().getAnnotation(PageTitle.class); 
+	        return title == null ? "" : title.value();
+    	}
     }
 }

@@ -27,7 +27,7 @@
 .vote-count-inline-vote-image {
 	width: 1em;
 	height: 1em;
-	vertical-align: text-bottom;
+	vertical-align: -0.15em;
 }
 
 .vote-yes{
@@ -106,7 +106,7 @@
 }
 
 .text-box-button-text.title {
-	font-size: x-large;
+	font-size: large;
 	font-weight: bold;
 }
 
@@ -115,13 +115,29 @@
 		font-size: smaller;
 	}
 	
-	.text-box-button-text.title {
-		font-size: large;	
-	}
-	
 	.vanish-below-480px {
 		display: none;
 	}
+}
+
+@media all and (min-width: 800px) {
+	.vanish-above-800px {
+		display: none;
+	}
+	
+	.title-wrapper {
+		justify-content: center;
+	}
+}
+
+@media all and (max-width: 800px) {
+	.vanish-below-800px {
+		display: none;
+	}
+	
+	
+	
+	
 }
 
 

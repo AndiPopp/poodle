@@ -72,14 +72,16 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 		this.user = user;
 		this.voteService = voteService;
 		this.pollService = pollService;
+
 		//configure layout
 		this.setPadding(false);
 		this.setSpacing(false);
+		this.setMaxWidth("800px");
+
 		this.header = new HorizontalLayout();
 		this.header.setWidthFull();
 		this.header.getStyle().set("margin-bottom", "1ex");
 		this.header.setDefaultVerticalComponentAlignment(Alignment.END);
-//		this.header.getStyle().set("border", "2px dotted AntiqueWhite"); //for debug purposes
 		this.add(header); 
 		
 		//build vote selector
@@ -389,7 +391,6 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 		
 		configureDisplayNameInput();
 		HorizontalLayout saveBar = buildFooterBar(deleteButton, displayNameInput, saveButton);
-//		saveBar.getStyle().set("border", "2px dotted FireBrick"); //for debug purposes
 		this.add(saveBar);
 	}
 
