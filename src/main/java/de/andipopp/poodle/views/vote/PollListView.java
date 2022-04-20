@@ -1,6 +1,7 @@
 package de.andipopp.poodle.views.vote;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -67,6 +68,7 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 	Button closeButton = new Button("Save and Close Poll");
 
 	public PollListView(P poll, User user, VoteService voteService, PollService pollService) {
+		
 		//Set fields
 		this.poll = poll;
 		this.user = user;
@@ -86,10 +88,9 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 		
 		//build vote selector
 		voteSelector = new Select<>();
-		Vote<P,O> usersVote = configureVoteSelector();
-		guessVote(usersVote);
+		configureVoteSelector();
 		
-		//hookup listener for buttons
+		//hook-up listeners for buttons
 		saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 		saveButton.addClickListener(e -> saveCurrentVote());
 		
@@ -175,7 +176,20 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 		else voteSelector.setValue(usersVote);
 	}
 
-
+	public void guessVote(User user) {
+		for (Iterator<Vote<P,O>> it = voteSelector.getListDataView().getItems().iterator(); it.hasNext();) {
+			Vote<P,O> vote = it.next();
+			if (vote.getOwner() != null && vote.getOwner().equals(user)) {
+				voteSelector.setValue(vote);
+				return;
+			}
+		}
+		voteSelector.setValue(newVote);
+	}
+	
+	/**
+	 * Flag to keep the vote selector event from firing while we re-configure the vote selector
+	 */
 	private boolean configureVoteSelectorMode = false;
 
 	private Vote<P,O> configureVoteSelector() {
@@ -197,7 +211,6 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 			votes.add(vote);
 			if (vote.getOwner() != null && vote.getOwner().equals(user)) usersVote = vote;
 		}
-//		System.out.println("Loaded "+(sortedVotes.size()+1)+" votes");
 		voteSelector.setItems(votes);
 		voteSelector.setItemLabelGenerator(v -> {
 			if (v.getOwner() == null) return v.getListLabel();
@@ -237,13 +250,11 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 		
 		//TODO The rest down here needs to be cleaned up
 		
-//		Logger logger = LoggerFactory.getLogger(getClass());
     	
 		//write the results to backend
 		boolean result = false;
 		String message = "Unexpected result while saving vote. Refresh to see if it worked.";
 		if (currentVote.equals(newVote)) {
-//			logger.info("Adding to "+voteService.count()+" votes, new vote "+currentVote.getId());
 			//hookup the new vote to the poll, its answers to the options and declare the owner
 			this.poll.addVote(currentVote);
 			currentVote.hookupAnswersToOptions();
@@ -257,7 +268,6 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 			result = repResult != null;
 		} else 
 		if(currentVote.getOwner() == null || currentVote.getOwner().equals(user)) {
-//			logger.info("Modifying in "+voteService.count()+" votes, vote "+currentVote.getId());
 			result = voteService.update(currentVote) != null;
 		} else {
 			message = "You don't have permission to edit this vote.";
@@ -275,7 +285,6 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 			Notification notification = Notification.show(message);
 			notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
 		}
-//		logger.info("Now having "+voteService.count()+" votes.");
 	}
 	
 	private void confirmDeleteVote() {
@@ -344,7 +353,7 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 		//start clean with only header
 		this.clearList();
 		this.add(header);
-		//if we have a currrent vote, build the list
+		//if we have a current vote, build the list
 		if (currentVote != null) {
 			for(AbstractOption<P,O> option : poll.getOptions()) {
 				OptionListItem item = option.toOptionsListItem(user);
@@ -379,15 +388,15 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 	protected void buildSaveBar() {
 		
 		//configure button enabling
-		saveButton.setEnabled(true);
-		deleteButton.setEnabled(true);
-		displayNameInput.setEnabled(true);
-		if (currentVote.getOwner() != null) {
+		saveButton.setEnabled(currentVote != null);
+		deleteButton.setEnabled(currentVote != null);
+		displayNameInput.setEnabled(currentVote != null);
+		if (currentVote != null && currentVote.getOwner() != null) {
 			saveButton.setEnabled(currentVote.canEdit(user));
 			deleteButton.setEnabled(currentVote.canEdit(user));
 			displayNameInput.setEnabled(currentVote.canEdit(user));
 		}
-		if (currentVote.equals(newVote)) deleteButton.setEnabled(false);
+		if (currentVote != null && currentVote.equals(newVote)) deleteButton.setEnabled(false);
 		
 		configureDisplayNameInput();
 		HorizontalLayout saveBar = buildFooterBar(deleteButton, displayNameInput, saveButton);

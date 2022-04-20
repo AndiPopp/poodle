@@ -22,17 +22,19 @@ public class DatePollListView extends PollListView<DatePoll, DateOption> {
 
 	private ZoneIdComboBox zoneIdSelector;
 	
-	public DatePollListView(DatePoll poll, User user, VoteService voteService, PollService pollService) {
+	public DatePollListView(DatePoll poll, User user, VoteService voteService, PollService pollService) {		
 		super(poll, user, voteService, pollService);
 		
-		zoneIdSelector = new ZoneIdComboBox();
+		zoneId = TimeUtils.getUserTimeZone(getUser());
+		
+		//configure the selector with the given zoneId and add the listener afterwards, so we do not fire the event here
+		zoneIdSelector = new ZoneIdComboBox(zoneId);
 		zoneIdSelector.addValueChangeListener(e -> {
 			zoneId = zoneIdSelector.getValue();
 			buildAll();
 		});
-		zoneIdSelector.setValue(TimeUtils.getUserTimeZone(getUser())); //do this after the listener so the time zone will be set correctly
-		header.add(zoneIdSelector);
-		if (getPoll().isClosed()) header.add(getPoll().winnerIcalAnchor());
+
+
 	}
 
 	private final static DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMM Y");
@@ -59,7 +61,17 @@ public class DatePollListView extends PollListView<DatePoll, DateOption> {
 		
 		//if we have a current vote, build the list
 		if (currentVote != null) {
-			if (zoneId == null) zoneId = ZoneId.systemDefault(); //this should normally be handled by the zone selector
+			
+			/* This is still a dirty work-around for because the constructor of PollListView triggers load vote 
+			 * (and therefore buildAll and buildList) by setting the value for the vote selector, all of it before
+			 * the constructor of this class has a change to set the time zone.
+			 * In general, the problem is that both selector should trigger a rebuild, but the rebuild only makes
+			 * sense once a vote and a zoneId have been selected.
+			 * We could use the fact that the actual zone id is in the field zoneId, not just the selector. So the
+			 * sequence should be:
+			 * 1.) Run the constructor of PollListView without triggering the 
+			 */
+//			if (zoneId == null) zoneId = TimeUtils.getUserTimeZone(getUser()); 
 			
 			for(DateOption option : poll.getOptions()) {
 				//check if we have a new month

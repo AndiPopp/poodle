@@ -99,10 +99,9 @@ public class MainLayout extends AppLayout {
         
         viewTitle = new H1();
         viewTitle.addClassNames("view-title");
-        HorizontalLayout titleWrapper = new HorizontalLayout(viewTitle); // a little bit of center because of the drawer toggle, maybe a spacers with flex grow to the wrapper?
+        HorizontalLayout titleWrapper = new HorizontalLayout(viewTitle);
         titleWrapper.setWidthFull();
         titleWrapper.addClassName("title-wrapper");
-//        titleWrapper.setJustifyContentMode(JustifyContentMode.CENTER);
         Header header = new Header(toggle, titleWrapper);
         header.addClassNames("view-header");
         return header;

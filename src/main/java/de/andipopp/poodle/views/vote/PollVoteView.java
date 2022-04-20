@@ -104,6 +104,7 @@ public class PollVoteView extends PollView implements HasDynamicTitle {
 		
 		if (poll instanceof DatePoll) {
 			listView = new DatePollListView((DatePoll) poll, getCurrentUser(), voteService, pollService); 
+			listView.guessVote(currentUser);
 			listView.addListener(PollListView.ViewChangeEvent.class, e -> configureTopRightContextMenu());
 			//TODO also build table view
 			if (state == ViewToggleState.LIST) this.pollContent.add(listView);
