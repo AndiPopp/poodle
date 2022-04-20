@@ -14,15 +14,15 @@ import de.andipopp.poodle.data.service.PollService;
 import de.andipopp.poodle.data.service.VoteService;
 import de.andipopp.poodle.util.TimeUtils;
 import de.andipopp.poodle.views.components.ZoneIdComboBox;
-import de.andipopp.poodle.views.vote.PollListView;
+import de.andipopp.poodle.views.vote.OptionsVoteListView;
 
-public class DatePollListView extends PollListView<DatePoll, DateOption> {
+public class DateOptionsVoteListView extends OptionsVoteListView<DatePoll, DateOption> {
 
 	private ZoneId zoneId;
 
 	private ZoneIdComboBox zoneIdSelector;
 	
-	public DatePollListView(DatePoll poll, User user, VoteService voteService, PollService pollService) {		
+	public DateOptionsVoteListView(DatePoll poll, User user, VoteService voteService, PollService pollService) {		
 		super(poll, user, voteService, pollService);
 		
 		zoneId = TimeUtils.getUserTimeZone(getUser());
@@ -85,7 +85,7 @@ public class DatePollListView extends PollListView<DatePoll, DateOption> {
 				lastStart = currentStart;
 				
 				//Construct the list item
-				DateOptionListItem item = option.toOptionsListItem(getUser());
+				DateOptionVoteListItem item = option.toOptionsListItem(getUser());
 				item.setZoneId(zoneId);
 				configureItemAndaddToList(item);
 			}

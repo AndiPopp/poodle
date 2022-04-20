@@ -20,7 +20,12 @@ import de.andipopp.poodle.data.entity.polls.AnswerType;
 import de.andipopp.poodle.data.entity.polls.Vote;
 import de.andipopp.poodle.util.InvalidException;
 
-public class OptionListItem extends HorizontalLayout {
+/**
+ * An item representing a single {@link AbstractOption} in a {@link OptionsVoteListView}
+ * @author Andi Popp
+ *
+ */
+public class OptionVoteListItem extends HorizontalLayout {
 	
 	private AbstractOption<?,?> option;
 	
@@ -51,7 +56,7 @@ public class OptionListItem extends HorizontalLayout {
 	 */
 	OptionSelectToggleButton winnerToggleButton;
 
-	public OptionListItem(AbstractOption<?, ?> option, User currentUser) {
+	public OptionVoteListItem(AbstractOption<?, ?> option, User currentUser) {
 		//set fields
 		this.currentUser = currentUser;
 		this.option = option;
@@ -77,7 +82,7 @@ public class OptionListItem extends HorizontalLayout {
 	}
 
 
-	public OptionListItem(AbstractOption<?, ?> option, Vote<?,?> vote, User currentUser) {
+	public OptionVoteListItem(AbstractOption<?, ?> option, Vote<?,?> vote, User currentUser) {
 		this(option, currentUser);
 		loadVote(vote);
 	}

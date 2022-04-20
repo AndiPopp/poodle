@@ -18,7 +18,7 @@ import javax.validation.constraints.Size;
 import biweekly.component.VEvent;
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.util.JSoupUtils;
-import de.andipopp.poodle.views.vote.date.DateOptionListItem;
+import de.andipopp.poodle.views.vote.date.DateOptionVoteListItem;
 
 /**
  * An option in a {@link DatePoll}
@@ -168,8 +168,8 @@ public class DateOption extends AbstractOption<DatePoll, DateOption> implements 
 	 * ======================== */
 	
 	@Override
-	public DateOptionListItem toOptionsListItem(User currentUser) {
-		return new DateOptionListItem(this, currentUser);
+	public DateOptionVoteListItem toOptionsListItem(User currentUser) {
+		return new DateOptionVoteListItem(this, currentUser);
 	}
 	
 	/* ===============

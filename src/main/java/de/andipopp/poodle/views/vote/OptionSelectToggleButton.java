@@ -4,11 +4,11 @@ import com.vaadin.flow.component.html.Image;
 
 public class OptionSelectToggleButton extends Image {
 
-	OptionListItem parent;
+	OptionVoteListItem parent;
 	
 	boolean winner;
 	
-	public OptionSelectToggleButton(OptionListItem parent) {
+	public OptionSelectToggleButton(OptionVoteListItem parent) {
 		this.parent = parent;
 		winner = parent.getOption().isWinner();
 		setCursor();

@@ -34,7 +34,7 @@ import de.andipopp.poodle.util.UUIDUtils;
 import de.andipopp.poodle.views.MainLayout;
 import de.andipopp.poodle.views.PollView;
 import de.andipopp.poodle.views.components.LineAwesomeMenuIcon;
-import de.andipopp.poodle.views.vote.date.DatePollListView;
+import de.andipopp.poodle.views.vote.date.DateOptionsVoteListView;
 
 @Route(value = "poll", layout = MainLayout.class)
 @AnonymousAllowed
@@ -69,7 +69,7 @@ public class PollVoteView extends PollView implements HasDynamicTitle {
 		LIST, TABLE
 	}
 	
-	PollListView<?, ?> listView;
+	OptionsVoteListView<?, ?> listView;
 	
 	public PollVoteView(AuthenticatedUser authenticatedUser, PollService pollService, VoteService voteService) {
 		super(authenticatedUser, pollService);
@@ -103,9 +103,9 @@ public class PollVoteView extends PollView implements HasDynamicTitle {
 		this.pollContent.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 		
 		if (poll instanceof DatePoll) {
-			listView = new DatePollListView((DatePoll) poll, getCurrentUser(), voteService, pollService); 
+			listView = new DateOptionsVoteListView((DatePoll) poll, getCurrentUser(), voteService, pollService); 
 			listView.guessVote(currentUser);
-			listView.addListener(PollListView.ViewChangeEvent.class, e -> configureTopRightContextMenu());
+			listView.addListener(OptionsVoteListView.ViewChangeEvent.class, e -> configureTopRightContextMenu());
 			//TODO also build table view
 			if (state == ViewToggleState.LIST) this.pollContent.add(listView);
 		}

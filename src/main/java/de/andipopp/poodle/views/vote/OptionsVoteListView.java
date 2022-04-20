@@ -29,7 +29,7 @@ import de.andipopp.poodle.data.service.PollService;
 import de.andipopp.poodle.data.service.VoteService;
 import de.andipopp.poodle.util.InvalidException;
 
-public abstract class PollListView<P extends AbstractPoll<P, O>, O extends AbstractOption<P, O>> extends VerticalLayout {
+public abstract class OptionsVoteListView<P extends AbstractPoll<P, O>, O extends AbstractOption<P, O>> extends VerticalLayout {
 
 
 	protected PollService pollService;
@@ -57,7 +57,7 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 	
 	protected HorizontalLayout header;
 
-	protected List<OptionListItem> optionListItems = new LinkedList<>();
+	protected List<OptionVoteListItem> optionListItems = new LinkedList<>();
 	
 	Button saveButton = new Button("Save");
 	
@@ -67,7 +67,7 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 	
 	Button closeButton = new Button("Save and Close Poll");
 
-	public PollListView(P poll, User user, VoteService voteService, PollService pollService) {
+	public OptionsVoteListView(P poll, User user, VoteService voteService, PollService pollService) {
 		
 		//Set fields
 		this.poll = poll;
@@ -238,10 +238,10 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 		try {
 			//validate the input fields
 			currentVote.validateDisplayName(displayNameInput.getValue());
-			for(OptionListItem item : optionListItems) item.validateAnswerFromButton();
+			for(OptionVoteListItem item : optionListItems) item.validateAnswerFromButton();
 			//read values into the object
 			currentVote.setDisplayName(displayNameInput.getValue());
-			for(OptionListItem item : optionListItems) item.readAnswerFromButton();
+			for(OptionVoteListItem item : optionListItems) item.readAnswerFromButton();
 		} catch (InvalidException e) {
 			Notification notification = Notification.show(e.getMessage(), 4000, Notification.Position.BOTTOM_CENTER);
 			notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
@@ -320,7 +320,7 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 	}
 	
 	private void closePoll() {
-		for(OptionListItem item : optionListItems) item.readWinnerFromButton();
+		for(OptionVoteListItem item : optionListItems) item.readWinnerFromButton();
 		poll.setClosed(true);
 		pollService.update(poll);
 		setClosingMode(false);
@@ -356,13 +356,13 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 		//if we have a current vote, build the list
 		if (currentVote != null) {
 			for(AbstractOption<P,O> option : poll.getOptions()) {
-				OptionListItem item = option.toOptionsListItem(user);
+				OptionVoteListItem item = option.toOptionsListItem(user);
 				configureItemAndaddToList(item);
 			}
 		}
 	}
 
-	protected void configureItemAndaddToList(OptionListItem item) {
+	protected void configureItemAndaddToList(OptionVoteListItem item) {
 		item.setClosingMode(closingMode);
 		item.loadVote(currentVote);
 		item.build();
@@ -440,9 +440,9 @@ public abstract class PollListView<P extends AbstractPoll<P, O>, O extends Abstr
 		return getEventBus().addListener(eventType, listener);
 	}
 	
-	public static class ViewChangeEvent extends ComponentEvent<PollListView<?, ?>>{
+	public static class ViewChangeEvent extends ComponentEvent<OptionsVoteListView<?, ?>>{
 		
-		public ViewChangeEvent(PollListView<?, ?> source) {
+		public ViewChangeEvent(OptionsVoteListView<?, ?> source) {
 			super(source, false);
 		}
 	}

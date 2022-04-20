@@ -15,14 +15,14 @@ import de.andipopp.poodle.data.entity.polls.DateOption;
 import de.andipopp.poodle.data.entity.polls.Vote;
 import de.andipopp.poodle.util.JSoupUtils;
 import de.andipopp.poodle.util.VaadinUtils;
-import de.andipopp.poodle.views.vote.OptionListItem;
+import de.andipopp.poodle.views.vote.OptionVoteListItem;
 
 /**
  * A box to display a single date option
  * @author Andi Popp
  *
  */
-public class DateOptionListItem extends OptionListItem {
+public class DateOptionVoteListItem extends OptionVoteListItem {
 
 	ZoneId zoneId = ZoneId.systemDefault();
 	
@@ -30,14 +30,14 @@ public class DateOptionListItem extends OptionListItem {
 	 * @param option
 	 * @param vote
 	 */
-	public DateOptionListItem(AbstractOption<?, ?> option, Vote<?, ?> vote, User currentUser) {
+	public DateOptionVoteListItem(AbstractOption<?, ?> option, Vote<?, ?> vote, User currentUser) {
 		super(option, vote, currentUser);
 	}
 
 	/**
 	 * @param option
 	 */
-	public DateOptionListItem(AbstractOption<?, ?> option, User currentUser) {
+	public DateOptionVoteListItem(AbstractOption<?, ?> option, User currentUser) {
 		super(option, currentUser);
 	}
 

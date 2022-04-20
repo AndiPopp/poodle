@@ -20,7 +20,7 @@ import org.jsoup.safety.Safelist;
 
 import de.andipopp.poodle.data.entity.AbstractAutoIdEntity;
 import de.andipopp.poodle.data.entity.User;
-import de.andipopp.poodle.views.vote.OptionListItem;
+import de.andipopp.poodle.views.vote.OptionVoteListItem;
 
 /**
  * An abstract representation of an option in a poll
@@ -205,8 +205,8 @@ public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends Abst
 	 * = UI auxiliary methods =
 	 * ======================== */
 	
-	public OptionListItem toOptionsListItem(User currentUser) {
-		return new OptionListItem(this, currentUser);
+	public OptionVoteListItem toOptionsListItem(User currentUser) {
+		return new OptionVoteListItem(this, currentUser);
 	}
 	
 	/* ========================
