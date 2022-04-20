@@ -25,11 +25,12 @@ public class DatePollListView extends PollListView<DatePoll, DateOption> {
 	public DatePollListView(DatePoll poll, User user, VoteService voteService, PollService pollService) {
 		super(poll, user, voteService, pollService);
 		
-		zoneIdSelector = new ZoneIdComboBox(TimeUtils.getUserTimeZone(getUser()));
+		zoneIdSelector = new ZoneIdComboBox();
 		zoneIdSelector.addValueChangeListener(e -> {
 			zoneId = zoneIdSelector.getValue();
 			buildAll();
 		});
+		zoneIdSelector.setValue(TimeUtils.getUserTimeZone(getUser())); //do this after the listener so the time zone will be set correctly
 		header.add(zoneIdSelector);
 		if (getPoll().isClosed()) header.add(getPoll().winnerIcalAnchor());
 	}

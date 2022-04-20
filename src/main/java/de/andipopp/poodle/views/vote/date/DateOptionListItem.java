@@ -124,7 +124,7 @@ public class DateOptionListItem extends OptionListItem {
 		String result = "";
 		String connector = ", ";
 		String currentConnector = "";
-		if (getOption().getTitle() != null) {
+		if (getOption().getTitle() != null && !getOption().getTitle().isBlank()) {
 			result += currentConnector + JSoupUtils.cleanNone(getOption().getTitle());
 			currentConnector = connector;
 		}
@@ -136,7 +136,7 @@ public class DateOptionListItem extends OptionListItem {
 		result += " " + timeFormatter.format(getOption().getZonedStart(zoneId));
 		currentConnector = connector;
 				
-		if (getOption().getLocation() != null) {
+		if (getOption().getLocation() != null && !getOption().getLocation().isBlank()) {
 			result += currentConnector + getOption().getLocation();
 			currentConnector = connector;
 		}
