@@ -316,12 +316,12 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 	
 	public String getListLabel() {
 		if (displayName != null) return displayName;
-		if (owner != null) return owner.getName();
+		if (owner != null) return owner.getDisplayName();
 		return NEW_VOTE_LABEL;
 	}
 	
 	public Avatar getAvatar() {
-		if (owner != null) return owner.getAvatarCopy();
+		if (owner != null) return owner.getAvatarFromProfilePicture();
 		Avatar avatar = new Avatar();
 		avatar.setColorIndex(rng.nextInt(6));
 		if (displayName != null & !displayName.isEmpty()) avatar.setName(displayName);

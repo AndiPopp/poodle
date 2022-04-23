@@ -46,7 +46,7 @@ public class DataGenerator {
 
             logger.info("... generating 2 User entities...");
             User user = new User();
-            user.setName("John Normal");
+            user.setDisplayName("John Normal");
             user.setUsername("user");
             user.setHashedPassword(passwordEncoder.encode("user"));
             user.setProfilePictureUrl(
@@ -54,7 +54,7 @@ public class DataGenerator {
             user.setRoles(Collections.singleton(Role.USER));
             userRepository.save(user);
             User admin = new User();
-            admin.setName("Emma Powerful");
+            admin.setDisplayName("Emma Powerful");
             admin.setUsername("admin");
             admin.setHashedPassword(passwordEncoder.encode("admin"));
             admin.setProfilePictureUrl(
@@ -129,10 +129,10 @@ public class DataGenerator {
     	NameGenerator.addRandomVotes(poll, 12);
     	Vote<?,?> vote = NameGenerator.addRandomVote(poll);
     	vote.setOwner(user);
-    	vote.setDisplayName(user.getName());
+    	vote.setDisplayName(user.getDisplayName());
     	vote = NameGenerator.addRandomVote(poll);
     	vote.setOwner(admin);
-    	vote.setDisplayName(admin.getName());
+    	vote.setDisplayName(admin.getDisplayName());
     	pollRepository.save(poll);
     	
     	poll = new DatePoll();

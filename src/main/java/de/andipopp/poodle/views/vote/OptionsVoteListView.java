@@ -411,12 +411,12 @@ public abstract class OptionsVoteListView<P extends AbstractPoll<P, O>, O extend
 		if (voteSelector.getValue().getDisplayName() != null) {
 			displayNameInput.setValue(voteSelector.getValue().getDisplayName());
 		}else if (voteSelector.getValue().getOwner() != null) {
-			displayNameInput.setValue(voteSelector.getValue().getOwner().getName());
+			displayNameInput.setValue(voteSelector.getValue().getOwner().getDisplayName());
 		}
 
 		else if(voteSelector.getValue().equals(newVote)){
 			if (user != null) {
-				displayNameInput.setValue(user.getName());
+				displayNameInput.setValue(user.getDisplayName());
 			}
 		}
 		

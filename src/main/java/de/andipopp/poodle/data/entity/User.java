@@ -1,85 +1,93 @@
 package de.andipopp.poodle.data.entity;
 
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
+import javax.annotation.Nullable;
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vaadin.flow.component.avatar.Avatar;
 
 import de.andipopp.poodle.data.Role;
-import de.andipopp.poodle.data.entity.polls.AbstractPoll;
-import de.andipopp.poodle.data.entity.polls.Vote;
 
 @Entity
 @Table(name = "application_user")
 public class User extends AbstractAutoIdEntity {
 
+	private static final int MAX_USERNAME_SIZE = 32;
+	
+	@Column(length = MAX_USERNAME_SIZE)
+	@Size(max = MAX_USERNAME_SIZE)
     private String username;
-    private String name;
+    
+    private static final int MAX_NAME_SIZE = 64;
+    
+    @Column(length = MAX_NAME_SIZE)
+	@Size(max = MAX_NAME_SIZE)
+    private String displayName;
+    
     @JsonIgnore
+    @Column(length = 64)
+	@Size(max = 64)
     private String hashedPassword;
+    
     @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Role> roles;
+    
     @Lob
     private String profilePictureUrl;
-
-    private Avatar avatar;
     
-    private ZoneId timeZone;
-    
-
-	@OneToMany(cascade = CascadeType.ALL, targetEntity=AbstractPoll.class, orphanRemoval = true)
-	@LazyCollection(LazyCollectionOption.FALSE)
-    List<AbstractPoll<?,?>> polls = new ArrayList<>();
-    
-	@OneToMany(cascade = CascadeType.ALL, targetEntity=AbstractPoll.class, orphanRemoval = true)
-	@LazyCollection(LazyCollectionOption.FALSE)
-    List<Vote<?,?>> votes = new ArrayList<>();
-    
+    @Nullable
+    @Column(length = 40)
+	@Size(max = 40)
+    private String zoneId;
 	
     public String getUsername() {
         return username;
     }
+    
     public void setUsername(String username) {
         this.username = username;
     }
-    public String getName() {
-        return name;
+    
+    public String getDisplayName() {
+        return displayName;
     }
-    public void setName(String name) {
-        this.name = name;
+    
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
+    
     public String getHashedPassword() {
         return hashedPassword;
     }
+    
     public void setHashedPassword(String hashedPassword) {
         this.hashedPassword = hashedPassword;
     }
+    
     public Set<Role> getRoles() {
         return roles;
     }
+    
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
+    
     public String getProfilePictureUrl() {
         return profilePictureUrl;
     }
+    
     public void setProfilePictureUrl(String profilePictureUrl) {
         this.profilePictureUrl = profilePictureUrl;
     }
@@ -88,67 +96,40 @@ public class User extends AbstractAutoIdEntity {
 	 * Getter for a copy of {@link #avatar}
 	 * @return a copy of {@link #avatar}
 	 */
-	public Avatar getAvatarCopy() {
-		Avatar avatar = new Avatar(name);
-		if (this.avatar != null && this.avatar.getImage() != null) avatar.setImage(this.avatar.getImage());
-		else if (this.avatar != null && this.avatar.getImageResource() != null) avatar.setImageResource(this.avatar.getImageResource());
-		else if (profilePictureUrl != null && !profilePictureUrl.isEmpty()) avatar.setImage(profilePictureUrl);
+	public Avatar getAvatarFromProfilePicture() {
+		Avatar avatar = new Avatar(displayName);
+		if (profilePictureUrl != null && !profilePictureUrl.isEmpty()) avatar.setImage(profilePictureUrl);
 		return avatar;
-	}
-	
-	
-	/**
-	 * Setter for {@link #avatar}
-	 * @param avatar the {@link #avatar} to set
-	 */
-	public void setAvatar(Avatar avatar) {
-		this.avatar = avatar;
-	}
-	
-	/**
-	 * Getter for {@link #avatar}
-	 * @return the {@link #avatar}
-	 */
-	public Avatar getAvatar() {
-		return avatar;
-	}
-	/**
-	 * Getter for {@link #polls}
-	 * @return the {@link #polls}
-	 */
-	public List<AbstractPoll<?, ?>> getPolls() {
-		return polls;
-	}
-	/**
-	 * Setter for {@link #polls}
-	 * @param polls the {@link #polls} to set
-	 */
-	public void setPolls(List<AbstractPoll<?, ?>> polls) {
-		this.polls = polls;
-	}
-
-	public void removePoll(AbstractPoll<?,?> poll) {
-		poll.setOwner(null);
-		polls.remove(poll);
-	}
-	
-	public void addPoll(AbstractPoll<?,?> poll) {
-		polls.add(poll);
-		poll.setOwner(this);
 	}
 	
     /**
-	 * Getter for {@link #timeZone}
-	 * @return the {@link #timeZone}
+	 * Getter for {@link #zoneId}
+	 * @return the {@link #zoneId}
 	 */
-	public ZoneId getTimeZone() {
-		return timeZone;
+	public String getZoneId() {
+		return zoneId;
 	}
 	/**
-	 * Setter for {@link #timeZone}
-	 * @param timeZone the {@link #timeZone} to set
+	 * Setter for {@link #zoneId}
+	 * @param zoneId the {@link #zoneId} to set
+	 */
+	public void setZoneId(String zoneId) {
+		this.zoneId = zoneId;
+	}
+	/**
+	 * Get the time zone specified by {@link #zoneId}
+	 * @return the time zone specified by {@link #zoneId}, <code>null</code>l if {@link #zoneId} is <code>null</code>ull
+	 */
+	public ZoneId getTimeZone() {
+		if (zoneId != null) return ZoneId.of(zoneId);
+		else return null;
+	}
+	/**
+	 * Set the {@link #zoneId} to the ID of the argument time zone
+	 * @param timeZone whose ID to set for {@link #zoneId}
 	 */
 	public void setTimeZone(ZoneId timeZone) {
-		this.timeZone = timeZone;
+		if (timeZone != null) this.zoneId = timeZone.getId();
+		else this.zoneId = null;
 	}
 }

@@ -147,7 +147,7 @@ public class PollVoteView extends PollView implements HasDynamicTitle {
 		header.removeAll();
 		header.setWidthFull();
 		header.setDefaultVerticalComponentAlignment(Alignment.START);
-		Avatar ownerAvatar = poll.getOwner().getAvatarCopy();
+		Avatar ownerAvatar = poll.getOwner().getAvatarFromProfilePicture();
 		ownerAvatar.addThemeVariants(AvatarVariant.LUMO_SMALL);
 		ownerAvatar.getStyle().set("border", "3px solid black") ;
 		this.content.add(ownerAvatar);
@@ -174,7 +174,7 @@ public class PollVoteView extends PollView implements HasDynamicTitle {
 		String text = "created ";
 		Duration duration = Duration.between(poll.getCreateDate(), Instant.now());
 		text += duration.toDays() +" day(s) ago ";
-		text += "by " + poll.getOwner().getName();
+		text += "by " + poll.getOwner().getDisplayName();
 		text +=  " and retained until "+poll.getDeleteDate();
 		subtitle.setText(text);
 		subtitle.getStyle().set("margin-top", "0ex");
