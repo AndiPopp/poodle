@@ -37,6 +37,8 @@ import de.andipopp.poodle.views.MainLayout;
 import de.andipopp.poodle.views.PollView;
 import de.andipopp.poodle.views.components.ConfirmationDialog;
 import de.andipopp.poodle.views.components.DebugLabel;
+import de.andipopp.poodle.views.components.ImageUpload;
+import de.andipopp.poodle.views.components.ImageUpload.ImageReceiver;
 import de.andipopp.poodle.views.editpoll.date.DateOptionFormList;
 import de.andipopp.poodle.views.mypolls.MyPollsView;
 
@@ -58,6 +60,8 @@ public class EditPollView extends PollView implements ValueChangeListener<ValueC
     
     private PollSettingsForm pollSettingsForm;
     
+    private ImageUpload imageUpload;
+    
     private AbstractOptionFormList<? extends AbstractOptionForm> optionFormList;
     
     //each step gets an accordion panel
@@ -65,6 +69,8 @@ public class EditPollView extends PollView implements ValueChangeListener<ValueC
     private AccordionPanel pollCoredataFormPanel;
     
     private AccordionPanel pollSettingsFormPanel;
+    
+    private AccordionPanel imageUploadPanel;
     
     private AccordionPanel optionFormListPanel;
     
@@ -79,6 +85,8 @@ public class EditPollView extends PollView implements ValueChangeListener<ValueC
     private Button toStep2Button = new Button("Next Step");
     
     private Button toStep3Button = new Button("Next Step");
+    
+    private Button toStep4Button = new Button("Next Step");
     
     private Button savePollButton = new Button("Save Poll");
     
@@ -105,7 +113,9 @@ public class EditPollView extends PollView implements ValueChangeListener<ValueC
 		toStep2Button.addClassName("primary-text");
 		toStep2Button.addClickListener(e -> pollSettingsFormPanel.setOpened(true));
 		toStep3Button.addClassName("primary-text");
-		toStep3Button.addClickListener(e -> optionFormListPanel.setOpened(true));
+		toStep3Button.addClickListener(e -> imageUploadPanel.setOpened(true));
+		toStep4Button.addClassName("primary-text");
+		toStep4Button.addClickListener(e -> optionFormListPanel.setOpened(true));
 		deletePollButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
 		deletePollButton.addClickListener(e -> confirmDeletePoll());
 		savePollButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -155,12 +165,23 @@ public class EditPollView extends PollView implements ValueChangeListener<ValueC
 		pollSettingsFormPanel = new AccordionPanel("Step 2: Poll Settings", pollSettingsFormWrapper);
 		formAccordion.add(pollSettingsFormPanel);
 		
+		imageUpload = new ImageUpload(new ImageReceiver(Config.getCurrent().getPollImagePath(), this.poll.getId()));
+		HorizontalLayout imageUploadWithLimit = new HorizontalLayout(imageUpload, new Label("(max "+Config.getCurrent().getImageSizeLimitKiloBytes()+" kB)" ));
+		imageUploadWithLimit.setDefaultVerticalComponentAlignment(Alignment.BASELINE);
+		HorizontalLayout imageUploadWrapper = new HorizontalLayout(imageUploadWithLimit, toStep4Button);
+		imageUploadWrapper.setPadding(false);
+		imageUploadWrapper.setDefaultVerticalComponentAlignment(Alignment.END);
+		imageUploadWrapper.setJustifyContentMode(JustifyContentMode.BETWEEN);
+		imageUploadPanel = new AccordionPanel("Step 3: Optional Poll Image", imageUploadWrapper);
+		formAccordion.add(imageUploadPanel);
+		
+		
 		if (poll instanceof DatePoll) 
 			optionFormList = new DateOptionFormList((DatePoll) this.poll, TimeUtils.getUserTimeZone(getCurrentUser()));
 		optionFormList.buildList();
 		optionFormList.setPadding(false);
 
-		optionFormListPanel = new AccordionPanel("Step 3: Define Options", optionFormList);
+		optionFormListPanel = new AccordionPanel("Step 4: Define Options", optionFormList);
 		formAccordion.add(optionFormListPanel);
 		
 		//add the final buttons

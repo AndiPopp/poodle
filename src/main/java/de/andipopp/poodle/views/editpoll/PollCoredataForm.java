@@ -39,7 +39,7 @@ public class PollCoredataForm extends PollBindableForm{
 	 * Input field for {@link DatePoll#getLocation()}
 	 */
 	TextField location = new TextField("Location");
-
+	
 	/**
 	 * Construct a new form and configure it according to the poll
 	 * @param poll the poll used for {@link #configureInputFields(AbstractPoll)}
@@ -53,8 +53,6 @@ public class PollCoredataForm extends PollBindableForm{
 		removeAll();
 		
 		if (poll instanceof DatePoll) configureForDatePoll((DatePoll) poll);
-		
-
 	}
 	
 	/**

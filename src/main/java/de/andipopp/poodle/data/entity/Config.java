@@ -250,4 +250,68 @@ public class Config extends AbstractEntity {
 		this.allowOrphanPolls = allowOrphanPolls;
 	}
 	
+	/**
+	 * The maximum size of poll and user images in kilobytes
+	 */
+	private int imageSizeLimitKiloBytes = 200;
+	
+	/**
+	 * Getter for {@link #imageSizeLimitKiloBytes}
+	 * @return the {@link #imageSizeLimitKiloBytes}
+	 */
+	public int getImageSizeLimitKiloBytes() {
+		return imageSizeLimitKiloBytes;
+	}
+
+	/**
+	 * Setter for {@link #imageSizeLimitKiloBytes}
+	 * @param imageSizeLimitKiloBytes the {@link #imageSizeLimitKiloBytes} to set
+	 */
+	public void setImageSizeLimitKiloBytes(int imageSizeLimitKiloBytes) {
+		this.imageSizeLimitKiloBytes = imageSizeLimitKiloBytes;
+	}
+
+	/**
+	 * The path to store the poll images
+	 */
+	private String pollImagePath = "poll-images";
+	
+	/**
+	 * Getter for {@link #pollImagePath}
+	 * @return the {@link #pollImagePath}
+	 */
+	public String getPollImagePath() {
+		return pollImagePath;
+	}
+
+	/**
+	 * Setter for {@link #pollImagePath}
+	 * @param pollImagePath the {@link #pollImagePath} to set
+	 */
+	public void setPollImagePath(String pollImagePath) {
+		this.pollImagePath = pollImagePath;
+	}
+
+	/**
+	 * The path to store the user images
+	 */
+	private String userImagePath = "user-images";
+
+	/**
+	 * Getter for {@link #userImagePath}
+	 * @return the {@link #userImagePath}
+	 */
+	public String getUserImagePath() {
+		return userImagePath;
+	}
+
+	/**
+	 * Setter for {@link #userImagePath}
+	 * @param userImagePath the {@link #userImagePath} to set
+	 */
+	public void setUserImagePath(String userImagePath) {
+		this.userImagePath = userImagePath;
+	}
+	
+	
 }

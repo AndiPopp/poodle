@@ -147,9 +147,9 @@ public class PollVoteView extends PollView implements HasDynamicTitle {
 		header.removeAll();
 		header.setWidthFull();
 		header.setDefaultVerticalComponentAlignment(Alignment.START);
-		Avatar ownerAvatar = poll.getOwner().getAvatarFromProfilePicture();
+		Avatar ownerAvatar =  poll.getAvatar(); //poll.getOwner().getAvatarFromProfilePicture();
 		ownerAvatar.addThemeVariants(AvatarVariant.LUMO_SMALL);
-		ownerAvatar.getStyle().set("border", "3px solid black") ;
+		ownerAvatar.getStyle().set("border", "1px solid black") ;
 		this.content.add(ownerAvatar);
 		HorizontalLayout avatarAndTitleWrapper = new HorizontalLayout(ownerAvatar, configureSubtitle());
 		avatarAndTitleWrapper.setDefaultVerticalComponentAlignment(Alignment.CENTER);
