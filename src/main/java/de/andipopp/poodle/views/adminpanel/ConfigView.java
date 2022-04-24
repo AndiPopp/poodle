@@ -247,7 +247,7 @@ public class ConfigView extends VerticalLayout{
 		File oldFile = new File(oldPath);
 		for(File file : oldFile.listFiles()) {
 			try {
-				FileUtils.moveFile(file, new File(newPath + System.getProperty("file.separator")+file.getName()));
+				if (!file.getName().startsWith(".")) FileUtils.moveFile(file, new File(newPath + System.getProperty("file.separator")+file.getName()));
 			} catch (IOException e) {
 				throw new IOException("Error while moving files. Folder movement is incomplete. CHECK CONTENTS!", e);
 			}
