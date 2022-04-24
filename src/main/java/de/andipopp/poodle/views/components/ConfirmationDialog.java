@@ -89,6 +89,46 @@ public class ConfirmationDialog extends Dialog {
 	}
 	
 	/**
+	 * Getter for {@link #cancel}
+	 * @return the {@link #cancel}
+	 */
+	public Button getCancel() {
+		return cancel;
+	}
+
+	/**
+	 * Setter for {@link #cancel}
+	 * @param cancel the {@link #cancel} to set
+	 */
+	public void setCancel(Button cancel) {
+		this.cancel = cancel;
+	}
+
+	/**
+	 * Getter for {@link #ok}
+	 * @return the {@link #ok}
+	 */
+	public Button getOk() {
+		return ok;
+	}
+
+	/**
+	 * Getter for {@link #yes}
+	 * @return the {@link #yes}
+	 */
+	public Button getYes() {
+		return yes;
+	}
+
+	/**
+	 * Getter for {@link #no}
+	 * @return the {@link #no}
+	 */
+	public Button getNo() {
+		return no;
+	}
+
+	/**
 	 * Add a listener to {@link #ok}
 	 * @param listener the listener
 	 */

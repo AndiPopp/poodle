@@ -2,10 +2,12 @@ package de.andipopp.poodle.views.usersettings;
 
 import java.util.Date;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.avatar.AvatarVariant;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.html.Label;
@@ -25,6 +27,7 @@ import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.data.service.UserService;
 import de.andipopp.poodle.security.AuthenticatedUser;
 import de.andipopp.poodle.util.InvalidException;
+import de.andipopp.poodle.views.components.ConfirmationDialog;
 import de.andipopp.poodle.views.components.ImageUpload;
 import de.andipopp.poodle.views.components.ImageUpload.ImageReceiver;
 
@@ -48,6 +51,10 @@ public class GeneralUserSettingsView extends VerticalLayout {
 	
 	private Button save = new Button("Save");
 	
+	private Checkbox dangerZoneActive = new Checkbox("Activate");
+	
+	private Button delete = new Button("DeleteUser");
+	
 	private Binder<User> binder = new BeanValidationBinder<>(User.class);
 
 	private Binder<User> pwBinder = new Binder<>(User.class);
@@ -58,6 +65,8 @@ public class GeneralUserSettingsView extends VerticalLayout {
 	
 	private final UserService userService;
 
+	
+	
 	public GeneralUserSettingsView(User user, AuthenticatedUser authenticatedUser, UserService userService) {
 		this.user = user;
 		this.authenticatedUser = authenticatedUser;
@@ -89,7 +98,11 @@ public class GeneralUserSettingsView extends VerticalLayout {
 		buttonPanel.setWidthFull();
 		buttonPanel.setJustifyContentMode(JustifyContentMode.END);
 		save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-		save.addClickListener(e -> prepareSaveUser());
+		save.addClickListener(e -> saveUser());
+		delete.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
+		delete.addClickListener(e -> confirmDeleteUser());
+		dangerZoneActive.addValueChangeListener(e -> configureDangerZone());
+		configureDangerZone();
 		
 		H4 firstHeader = new H4("Names");
 		firstHeader.getStyle().set("margin-top", "0px");
@@ -102,10 +115,14 @@ public class GeneralUserSettingsView extends VerticalLayout {
 			new Paragraph(),
 			buttonPanel,
 			new H4("Change Avarar"),
-			avatarPanel
+			avatarPanel,
+			new Paragraph(),
+			dangerZone()
 		);
 		
 	}
+
+
 
 	private void configureBinder() {
 		binder.bindInstanceFields(this);
@@ -120,7 +137,41 @@ public class GeneralUserSettingsView extends VerticalLayout {
 			.bind("hashedPassword2");
 	}
 
-	private void prepareSaveUser() {
+	
+	
+	
+	private void configureAvatarPanel() {
+		avatarPanel.removeAll();
+		currentAvatar = user.getAvatar();
+		currentAvatar.addThemeVariants(AvatarVariant.LUMO_XLARGE);
+		currentAvatar.getStyle().set("border", "1px solid var(--lumo-contrast-70pct)");
+		avatarPanel.add(currentAvatar, imageUpload, new Label("(Max "+Config.getCurrent().getImageSizeLimitKiloBytes()+" kB, has immediate effect)"));
+	}
+	
+	private Component dangerZone() {
+		VerticalLayout dangerZone = new VerticalLayout();
+		H4 headerText = new H4("Danger Zone");
+		headerText.getStyle().set("margin-top", "0px");
+		headerText.addClassName("danger-zone-text");
+		dangerZoneActive.addClassName("danger-zone-text");
+		
+		HorizontalLayout header = new HorizontalLayout(headerText, dangerZoneActive);
+		header.setDefaultVerticalComponentAlignment(Alignment.BASELINE);
+		
+		HorizontalLayout buttons = new HorizontalLayout(delete);
+		
+		
+		dangerZone.add(header, buttons);
+		dangerZone.addClassName("danger-zone");
+		
+		return dangerZone;
+	}
+	
+	private void configureDangerZone() {
+		delete.setEnabled(dangerZoneActive.getValue());
+	}
+	
+	private void saveUser() {
 		if (authenticatedUser == null || authenticatedUser.get().isEmpty() || !(user.equals(authenticatedUser.get().get()) || UserSettingsView.isAdmin(authenticatedUser))) {
 			Notification.show("Access denied").addThemeVariants(NotificationVariant.LUMO_ERROR);
 			return;
@@ -151,15 +202,20 @@ public class GeneralUserSettingsView extends VerticalLayout {
 	}
 
 	
-	
-	private void configureAvatarPanel() {
-		avatarPanel.removeAll();
-		currentAvatar = user.getAvatar();
-		currentAvatar.addThemeVariants(AvatarVariant.LUMO_XLARGE);
-		currentAvatar.getStyle().set("border", "1px solid var(--lumo-contrast-70pct)");
-		avatarPanel.add(currentAvatar, imageUpload, new Label("(Max "+Config.getCurrent().getImageSizeLimitKiloBytes()+" kB, has immediate effect)"));
+	private void confirmDeleteUser() {
+		ConfirmationDialog confirmationDialog = new ConfirmationDialog("Delete user "+user.getUsername()+"?", "This can NOT be undond!");
+		confirmationDialog.getOk().addThemeVariants(ButtonVariant.LUMO_ERROR);
+		confirmationDialog.getCancel().removeThemeVariants(ButtonVariant.LUMO_ERROR);
+		confirmationDialog.addOkListener(e -> deleteUser());
+		confirmationDialog.open();
 	}
-	
-	
+
+	private void deleteUser() {
+		if (!authenticatedUser.get().isEmpty() && (UserSettingsView.isAdmin(authenticatedUser) || authenticatedUser.get().get().equals(user))) {
+			userService.delete(user.getId()); //TODO this is not enough, we need to clear out the ownership of polls and votes
+			if (authenticatedUser.get().get().equals(user)) authenticatedUser.logout();
+			else Notification.show("User deleted").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+		}
+	}
 	
 }

@@ -10,6 +10,16 @@
 
 /* Classes */
 
+.danger-zone {
+	border: 2px solid var(--lumo-error-color);
+	background-color: var(--lumo-error-color-10pct);
+	
+}
+
+.danger-zone-text {
+	color: var(--lumo-error-text-color);
+}
+
 .dialog-error {
 	background-color: var(--lumo-error-color-10pct);
 }
