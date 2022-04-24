@@ -1,4 +1,4 @@
-package de.andipopp.poodle.views.viewpolls;
+package de.andipopp.poodle.views.about;
 
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
@@ -6,15 +6,16 @@ import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.auth.AnonymousAllowed;
+
 import de.andipopp.poodle.views.MainLayout;
-import javax.annotation.security.RolesAllowed;
 
-@PageTitle("View Polls")
-@Route(value = "view-polls", layout = MainLayout.class)
-@RolesAllowed("ADMIN")
-public class ViewPollsView extends VerticalLayout {
+@PageTitle("About Poodle")
+@Route(value = "about", layout = MainLayout.class)
+@AnonymousAllowed
+public class AboutView extends VerticalLayout {
 
-    public ViewPollsView() {
+    public AboutView() {
         setSpacing(false);
 
         Image img = new Image("images/empty-plant.png", "placeholder plant");

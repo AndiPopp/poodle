@@ -20,7 +20,7 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 import de.andipopp.poodle.views.MainLayout;
 
 @PageTitle("View Poll")
-@Route(value = "view-poll", layout = MainLayout.class)
+@Route(value = "test", layout = MainLayout.class)
 //@RouteAlias(value = "", layout = MainLayout.class)
 @AnonymousAllowed
 public class TestView extends VerticalLayout {
@@ -38,10 +38,6 @@ public class TestView extends VerticalLayout {
 		
         WrappedSession session = VaadinRequest.getCurrent().getWrappedSession();
         add(new Paragraph(session.getId()));
-        
-        for (String name : session.getAttributeNames()) {
-        	System.out.println(name);
-        }
         
         StreamResource res = new StreamResource("Test.ics", () -> testIcsAsInputStream());
         res.setContentType("text/calendar");

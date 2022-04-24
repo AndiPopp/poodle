@@ -26,11 +26,11 @@ import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.security.AuthenticatedUser;
+import de.andipopp.poodle.views.about.AboutView;
+import de.andipopp.poodle.views.adminpanel.AdminPanelView;
 import de.andipopp.poodle.views.editpoll.NewPollView;
 import de.andipopp.poodle.views.mypolls.MyPollsView;
-import de.andipopp.poodle.views.test.TestView;
 import de.andipopp.poodle.views.usersettings.UserSettingsView;
-import de.andipopp.poodle.views.viewpolls.ViewPollsView;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -140,13 +140,15 @@ public class MainLayout extends AppLayout {
         return new MenuItemInfo[]{ //
                 new MenuItemInfo("New Poll", "la la-plus-circle", NewPollView.class), //
 
-                new MenuItemInfo("View Polls", "la la-poll-h", ViewPollsView.class), //
-
                 new MenuItemInfo("My Polls", "la la-poll", MyPollsView.class), //
 
                 new MenuItemInfo("User Settings", "la la-user-edit", UserSettingsView.class), //
 
-                new MenuItemInfo("Test View", "la la-vial", TestView.class), //
+                new MenuItemInfo("Admin Panel", "la la-user-shield", AdminPanelView.class), //
+                
+                new MenuItemInfo("About", "la la-info", AboutView.class), //
+                
+//                new MenuItemInfo("Test View", "la la-vial", TestView.class), //
         };
     }
 
