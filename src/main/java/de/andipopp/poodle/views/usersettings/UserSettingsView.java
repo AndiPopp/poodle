@@ -36,7 +36,7 @@ public class UserSettingsView extends VerticalLayout implements BeforeEnterObser
 	 */
 	private static final String MAX_CONTENT_WIDTH = "1000px"; 
 	
-	public static final String ID_PARAM_NAME = "id";
+	public static final String ID_PARAM_NAME = "userId";
 	
 	private UserService userService;
 	

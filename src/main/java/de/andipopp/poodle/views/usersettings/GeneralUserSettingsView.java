@@ -24,6 +24,7 @@ import de.andipopp.poodle.data.entity.Config;
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.data.service.UserService;
 import de.andipopp.poodle.security.AuthenticatedUser;
+import de.andipopp.poodle.util.InvalidException;
 import de.andipopp.poodle.views.components.ImageUpload;
 import de.andipopp.poodle.views.components.ImageUpload.ImageReceiver;
 
@@ -141,8 +142,12 @@ public class GeneralUserSettingsView extends VerticalLayout {
 			newPassword2.clear();
 		}
 		
-		user = userService.update(user);
-		Notification.show("Saved", 3000, Position.BOTTOM_CENTER).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+		try {
+			user = userService.update(user);
+			Notification.show("Saved", 3000, Position.BOTTOM_CENTER).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+		} catch (InvalidException e) {
+			Notification.show(e.getMessage(), 5000, Position.BOTTOM_CENTER).addThemeVariants(NotificationVariant.LUMO_ERROR);
+		}
 	}
 
 	

@@ -3,7 +3,9 @@ package de.andipopp.poodle.util;
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.router.RouterLink;
 
+import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
+import de.andipopp.poodle.views.usersettings.UserSettingsView;
 import de.andipopp.poodle.views.vote.PollVoteView;
 
 public class HtmlUtils {
@@ -30,6 +32,11 @@ public class HtmlUtils {
 	public static String linkToPoll(AbstractPoll<?, ?> poll) {
 		RouterLink link = new RouterLink("", PollVoteView.class);
 		return link.getHref()+"?pollId="+UUIDUtils.uuidToBase64url(poll.getId());
+	}
+	
+	public static String linkToUser(User user) {
+		RouterLink link = new RouterLink("", UserSettingsView.class);
+		return link.getHref()+"?" + UserSettingsView.ID_PARAM_NAME +  "="+UUIDUtils.uuidToBase64url(user.getId());
 	}
 	
 	

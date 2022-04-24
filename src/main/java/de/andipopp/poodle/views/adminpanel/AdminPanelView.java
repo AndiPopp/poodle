@@ -29,7 +29,9 @@ public class AdminPanelView extends VerticalLayout {
 
 	PollsView pollsView;
 	
-	Tab userTab = new Tab("Users");
+	Tab usersTab = new Tab("Users");
+	
+	UsersView usersView;
 	
 	VerticalLayout content = new VerticalLayout();
 	
@@ -41,10 +43,11 @@ public class AdminPanelView extends VerticalLayout {
     	
     	pollsView = new PollsView(pollService);
     	configView = new ConfigView(configService);
+    	usersView = new UsersView(userService);
     	
     	this.setPadding(false);
     	this.setSpacing(false);
-    	tabs = new Tabs(configTab, pollTab, userTab);
+    	tabs = new Tabs(configTab, pollTab, usersTab);
     	tabs.addThemeVariants(TabsVariant.LUMO_CENTERED);
     	tabs.addSelectedChangeListener(e -> setContent(e.getSelectedTab()));
     	tabs.setWidthFull();;
@@ -56,6 +59,7 @@ public class AdminPanelView extends VerticalLayout {
     	this.content.removeAll();
     	if (tab.equals(pollTab)) this.content.add(pollsView);
     	else if (tab.equals(configTab)) this.content.add(configView);
+    	else if (tab.equals(usersTab)) this.content.add(usersView);
     }
 
 }

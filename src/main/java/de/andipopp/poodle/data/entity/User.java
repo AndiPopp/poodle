@@ -26,7 +26,7 @@ public class User extends AbstractAutoIdEntity {
 
 	private static final int MAX_USERNAME_SIZE = 32;
 	
-	@Column(length = MAX_USERNAME_SIZE)
+	@Column(length = MAX_USERNAME_SIZE, unique=true)
 	@Size(max = MAX_USERNAME_SIZE)
     private String username;
     
