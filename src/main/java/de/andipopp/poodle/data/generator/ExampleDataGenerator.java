@@ -104,6 +104,9 @@ public class ExampleDataGenerator {
     		VoteRepository voteRepository,
     		User user, 
     		User admin) throws IOException {
+    	
+    	pollRepository.save(new DatePoll("Example Poll", "Description", "Location"));    	
+    	
     	DatePoll poll = new DatePoll();
     	poll.setTitle("Masters of the Universe get-together");
     	poll.setDescription("He-Man will be there. So <a href=\"https://www.google.com\">google</a> yourself your finest magic sword and feline steed.");
@@ -207,12 +210,9 @@ public class ExampleDataGenerator {
     		));
     	pollRepository.save(poll);
     	
-    	try {
-			Thread.sleep(100);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+    	
+    	
     	logger.info("Created " + pollRepository.count() + " example polls with " 
     			+ optionRepository.count() + " options and "
     			+ voteRepository.count() + " votes.");

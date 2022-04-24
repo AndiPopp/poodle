@@ -4,8 +4,12 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
 
 import org.jsoup.safety.Safelist;
 
@@ -102,9 +106,13 @@ public class Config extends AbstractEntity {
 	 * = Dynamic members =
 	 * ================== */
 	
+	private static final int WELCOME_TITLE_MAX_SIZE = 32;
+	
 	/**
 	 * The title displayed at the welcome screen for unregistered users
 	 */
+	@Size(max = WELCOME_TITLE_MAX_SIZE)
+	@Column(length = WELCOME_TITLE_MAX_SIZE)
 	private String welcomeTitle = "Welcome to Poodle";
 	
 	/**
@@ -123,10 +131,14 @@ public class Config extends AbstractEntity {
 		this.welcomeTitle = welcomeTitle;
 	}
 
+	private static final int WELCOME_MESSAGE_MAX_SIZE = 255;
+	
 	/**
 	 * The message displayed below the {@link #welcomeTitle} at the welcome screen for unregistered users.
 	 * Can contain {@link Safelist#basicWithImages()} HTML
 	 */
+	@Size(max = WELCOME_MESSAGE_MAX_SIZE)
+	@Column(length = WELCOME_MESSAGE_MAX_SIZE)
 	private String welcomeMessage = "Login to manage your polls.";
 	
 	/**
@@ -148,6 +160,8 @@ public class Config extends AbstractEntity {
 	/**
 	 * The minimum number of days from the current day {@link AbstractPoll#setDeleteDate(LocalDate)} will accept
 	 */
+	@Min(1)
+	@Max(Integer.MAX_VALUE)
 	private int minPollRetentionDays = 7;
 	
 	/**
@@ -177,6 +191,8 @@ public class Config extends AbstractEntity {
 	/**
 	 * The maximum number of days from the current day {@link AbstractPoll#setDeleteDate()} will accept
 	 */
+	@Min(1)
+	@Max(Integer.MAX_VALUE)
 	private int maxPollRetentionDays = 500;
 	
 	/**
@@ -211,6 +227,8 @@ public class Config extends AbstractEntity {
 	/**
 	 * The default number of day a poll will be stored before it gets auto-deleted
 	 */
+	@Min(1)
+	@Max(Integer.MAX_VALUE)
 	private int defaultPollRententionDays = 180;
 
 	/**
@@ -259,6 +277,8 @@ public class Config extends AbstractEntity {
 	 * Getter for {@link #imageSizeLimitKiloBytes}
 	 * @return the {@link #imageSizeLimitKiloBytes}
 	 */
+	@Min(20)
+	@Max(Integer.MAX_VALUE)
 	public int getImageSizeLimitKiloBytes() {
 		return imageSizeLimitKiloBytes;
 	}
@@ -271,9 +291,13 @@ public class Config extends AbstractEntity {
 		this.imageSizeLimitKiloBytes = imageSizeLimitKiloBytes;
 	}
 
+	private static final int IMAGE_PATH_MAX_SIZE = 64;
+	
 	/**
 	 * The path to store the poll images
 	 */
+	@Size(max = IMAGE_PATH_MAX_SIZE)
+	@Column(length = IMAGE_PATH_MAX_SIZE)
 	private String pollImagePath = "poll-images";
 	
 	/**
@@ -295,6 +319,8 @@ public class Config extends AbstractEntity {
 	/**
 	 * The path to store the user images
 	 */
+	@Size(max = IMAGE_PATH_MAX_SIZE)
+	@Column(length = IMAGE_PATH_MAX_SIZE)
 	private String userImagePath = "user-images";
 
 	/**

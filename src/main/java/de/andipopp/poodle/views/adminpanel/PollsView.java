@@ -53,7 +53,7 @@ public class PollsView extends VerticalLayout {
     	this.pollService = pollService;
     	
     	addClassName("myPolls-view");
-    	setHeight("100%");
+    	setHeightFull();
     	setMaxWidth(MAX_CONTENT_WIDTH);
     	
     	boolean reduced = VaadinRequest.getCurrent().getHeader("user-agent").contains("Mobile");
@@ -115,7 +115,10 @@ public class PollsView extends VerticalLayout {
 			.setFlexGrow(6)
 		;
 		
-		Grid.Column<AbstractPoll> ownerCol = grid.addColumn(new ComponentRenderer<>(poll -> new Label(poll.getOwner().getDisplayName())))
+		Grid.Column<AbstractPoll> ownerCol = grid.addColumn(new ComponentRenderer<>(poll -> {
+			if (poll.getOwner() != null && poll.getOwner().getDisplayName() != null) return new Label(poll.getOwner().getDisplayName());
+			else return new Label("");
+		}))
 				.setHeader("Owner")
 				.setWidth("150px")
 				.setFlexGrow(1)

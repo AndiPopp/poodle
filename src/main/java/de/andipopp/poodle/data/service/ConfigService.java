@@ -34,4 +34,8 @@ public class ConfigService {
     public boolean hasConfig(UUID id) {
     	return false;
     }
+    
+    public Config save(Config config) {
+    	return repository.save(config);
+    }
 }

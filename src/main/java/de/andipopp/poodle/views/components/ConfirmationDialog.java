@@ -34,6 +34,16 @@ public class ConfirmationDialog extends Dialog {
 	private Button cancel = new Button("Cancel");
 	
 	/**
+	 * The Yes button
+	 */
+	private Button yes = new Button("Yes");
+	
+	/**
+	 * The No button
+	 */
+	private Button no = new Button("No");
+	
+	/**
 	 * Message displaying the problem
 	 */
 	private Label message;
@@ -46,12 +56,16 @@ public class ConfirmationDialog extends Dialog {
 	/**
 	 * @param message value for {@link #message}
 	 * @param question value for {@link #question}
+	 * @param YesNoInsteadOfOk if true, a {@link #yes} and {@link #no} will be used instead of {@link #ok}
 	 */
-	public ConfirmationDialog(String message, String question) {
+	public ConfirmationDialog(String message, String question, boolean YesNoInsteadOfOk) {
 		this.message = new Label(message);
 		this.question = new Label(question);
 		
-		HorizontalLayout buttons = new HorizontalLayout(cancel, ok);
+		HorizontalLayout buttons = new HorizontalLayout(cancel);
+		if (YesNoInsteadOfOk) buttons.add(no, yes);
+		else buttons.add(ok);
+		
 		buttons.setMinWidth(MIN_BUTTONS_WIDTH);
 		buttons.setJustifyContentMode(JustifyContentMode.BETWEEN);
 		
@@ -59,12 +73,19 @@ public class ConfirmationDialog extends Dialog {
 		dialogLayout.setPadding(false);
 		
 		ok.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+		yes.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 		cancel.addThemeVariants(ButtonVariant.LUMO_ERROR);
 		
 		ok.addClickListener(e -> this.close());
 		cancel.addClickListener(e -> this.close());
+		yes.addClickListener(e -> this.close());
+		no.addClickListener(e -> this.close());
 		
 		this.add(dialogLayout);
+	}
+	
+	public ConfirmationDialog(String message, String question) {
+		this(message, question, false);
 	}
 	
 	/**
@@ -82,6 +103,23 @@ public class ConfirmationDialog extends Dialog {
 	public void addCancelListener(ComponentEventListener<ClickEvent<Button>> listener) {
 		ok.addClickListener(listener);
 	}
+	
+	/**
+	 * Add a listener to {@link #cancel}
+	 * @param listener the listener
+	 */
+	public void addYesListener(ComponentEventListener<ClickEvent<Button>> listener) {
+		yes.addClickListener(listener);
+	}
+	
+	/**
+	 * Add a listener to {@link #cancel}
+	 * @param listener the listener
+	 */
+	public void addNoListener(ComponentEventListener<ClickEvent<Button>> listener) {
+		no.addClickListener(listener);
+	}
+	
 	
 	
 	
