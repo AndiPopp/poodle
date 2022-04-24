@@ -27,7 +27,7 @@ public class NewPollView extends HorizontalLayout {
 
 	private static final String MAX_WIDTH = "800px";
 	
-	private PollSelectorBox simplePollSelector = new PollSelectorBox(
+	private PollTypeSelectorBox simplePollSelector = new PollTypeSelectorBox(
 			"la-vote-yea",
 			"Simple Poll",
 			"Name a few options and get people to vote for them. The best kind of poll for when you "
@@ -35,7 +35,7 @@ public class NewPollView extends HorizontalLayout {
 			
 		);
 	
-	private PollSelectorBox datePollSelector = new PollSelectorBox(
+	private PollTypeSelectorBox datePollSelector = new PollTypeSelectorBox(
 		"la-calendar",
 		"Date Poll",
 		"Planning a barbeque, board game session or some other kind of event? Use a date poll "
@@ -67,9 +67,9 @@ public class NewPollView extends HorizontalLayout {
 	 * @author Andi Popp
 	 *
 	 */
-	private static class PollSelectorBox extends VerticalLayout{
+	private static class PollTypeSelectorBox extends VerticalLayout{
 
-		PollSelectorBox(String iconName, String typeName, String description) {
+		PollTypeSelectorBox(String iconName, String typeName, String description) {
 			this.addClassName("text-box-button");
 			
 			Span icon = new Span();

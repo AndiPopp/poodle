@@ -105,9 +105,10 @@ public class ExampleDataGenerator {
     		User user, 
     		User admin) throws IOException {
     	
-    	pollRepository.save(new DatePoll("Example Poll", "Description", "Location"));    	
+    	DatePoll poll = new DatePoll("Example Poll", "Description", "Location");
+    	pollRepository.save(poll);    	
     	
-    	DatePoll poll = new DatePoll();
+    	poll = new DatePoll();
     	poll.setTitle("Masters of the Universe get-together");
     	poll.setDescription("He-Man will be there. So <a href=\"https://www.google.com\">google</a> yourself your finest magic sword and feline steed.");
     	poll.setLocation("Castle Greyskull (unless specified otherwise)");
@@ -158,7 +159,7 @@ public class ExampleDataGenerator {
     		));
     	
     	NameGenerator.addRandomVotes(poll, 12);
-    	Vote<?,?> vote = NameGenerator.addRandomVote(poll);
+    	Vote<?,?>  vote = NameGenerator.addRandomVote(poll);
     	vote.setOwner(user);
     	vote.setDisplayName(user.getDisplayName());
     	vote = NameGenerator.addRandomVote(poll);
@@ -200,14 +201,16 @@ public class ExampleDataGenerator {
     	pollRepository.save(poll);
     	
     	poll = new DatePoll();
-    	poll.setTitle("Only for admin's eyes");
-    	poll.setDescription("Only the admin should see this");
+    	poll.setTitle("This belongs to admin");
     	poll.setOwner(admin);
     	poll.generateEditKey();
     	poll.addOption(new DateOption(
-    			new GregorianCalendar(2022, 1-1, 1, 8, 0).getTime(), 
-    			new GregorianCalendar(2022, 1-1, 1, 10, 0).getTime()
-    		));
+			new GregorianCalendar(2022, 1-1, 1, 8, 0).getTime(), 
+			new GregorianCalendar(2022, 1-1, 1, 10, 0).getTime()
+		));
+    	vote = NameGenerator.addRandomVote(poll);
+    	vote.setOwner(user);
+    	vote.setDisplayName(user.getDisplayName());
     	pollRepository.save(poll);
     	
 

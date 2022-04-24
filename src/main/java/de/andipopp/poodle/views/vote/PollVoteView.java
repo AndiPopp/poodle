@@ -172,7 +172,7 @@ public class PollVoteView extends PollView implements HasDynamicTitle {
 		String text = "created ";
 		Duration duration = Duration.between(poll.getCreateDate(), Instant.now());
 		text += duration.toDays() +" day(s) ago ";
-		text += "by " + poll.getOwner().getDisplayName();
+		if (poll.getOwner() != null && poll.getOwner().getDisplayName() != null) text += "by " + poll.getOwner().getDisplayName();
 		text +=  " and retained until "+poll.getDeleteDate();
 		subtitle.setText(text);
 		subtitle.getStyle().set("margin-top", "0ex");
