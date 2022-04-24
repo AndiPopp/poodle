@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.jsoup.safety.Safelist;
@@ -298,6 +300,8 @@ public class Config extends AbstractEntity {
 	 */
 	@Size(max = IMAGE_PATH_MAX_SIZE)
 	@Column(length = IMAGE_PATH_MAX_SIZE)
+	@NotNull
+	@NotEmpty
 	private String pollImagePath = "poll-images";
 	
 	/**
@@ -321,6 +325,8 @@ public class Config extends AbstractEntity {
 	 */
 	@Size(max = IMAGE_PATH_MAX_SIZE)
 	@Column(length = IMAGE_PATH_MAX_SIZE)
+	@NotNull
+	@NotEmpty
 	private String userImagePath = "user-images";
 
 	/**

@@ -28,6 +28,9 @@ import de.andipopp.poodle.data.service.ConfigService;
 
 public class ConfigView extends VerticalLayout{
 
+	/**
+	 * Maximum width a which this layout looks good
+	 */
 	private static final String MAX_WIDTH = "1000px";
 	
 	/**
@@ -209,6 +212,8 @@ public class ConfigView extends VerticalLayout{
 		VerticalLayout dialogLayout = new VerticalLayout();
 		dialogLayout.setPadding(false);
 		dialogLayout.add(moveUserImageContent, movePollImageContent, buttons);
+		
+		moveContentDialog = new Dialog(dialogLayout);
 	}
 	
 	private void updateMoveCheckboxes() {
