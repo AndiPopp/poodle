@@ -105,6 +105,10 @@
 	cursor: pointer;
 }
 
+.text-box-button-text {
+	cursor: pointer;
+}
+
 .text-box-button-text.title {
 	font-size: large;
 	font-weight: bold;

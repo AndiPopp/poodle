@@ -28,6 +28,7 @@ public class PollSelectorBox extends VerticalLayout{
 		
 		Avatar avatar = poll.getAvatar();
 		avatar.addThemeVariants(AvatarVariant.LUMO_LARGE);
+		avatar.addClassName("text-box-button-text");
 		avatar.getStyle().set("border", "1px solid var(--lumo-contrast-70pct)");
 		Label titleLabel = new Label(poll.getTitle());
 		titleLabel.addClassNames("text-box-button-text", "title");
@@ -40,8 +41,10 @@ public class PollSelectorBox extends VerticalLayout{
 		if (poll.getOwner() != null && poll.getOwner().getDisplayName() != null) createdLabelText += " by "+poll.getOwner().getDisplayName();
 		if (poll.getVotes().size() > 0) createdLabelText += ", " + poll.getVotes().size() +" votes";
 		Label createdLabel = new Label(createdLabelText + ".");
+		createdLabel.addClassName("text-box-button-text");
 		
 		HorizontalLayout bottom = new HorizontalLayout(createdLabel, new iconLabel(poll));
+		bottom.addClassName("text-box-button-text");
 		bottom.setJustifyContentMode(JustifyContentMode.BETWEEN);
 		bottom.setWidthFull();
 		
