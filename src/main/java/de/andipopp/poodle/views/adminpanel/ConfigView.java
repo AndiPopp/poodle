@@ -70,6 +70,11 @@ public class ConfigView extends VerticalLayout{
 	private IntegerField imageSizeLimitKiloBytes = new IntegerField("Max Images Size (kB)");
 
 	/**
+	 * Input field for {@link Config#getMinPasswordLength()}
+	 */
+	private IntegerField minPasswordLength = new IntegerField("Min Password Length");
+	
+	/**
 	 * Input field for {@link Config#getPollImagePath()}
 	 */
 	private TextField pollImagePath = new TextField("Poll Image Folder");
@@ -126,6 +131,8 @@ public class ConfigView extends VerticalLayout{
 		defaultPollRententionDays.setMin(Config.HARD_MIN_RETENTION_DAYS);
 		imageSizeLimitKiloBytes.setHasControls(true);
 		imageSizeLimitKiloBytes.setMin(Config.HARD_MIN_IMAGE_SIZE);
+		minPasswordLength.setHasControls(true);
+		minPasswordLength.setMin(Config.HARD_MIN_PASSWORD_LENGTH);
 		configureMoveContentDialog();
 	}
 
@@ -154,7 +161,11 @@ public class ConfigView extends VerticalLayout{
 		images.setColspan(pollImagePath, 2);
 		images.setColspan(imageSizeLimitKiloBytes, 1);
 		
-		FormLayout other = new FormLayout(allowOrphanPolls);
+		FormLayout other = new FormLayout(minPasswordLength, allowOrphanPolls);
+		other.setResponsiveSteps(
+				new ResponsiveStep("0", 1),
+				new ResponsiveStep("640px", 3)
+			);
 		
 		VerticalLayout forms = new VerticalLayout(
 			new H4("Welcom Screen Configuration"),

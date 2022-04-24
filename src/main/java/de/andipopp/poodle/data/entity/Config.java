@@ -349,5 +349,31 @@ public class Config extends AbstractEntity {
 		this.userImagePath = userImagePath;
 	}
 	
+	public static final int HARD_MIN_PASSWORD_LENGTH = 6;
+	
+	/**
+	 * Minimal password length
+	 */
+	@Min(HARD_MIN_PASSWORD_LENGTH)
+	private int minPasswordLength = 8;
+
+	/**
+	 * Getter for {@link #minPasswordLength}
+	 * @return the {@link #minPasswordLength}
+	 */
+	public int getMinPasswordLength() {
+		return minPasswordLength;
+	}
+
+	/**
+	 * Setter for {@link #minPasswordLength}
+	 * @param minPasswordLength the {@link #minPasswordLength} to set
+	 */
+	public void setMinPasswordLength(int minPasswordLength) {
+		this.minPasswordLength = minPasswordLength;
+	}
+	
+	
+	
 	
 }
