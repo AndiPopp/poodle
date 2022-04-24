@@ -27,8 +27,10 @@ import org.hibernate.annotations.LazyCollectionOption;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.router.QueryParameters;
+import com.vaadin.flow.router.RouterLink;
 
 import de.andipopp.poodle.data.Role;
 import de.andipopp.poodle.data.entity.AbstractAutoIdEntity;
@@ -36,6 +38,7 @@ import de.andipopp.poodle.data.entity.Config;
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.util.UUIDUtils;
 import de.andipopp.poodle.views.components.PoodleAvatar;
+import de.andipopp.poodle.views.editpoll.EditPollView;
 
 @Entity(name = "Poll")
 public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> extends AbstractAutoIdEntity {
@@ -553,6 +556,18 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 		}
 		//return result
 		return new QueryParameters(params);
+	}
+	
+	public void navigateToEdit() {
+		UI.getCurrent().navigate(EditPollView.ROUTE, buildQueryParameters(true));
+	}
+
+	public RouterLink linkToEdit() {
+		RouterLink link = new RouterLink();
+		link.setRoute(EditPollView.class);
+		link.setQueryParameters(buildQueryParameters(true));
+		link.setText("");
+		return link;
 	}
 	
 	public Avatar getAvatar() {

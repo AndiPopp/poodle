@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -70,6 +71,18 @@ public class PollService {
     	return repository.findByOwnerOrderByCreateDateDesc(owner);
     }
 
+    public List<AbstractPoll> findNewest(String titleFilter, String ownerFiler, Boolean closedFilter) {
+    	List<AbstractPoll> list = repository.findAllByOrderByCreateDateDesc();
+    	List<AbstractPoll> result = new LinkedList<AbstractPoll>();
+    	for(AbstractPoll poll : list) {
+    		if ((titleFilter == null || titleFilter.isBlank() || poll.getTitle().toLowerCase().contains(titleFilter.strip().toLowerCase()))
+    				&& (ownerFiler == null || ownerFiler.isBlank() || (poll.getOwner() != null && poll.getOwner().getDisplayName().toLowerCase().contains(ownerFiler.strip().toLowerCase())))
+    				&& (closedFilter == null || poll.isClosed() == closedFilter)
+    			) result.add(poll);
+    	}
+    	return result;
+    }
+    
     public List<AbstractPoll> findNewestByOwner(User owner, String titleFilter, Boolean closedFilter) { //TODO probably faster when done correctly in the backend
     	List<AbstractPoll> list = findNewestByOwner(owner);
     	List<AbstractPoll> result = new LinkedList<AbstractPoll>();

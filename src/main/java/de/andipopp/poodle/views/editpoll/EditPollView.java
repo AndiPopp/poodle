@@ -43,10 +43,12 @@ import de.andipopp.poodle.views.editpoll.date.DateOptionFormList;
 import de.andipopp.poodle.views.mypolls.MyPollsView;
 
 @PageTitle("Edit Poodle Poll")
-@Route(value = "edit", layout = MainLayout.class)
+@Route(value = EditPollView.ROUTE, layout = MainLayout.class)
 @PermitAll
 public class EditPollView extends PollView implements ValueChangeListener<ValueChangeEvent<?>>, BeforeLeaveObserver  {
 
+	public static final String ROUTE = "edit";
+	
     public static final String CREATE_POLL_KEY = "createPoll";
 
     /**

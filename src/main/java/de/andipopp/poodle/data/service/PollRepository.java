@@ -3,6 +3,7 @@ package de.andipopp.poodle.data.service;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import de.andipopp.poodle.data.entity.User;
@@ -15,4 +16,5 @@ public interface PollRepository extends JpaRepository<AbstractPoll<?,?>, UUID>{
 	List<AbstractPoll> findByOwnerOrderByCreateDateDesc(User owner);
 	
 	List<AbstractPoll> findAllByOrderByCreateDateDesc();
+
 }
