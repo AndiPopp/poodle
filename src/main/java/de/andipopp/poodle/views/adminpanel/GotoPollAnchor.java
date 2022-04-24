@@ -1,4 +1,4 @@
-package de.andipopp.poodle.views.mypolls;
+package de.andipopp.poodle.views.adminpanel;
 
 import com.vaadin.flow.component.html.Anchor;
 

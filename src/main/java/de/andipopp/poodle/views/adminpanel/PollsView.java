@@ -22,8 +22,6 @@ import com.vaadin.flow.server.VaadinRequest;
 
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.data.service.PollService;
-import de.andipopp.poodle.views.mypolls.EditPollIcon;
-import de.andipopp.poodle.views.mypolls.GotoPollAnchor;
 
 @RolesAllowed("ADMIN")
 public class PollsView extends VerticalLayout {
