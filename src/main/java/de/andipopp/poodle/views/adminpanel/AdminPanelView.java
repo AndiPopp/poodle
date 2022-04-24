@@ -55,7 +55,7 @@ public class AdminPanelView extends VerticalLayout {
     private void setContent(Tab tab) {
     	this.content.removeAll();
     	if (tab.equals(pollTab)) this.content.add(pollsView);
-    	if (tab.equals(configTab)) this.content.add(configView);
+    	else if (tab.equals(configTab)) this.content.add(configView);
     }
 
 }

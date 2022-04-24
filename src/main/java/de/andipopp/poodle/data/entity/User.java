@@ -11,6 +11,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -39,6 +40,9 @@ public class User extends AbstractAutoIdEntity {
     @Column(length = 64)
 	@Size(max = 64)
     private String hashedPassword;
+    
+    @Transient
+    private String hashedPassword2;
     
     @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.EAGER)
@@ -73,7 +77,23 @@ public class User extends AbstractAutoIdEntity {
         this.hashedPassword = hashedPassword;
     }
     
-    public Set<Role> getRoles() {
+    /**
+	 * Getter for {@link #hashedPassword2}
+	 * @return the {@link #hashedPassword2}
+	 */
+	public String getHashedPassword2() {
+		return hashedPassword2;
+	}
+
+	/**
+	 * Setter for {@link #hashedPassword2}
+	 * @param hashedPassword2 the {@link #hashedPassword2} to set
+	 */
+	public void setHashedPassword2(String hashedPassword2) {
+		this.hashedPassword2 = hashedPassword2;
+	}
+
+	public Set<Role> getRoles() {
         return roles;
     }
     
