@@ -122,6 +122,16 @@ public class PollsView extends VerticalLayout {
 				.setHeader("Owner")
 				.setWidth("150px")
 				.setFlexGrow(1)
+				.setComparator((arg0, arg1) -> {
+					if (arg0.getOwner() == null && arg1.getOwner() == null) return 0;
+					if (arg0.getOwner() != null && arg1.getOwner() == null) return -1;
+					if (arg0.getOwner() == null && arg1.getOwner() != null) return 1;
+					String displayName0 = "";
+					String displayName1 = "";
+					if (arg0.getOwner().getDisplayName() != null) displayName0 = arg0.getOwner().getDisplayName();
+					if (arg1.getOwner().getDisplayName() != null) displayName1 = arg1.getOwner().getDisplayName();
+					return displayName0.compareTo(displayName1);
+				})
 		;
 			
 		
