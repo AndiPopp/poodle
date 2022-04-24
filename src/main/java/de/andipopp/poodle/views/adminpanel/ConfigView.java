@@ -119,9 +119,13 @@ public class ConfigView extends VerticalLayout{
 		
 		//configure elements
 		minPollRetentionDays.setHasControls(true);
+		minPollRetentionDays.setMin(Config.HARD_MIN_RETENTION_DAYS);
 		maxPollRetentionDays.setHasControls(true);
+		maxPollRetentionDays.setMin(Config.HARD_MIN_RETENTION_DAYS);
 		defaultPollRententionDays.setHasControls(true);
+		defaultPollRententionDays.setMin(Config.HARD_MIN_RETENTION_DAYS);
 		imageSizeLimitKiloBytes.setHasControls(true);
+		imageSizeLimitKiloBytes.setMin(Config.HARD_MIN_IMAGE_SIZE);
 		configureMoveContentDialog();
 	}
 

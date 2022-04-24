@@ -159,10 +159,12 @@ public class Config extends AbstractEntity {
 		this.welcomeMessage = JSoupUtils.cleanBasicWithImages(welcomeMessage);
 	}
 
+	public static final int HARD_MIN_RETENTION_DAYS = 1;
+	
 	/**
 	 * The minimum number of days from the current day {@link AbstractPoll#setDeleteDate(LocalDate)} will accept
 	 */
-	@Min(1)
+	@Min(HARD_MIN_RETENTION_DAYS)
 	@Max(Integer.MAX_VALUE)
 	private int minPollRetentionDays = 7;
 	
@@ -193,7 +195,7 @@ public class Config extends AbstractEntity {
 	/**
 	 * The maximum number of days from the current day {@link AbstractPoll#setDeleteDate()} will accept
 	 */
-	@Min(1)
+	@Min(HARD_MIN_RETENTION_DAYS)
 	@Max(Integer.MAX_VALUE)
 	private int maxPollRetentionDays = 500;
 	
@@ -229,7 +231,7 @@ public class Config extends AbstractEntity {
 	/**
 	 * The default number of day a poll will be stored before it gets auto-deleted
 	 */
-	@Min(1)
+	@Min(HARD_MIN_RETENTION_DAYS)
 	@Max(Integer.MAX_VALUE)
 	private int defaultPollRententionDays = 180;
 
@@ -270,6 +272,8 @@ public class Config extends AbstractEntity {
 		this.allowOrphanPolls = allowOrphanPolls;
 	}
 	
+	public static final int HARD_MIN_IMAGE_SIZE = 20;
+	
 	/**
 	 * The maximum size of poll and user images in kilobytes
 	 */
@@ -279,7 +283,7 @@ public class Config extends AbstractEntity {
 	 * Getter for {@link #imageSizeLimitKiloBytes}
 	 * @return the {@link #imageSizeLimitKiloBytes}
 	 */
-	@Min(20)
+	@Min(HARD_MIN_IMAGE_SIZE)
 	@Max(Integer.MAX_VALUE)
 	public int getImageSizeLimitKiloBytes() {
 		return imageSizeLimitKiloBytes;
