@@ -1,0 +1,7 @@
+# Ignore everything ...
+*
+
+# .. but those
+!.gitignore
+!john.png
+!emma.png

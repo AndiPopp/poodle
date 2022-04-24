@@ -19,8 +19,6 @@ public class ImageUpload extends Upload {
 	
 	public static final String MIME_TYPE = "image/png";
 	
-
-
 	public ImageUpload(ImageReceiver receiver) {
 		super(receiver);
 		setAcceptedFileTypes(MIME_TYPE, FILE_EXTENSION);
@@ -37,10 +35,6 @@ public class ImageUpload extends Upload {
 		    notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
 		});
 	}
-	
-	
-	
-
 	
 	public static class ImageReceiver implements Receiver {
 

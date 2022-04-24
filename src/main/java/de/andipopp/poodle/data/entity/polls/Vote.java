@@ -68,6 +68,11 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 	private String displayName;
 	
 	/**
+	 * The color index of the default avatar
+	 */
+	private byte defaultAvatarColor = (byte) rng.nextInt(6);
+	
+	/**
 	 * Construct a new Vote with an empty hash set for {@link #answers}
 	 */
 	public Vote() {
@@ -321,9 +326,9 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 	}
 	
 	public Avatar getAvatar() {
-		if (owner != null) return owner.getAvatarFromProfilePicture();
+		if (owner != null) return owner.getAvatar();
 		Avatar avatar = new Avatar();
-		avatar.setColorIndex(rng.nextInt(6));
+		avatar.setColorIndex((int) defaultAvatarColor);
 		if (displayName != null & !displayName.isEmpty()) avatar.setName(displayName);
 		return avatar;
 	}	

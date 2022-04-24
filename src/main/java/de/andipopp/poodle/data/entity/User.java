@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vaadin.flow.component.avatar.Avatar;
 
 import de.andipopp.poodle.data.Role;
+import de.andipopp.poodle.views.components.PoodleAvatar;
 
 @Entity
 @Table(name = "application_user")
@@ -43,9 +44,6 @@ public class User extends AbstractAutoIdEntity {
     @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Role> roles;
-    
-    @Lob
-    private String profilePictureUrl;
     
     @Nullable
     @Column(length = 40)
@@ -84,22 +82,13 @@ public class User extends AbstractAutoIdEntity {
         this.roles = roles;
     }
     
-    public String getProfilePictureUrl() {
-        return profilePictureUrl;
-    }
-    
-    public void setProfilePictureUrl(String profilePictureUrl) {
-        this.profilePictureUrl = profilePictureUrl;
-    }
-	
     /**
 	 * Getter for a copy of {@link #avatar}
 	 * @return a copy of {@link #avatar}
 	 */
-	public Avatar getAvatarFromProfilePicture() {
-		Avatar avatar = new Avatar(displayName);
-		if (profilePictureUrl != null && !profilePictureUrl.isEmpty()) avatar.setImage(profilePictureUrl);
-		return avatar;
+	public Avatar getAvatar() {
+//		Avatar avatar = new Avatar(displayName);
+		return PoodleAvatar.forUser(this);
 	}
 	
     /**

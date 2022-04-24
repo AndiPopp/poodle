@@ -1,9 +1,12 @@
 package de.andipopp.poodle.data.generator;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -14,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 
 import de.andipopp.poodle.data.Role;
+import de.andipopp.poodle.data.entity.Config;
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.data.entity.polls.DateOption;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
@@ -22,9 +26,11 @@ import de.andipopp.poodle.data.service.OptionRepository;
 import de.andipopp.poodle.data.service.PollRepository;
 import de.andipopp.poodle.data.service.UserRepository;
 import de.andipopp.poodle.data.service.VoteRepository;
+import de.andipopp.poodle.util.UUIDUtils;
+import de.andipopp.poodle.views.components.ImageUpload;
 
 @SpringComponent
-public class DataGenerator {
+public class ExampleDataGenerator {
 
     @Bean
     @Order(99)
@@ -42,6 +48,8 @@ public class DataGenerator {
                 return;
             }
 
+            cleanAvatarFolders();
+            
             logger.info("Generating demo data");
 
             logger.info("... generating 2 User entities...");
@@ -49,24 +57,44 @@ public class DataGenerator {
             user.setDisplayName("John Normal");
             user.setUsername("user");
             user.setHashedPassword(passwordEncoder.encode("user"));
-            user.setProfilePictureUrl(
-                    "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=128&h=128&q=80");
             user.setRoles(Collections.singleton(Role.USER));
-            userRepository.save(user);
+            user = userRepository.save(user);
+            File userAvatar = new File(Config.getCurrent().getUserImagePath() + System.getProperty("file.separator") + "john.png");
+            File userAvatarCopy = new File(Config.getCurrent().getUserImagePath() + System.getProperty("file.separator") + UUIDUtils.uuidToBase64url(user.getId()) + ImageUpload.FILE_EXTENSION);
+            FileUtils.copyFile(userAvatar, userAvatarCopy);
+            
             User admin = new User();
             admin.setDisplayName("Emma Powerful");
             admin.setUsername("admin");
             admin.setHashedPassword(passwordEncoder.encode("admin"));
-            admin.setProfilePictureUrl(
-                    "https://images.unsplash.com/photo-1607746882042-944635dfe10e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=128&h=128&q=80");
             admin.setRoles(Set.of(Role.USER, Role.ADMIN));
-            userRepository.save(admin);
+            admin = userRepository.save(admin);
 
+            File adminAvatar = new File(Config.getCurrent().getUserImagePath() + System.getProperty("file.separator") + "emma.png");
+            File adminAvatarCopy = new File(Config.getCurrent().getUserImagePath() + System.getProperty("file.separator") + UUIDUtils.uuidToBase64url(admin.getId()) + ImageUpload.FILE_EXTENSION);
+            FileUtils.copyFile(adminAvatar, adminAvatarCopy);
+            
             //polls
             populatePollRepository(logger,pollRepository, optionRepository, voteRepository, user, admin);
             
             logger.info("Generated demo data");
         };
+    }
+    
+    private void cleanAvatarFolders() {
+    	File pollImageFolder = new File(Config.getCurrent().getPollImagePath());
+    	File userImageFolder = new File(Config.getCurrent().getUserImagePath());
+    	cleanImageFolder(pollImageFolder);
+    	cleanImageFolder(userImageFolder);
+    	
+    }
+    
+    private void cleanImageFolder(File folder) {
+    	if (folder.isDirectory()) {
+    		for(File file : folder.listFiles()) {
+    			if (file.getName().length()==26) file.delete();
+    		}
+    	}
     }
     
     private void populatePollRepository(
@@ -75,7 +103,7 @@ public class DataGenerator {
     		OptionRepository optionRepository,
     		VoteRepository voteRepository,
     		User user, 
-    		User admin) {
+    		User admin) throws IOException {
     	DatePoll poll = new DatePoll();
     	poll.setTitle("Masters of the Universe get-together");
     	poll.setDescription("He-Man will be there. So <a href=\"https://www.google.com\">google</a> yourself your finest magic sword and feline steed.");
@@ -148,7 +176,12 @@ public class DataGenerator {
     			new GregorianCalendar(2022, 11-1, 23, 20, 40).getTime()
     		));
     	NameGenerator.addRandomVotes(poll, 2);
-    	pollRepository.save(poll);
+    	poll = pollRepository.save(poll);
+    	
+    	File pollAvatar = new File(Config.getCurrent().getPollImagePath() + System.getProperty("file.separator") + "Hokage.drawio.png");
+        File pollAvatarCopy = new File(Config.getCurrent().getPollImagePath() + System.getProperty("file.separator") + UUIDUtils.uuidToBase64url(poll.getId()) + ImageUpload.FILE_EXTENSION);
+        FileUtils.copyFile(pollAvatar, pollAvatarCopy);
+    	
     	
     	poll = new DatePoll();
     	poll.setTitle("This is a really long title just to see what happens when we actually hit the 80");

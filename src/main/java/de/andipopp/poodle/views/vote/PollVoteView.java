@@ -51,7 +51,6 @@ public class PollVoteView extends PollView implements HasDynamicTitle {
 	 * = Layout Components =
 	 * ===================== */
 	
-
 	private VerticalLayout content;
 	
 	private VerticalLayout pollContent;
@@ -62,7 +61,6 @@ public class PollVoteView extends PollView implements HasDynamicTitle {
 	
 	private VerticalLayout info = new VerticalLayout();
 
-	
 	ViewToggleState state = ViewToggleState.LIST;
 	
 	private enum ViewToggleState {
@@ -147,11 +145,11 @@ public class PollVoteView extends PollView implements HasDynamicTitle {
 		header.removeAll();
 		header.setWidthFull();
 		header.setDefaultVerticalComponentAlignment(Alignment.START);
-		Avatar ownerAvatar =  poll.getAvatar(); //poll.getOwner().getAvatarFromProfilePicture();
-		ownerAvatar.addThemeVariants(AvatarVariant.LUMO_SMALL);
-		ownerAvatar.getStyle().set("border", "1px solid black") ;
-		this.content.add(ownerAvatar);
-		HorizontalLayout avatarAndTitleWrapper = new HorizontalLayout(ownerAvatar, configureSubtitle());
+		Avatar avatar =  poll.getAvatar(); 
+		avatar.addThemeVariants(AvatarVariant.LUMO_SMALL);
+		avatar.getStyle().set("border", "1px solid black") ;
+		this.content.add(avatar);
+		HorizontalLayout avatarAndTitleWrapper = new HorizontalLayout(avatar, configureSubtitle());
 		avatarAndTitleWrapper.setDefaultVerticalComponentAlignment(Alignment.CENTER);
 		avatarAndTitleWrapper.setWidthFull();
 

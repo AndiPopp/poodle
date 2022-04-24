@@ -1,8 +1,5 @@
 package de.andipopp.poodle.data.entity.polls;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -32,14 +29,13 @@ import org.jsoup.safety.Safelist;
 
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.router.QueryParameters;
-import com.vaadin.flow.server.StreamResource;
 
 import de.andipopp.poodle.data.Role;
 import de.andipopp.poodle.data.entity.AbstractAutoIdEntity;
 import de.andipopp.poodle.data.entity.Config;
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.util.UUIDUtils;
-import de.andipopp.poodle.views.components.ImageUpload;
+import de.andipopp.poodle.views.components.PoodleAvatar;
 
 @Entity(name = "Poll")
 public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> extends AbstractAutoIdEntity {
@@ -560,29 +556,7 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 	}
 	
 	public Avatar getAvatar() {
-		File pollAvatar = new File(Config.getCurrent().getPollImagePath() 
-			+ System.getProperty("file.separator") 
-			+ UUIDUtils.uuidToBase64url(getId())
-			+ ImageUpload.FILE_EXTENSION
-		);
-		
-		if (pollAvatar.exists()) {
-			Avatar avatar = new Avatar(getTitle());
-			avatar.setImageResource(new StreamResource("poll.png", () -> {
-				try {
-					return new FileInputStream(pollAvatar);
-				} catch (FileNotFoundException e) {
-					return null;
-				}
-			}));
-			return avatar;
-		}
-		else if (getOwner() != null) {
-			return getOwner().getAvatarFromProfilePicture();
-		}
-		else {
-			return new Avatar(getTitle());
-		}
+		return PoodleAvatar.forPoll(this);
 	}
 	
 	/* =================
