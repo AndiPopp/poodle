@@ -24,6 +24,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import com.vaadin.flow.component.avatar.Avatar;
 
+import de.andipopp.poodle.data.Role;
 import de.andipopp.poodle.data.entity.AbstractAutoIdEntity;
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.util.InvalidException;
@@ -337,6 +338,7 @@ public class Vote<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> ex
 		if (this.owner == null) return true;
 		if (this.owner.equals(user)) return true;
 		if (this.parent.getOwner().equals(user)) return true;
+		if (user != null && user.getRoles().contains(Role.ADMIN)) return true;
 		return false;
 	}
 	

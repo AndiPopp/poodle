@@ -40,7 +40,6 @@ public abstract class OptionsVoteListView<P extends AbstractPoll<P, O>, O extend
 	
 	protected Vote<P,O> currentVote;
 	
-	
 	/**
 	 * The user using this view, if null we have an anonymous vote
 	 */
@@ -227,11 +226,14 @@ public abstract class OptionsVoteListView<P extends AbstractPoll<P, O>, O extend
 		return usersVote;
 	}
 
+	
+	
 
 	/**
 	 * Save the current vote
 	 */
 	private void saveCurrentVote() {
+		if (currentVote == null) return;
 		
 		//Validate inputs
 		displayNameInput.setValue(displayNameInput.getValue().strip());
@@ -248,8 +250,13 @@ public abstract class OptionsVoteListView<P extends AbstractPoll<P, O>, O extend
 			return;
 		}
 		
-		//TODO The rest down here needs to be cleaned up
+		//check access
+		if (!currentVote.canEdit(user)) {
+			Notification.show("Access denied").addThemeVariants(NotificationVariant.LUMO_ERROR);
+			return;
+		}
 		
+		//TODO The rest down here needs to be cleaned up
     	
 		//write the results to backend
 		boolean result = false;
@@ -313,6 +320,12 @@ public abstract class OptionsVoteListView<P extends AbstractPoll<P, O>, O extend
 	}
 	
 	private void deleteCurrentVote() {
+		//check access
+		if (!currentVote.canEdit(user)) {
+			Notification.show("Access denied").addThemeVariants(NotificationVariant.LUMO_ERROR);
+			return;
+		}
+		
 		poll.removeVote(currentVote);
 		voteService.delete(currentVote); //first time removes the connections
 		voteService.delete(currentVote); //second time removes echo
@@ -320,6 +333,12 @@ public abstract class OptionsVoteListView<P extends AbstractPoll<P, O>, O extend
 	}
 	
 	private void closePoll() {
+		//check access
+		if (!poll.canEdit(user)) {
+			Notification.show("Access denied").addThemeVariants(NotificationVariant.LUMO_ERROR);
+			return;
+		}
+		
 		for(OptionVoteListItem item : optionListItems) item.readWinnerFromButton();
 		poll.setClosed(true);
 		pollService.update(poll);
@@ -402,7 +421,7 @@ public abstract class OptionsVoteListView<P extends AbstractPoll<P, O>, O extend
 		HorizontalLayout saveBar = buildFooterBar(deleteButton, displayNameInput, saveButton);
 		this.add(saveBar);
 	}
-
+	
 	private void configureDisplayNameInput() {
 		displayNameInput.setValue("");
 		displayNameInput.setPlaceholder("Enter name");
@@ -426,6 +445,7 @@ public abstract class OptionsVoteListView<P extends AbstractPoll<P, O>, O extend
 			displayNameInput.setValue(displayNameInput.getValue()+" "+NameGenerator.randomNumberLabel(3));
 		}
 	}
+	
 	
 	private HorizontalLayout buildFooterBar(Component ... comps) {
 		HorizontalLayout footerBar = new HorizontalLayout(comps);

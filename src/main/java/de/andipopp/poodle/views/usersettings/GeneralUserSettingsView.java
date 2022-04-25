@@ -1,6 +1,7 @@
 package de.andipopp.poodle.views.usersettings;
 
 import java.util.Date;
+import java.util.UUID;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.avatar.Avatar;
@@ -30,6 +31,7 @@ import de.andipopp.poodle.util.InvalidException;
 import de.andipopp.poodle.views.components.ConfirmationDialog;
 import de.andipopp.poodle.views.components.ImageUpload;
 import de.andipopp.poodle.views.components.ImageUpload.ImageReceiver;
+import de.andipopp.poodle.views.components.PoodleAvatar;
 
 public class GeneralUserSettingsView extends VerticalLayout {
 
@@ -48,6 +50,11 @@ public class GeneralUserSettingsView extends VerticalLayout {
 	private Avatar currentAvatar;
 	
 	private ImageUpload imageUpload;
+	
+	/**
+     * Temporary UUID to upload the image to before save is hit
+     */
+    private UUID tempImageUUID;
 	
 	private Button save = new Button("Save");
 	
@@ -71,6 +78,7 @@ public class GeneralUserSettingsView extends VerticalLayout {
 		this.user = user;
 		this.authenticatedUser = authenticatedUser;
 		this.userService = userService;
+		this.tempImageUUID = UUID.randomUUID();
 		configureBinder();
 		
 		this.setPadding(false);
@@ -81,7 +89,7 @@ public class GeneralUserSettingsView extends VerticalLayout {
 		
 		FormLayout password = new FormLayout(oldPassword, new Label(), newPassword,  newPassword2);
 		
-		imageUpload = new ImageUpload(new ImageReceiver(Config.getCurrent().getUserImagePath(), user.getId()));
+		imageUpload = new ImageUpload(new ImageReceiver(Config.getCurrent().getUserImagePath(), tempImageUUID));
 		imageUpload.addSucceededListener(e -> {
 			try {
 				Thread.sleep(200);
@@ -89,7 +97,7 @@ public class GeneralUserSettingsView extends VerticalLayout {
 				e1.printStackTrace();
 			}
 			imageUpload.clearFileList();
-			currentAvatar.setImage(currentAvatar.getImage() + "&now="+(new Date()).getTime()); //just at some random useless param to trigger a reload
+			currentAvatar.setImage(PoodleAvatar.avatarImagePath(PoodleAvatar.Type.USER, tempImageUUID) + "&now="+(new Date()).getTime()); //just at some random useless param to trigger a reload
 		});
 		avatarPanel.setDefaultVerticalComponentAlignment(Alignment.CENTER);
 		configureAvatarPanel();
@@ -113,17 +121,16 @@ public class GeneralUserSettingsView extends VerticalLayout {
 			new H4("Change Password"),
 			password,
 			new Paragraph(),
-			buttonPanel,
 			new H4("Change Avarar"),
 			avatarPanel,
+			buttonPanel,
 			new Paragraph(),
 			dangerZone()
 		);
 		
 	}
 
-
-
+	
 	private void configureBinder() {
 		binder.bindInstanceFields(this);
 		binder.readBean(this.user);
@@ -145,7 +152,7 @@ public class GeneralUserSettingsView extends VerticalLayout {
 		currentAvatar = user.getAvatar();
 		currentAvatar.addThemeVariants(AvatarVariant.LUMO_XLARGE);
 		currentAvatar.getStyle().set("border", "1px solid var(--lumo-contrast-70pct)");
-		avatarPanel.add(currentAvatar, imageUpload, new Label("(Max "+Config.getCurrent().getImageSizeLimitKiloBytes()+" kB, has immediate effect)"));
+		avatarPanel.add(currentAvatar, imageUpload, new Label("(Max "+Config.getCurrent().getImageSizeLimitKiloBytes()+" kB, might need refresh after save)"));
 	}
 	
 	private Component dangerZone() {
@@ -196,6 +203,10 @@ public class GeneralUserSettingsView extends VerticalLayout {
 		try {
 			user = userService.update(user);
 			Notification.show("Saved", 3000, Position.BOTTOM_CENTER).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+		
+			//now the user has as UUID, even if it is a new user, so we copy the image 
+			ImageUpload.moveTempImage(PoodleAvatar.Type.USER, tempImageUUID, user.getId());
+		
 		} catch (InvalidException e) {
 			Notification.show(e.getMessage(), 5000, Position.BOTTOM_CENTER).addThemeVariants(NotificationVariant.LUMO_ERROR);
 		}

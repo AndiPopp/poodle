@@ -51,8 +51,5 @@ public class AvatarImageServlet extends HttpServlet {
 		}
         
         resp.setStatus(200);
-        
-        
-
     }
 }

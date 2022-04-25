@@ -1,5 +1,7 @@
 package de.andipopp.poodle.views.editpoll;
 
+import java.util.UUID;
+
 import javax.annotation.security.PermitAll;
 
 import com.vaadin.flow.component.HasValue.ValueChangeEvent;
@@ -39,6 +41,7 @@ import de.andipopp.poodle.views.components.ConfirmationDialog;
 import de.andipopp.poodle.views.components.DebugLabel;
 import de.andipopp.poodle.views.components.ImageUpload;
 import de.andipopp.poodle.views.components.ImageUpload.ImageReceiver;
+import de.andipopp.poodle.views.components.PoodleAvatar;
 import de.andipopp.poodle.views.editpoll.date.DateOptionFormList;
 import de.andipopp.poodle.views.mypolls.MyPollsView;
 
@@ -64,6 +67,11 @@ public class EditPollView extends PollView implements ValueChangeListener<ValueC
     
     private ImageUpload imageUpload;
     
+    /**
+     * Temporary UUID to upload the image to before save is hit
+     */
+    private UUID tempImageUUID;
+    
     private AbstractOptionFormList<? extends AbstractOptionForm> optionFormList;
     
     //each step gets an accordion panel
@@ -73,6 +81,7 @@ public class EditPollView extends PollView implements ValueChangeListener<ValueC
     private AccordionPanel pollSettingsFormPanel;
     
     private AccordionPanel imageUploadPanel;
+ 
     
     private AccordionPanel optionFormListPanel;
     
@@ -110,6 +119,8 @@ public class EditPollView extends PollView implements ValueChangeListener<ValueC
 	public EditPollView(AuthenticatedUser authenticatedUser, PollService pollService) {
 		super(authenticatedUser, pollService);
 		this.add(notFound());
+		
+		tempImageUUID = UUID.randomUUID();
 		
 		//configure buttons
 		toStep2Button.addClassName("primary-text");
@@ -167,7 +178,9 @@ public class EditPollView extends PollView implements ValueChangeListener<ValueC
 		pollSettingsFormPanel = new AccordionPanel("Step 2: Poll Settings", pollSettingsFormWrapper);
 		formAccordion.add(pollSettingsFormPanel);
 		
-		imageUpload = new ImageUpload(new ImageReceiver(Config.getCurrent().getPollImagePath(), this.poll.getId()));
+		imageUpload = new ImageUpload(new ImageReceiver(Config.getCurrent().getPollImagePath(), tempImageUUID));
+
+			
 		HorizontalLayout imageUploadWithLimit = new HorizontalLayout(imageUpload, new Label("(max "+Config.getCurrent().getImageSizeLimitKiloBytes()+" kB)" ));
 		imageUploadWithLimit.setDefaultVerticalComponentAlignment(Alignment.BASELINE);
 		HorizontalLayout imageUploadWrapper = new HorizontalLayout(imageUploadWithLimit, toStep4Button);
@@ -353,12 +366,18 @@ public class EditPollView extends PollView implements ValueChangeListener<ValueC
 		//delete and connect the options to the poll
 		if (!deleteAndConnectOptionsToPoll()) return;
 		
-		//write to back-end and load the result (which will also rest the hasChanges flag)
-		loadPoll(pollService.update(poll));
+		//write to back-end
+		AbstractPoll<?,?> tempPoll = pollService.update(poll);
+		
+		//if an image has been uploaded to the temp UUID, move if to the poll's UUID. New polls will now have an UUID after update
+		ImageUpload.moveTempImage(PoodleAvatar.Type.POLL, tempImageUUID, tempPoll.getId());
 		
 		Notification succ = Notification.show("Poll saved!");
 		succ.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		succ.setPosition(Position.BOTTOM_CENTER);
+		
+		//load the result (which will also rest the hasChanges flag)
+		loadPoll(tempPoll);
 		
 	}
 	

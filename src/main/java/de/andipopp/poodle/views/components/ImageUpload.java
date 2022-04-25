@@ -1,9 +1,13 @@
 package de.andipopp.poodle.views.components;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.UUID;
+
+import org.apache.commons.io.FileUtils;
 
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -34,6 +38,36 @@ public class ImageUpload extends Upload {
 		    );
 		    notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
 		});
+	}
+	
+	public static String avatarImagePath(PoodleAvatar.Type type, UUID id) {
+		String path = "";
+		switch (type) {
+		case POLL:
+			path = Config.getCurrent().getPollImagePath();
+			break;
+		case USER:
+			path = Config.getCurrent().getUserImagePath();
+			break;
+		default:
+			break;
+		}
+		return path + File.separator + UUIDUtils.uuidToBase64url(id) + FILE_EXTENSION;
+	}
+	
+	public static void moveTempImage(PoodleAvatar.Type type, UUID tempImageUUID, UUID targetId) {
+		if (tempImageUUID != null) {
+			File imageFile = new File(ImageUpload.avatarImagePath(type, tempImageUUID));
+			if (imageFile.exists()) {
+				File targetFile = new File(ImageUpload.avatarImagePath(type, targetId));
+				try {
+					if (targetFile.exists()) targetFile.delete();
+					FileUtils.moveFile(imageFile, targetFile);
+				} catch (IOException e) {
+					Notification.show("Image copy failed, but rest of changes are unaffected.\n\n"+e.getMessage()).addThemeVariants(NotificationVariant.LUMO_ERROR);
+				}
+			}
+		}
 	}
 	
 	public static class ImageReceiver implements Receiver {

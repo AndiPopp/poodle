@@ -94,6 +94,10 @@ public class PoodleAvatar {
 		}
 	}
 	
+	public static String avatarImagePath(Type type, UUID id) {
+		return AvatarImageServlet.SUB_FOLDER + "?type=" + type.toString().toLowerCase() 
+				+ "&name=" + UUIDUtils.uuidToBase64url(id) + ImageUpload.FILE_EXTENSION;
+	}
 	
 	
 	
