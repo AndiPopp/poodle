@@ -25,7 +25,9 @@ import com.vaadin.flow.data.binder.Binder;
 
 import de.andipopp.poodle.data.entity.Config;
 import de.andipopp.poodle.data.entity.User;
+import de.andipopp.poodle.data.service.PollService;
 import de.andipopp.poodle.data.service.UserService;
+import de.andipopp.poodle.data.service.VoteService;
 import de.andipopp.poodle.security.AuthenticatedUser;
 import de.andipopp.poodle.util.InvalidException;
 import de.andipopp.poodle.views.components.ConfirmationDialog;
@@ -72,11 +74,15 @@ public class GeneralUserSettingsView extends VerticalLayout {
 	
 	private final UserService userService;
 
+	private final VoteService voteService;
 	
+	private final PollService pollService;
 	
-	public GeneralUserSettingsView(User user, AuthenticatedUser authenticatedUser, UserService userService) {
+	public GeneralUserSettingsView(User user, AuthenticatedUser authenticatedUser, UserService userService, VoteService voteService, PollService pollService) {
 		this.user = user;
 		this.authenticatedUser = authenticatedUser;
+		this.voteService = voteService;
+		this.pollService = pollService;
 		this.userService = userService;
 		this.tempImageUUID = UUID.randomUUID();
 		configureBinder();
@@ -223,9 +229,11 @@ public class GeneralUserSettingsView extends VerticalLayout {
 
 	private void deleteUser() {
 		if (!authenticatedUser.get().isEmpty() && (UserSettingsView.isAdmin(authenticatedUser) || authenticatedUser.get().get().equals(user))) {
-			userService.delete(user.getId()); //TODO this is not enough, we need to clear out the ownership of polls and votes
+			pollService.orphenatePolls(user);
+			voteService.orphenateVotes(user);
 			if (authenticatedUser.get().get().equals(user)) authenticatedUser.logout();
 			else Notification.show("User deleted").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+			userService.delete(user.getId());
 		}
 	}
 	

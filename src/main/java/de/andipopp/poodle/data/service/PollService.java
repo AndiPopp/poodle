@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +39,16 @@ public class PollService {
         repository.deleteById(id);
     }
 
+    public void orphenatePolls(User user) {
+    	for(AbstractPoll<?,?> poll : findByOwner(user)) {
+    		//double-check
+    		if (poll.getOwner().equals(user)) {
+    			poll.setOwner(null);
+    			update(poll);
+    		}
+    	}
+    }
+    
     public Page<AbstractPoll<?,?>> list(Pageable pageable) {
         return repository.findAll(pageable);
     }

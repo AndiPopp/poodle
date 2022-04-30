@@ -35,6 +35,16 @@ public class VoteService {
     	repository.deleteById(id);
     }
     
+    public void orphenateVotes(User user) {
+    	for(Vote<?,?> vote : findByOwner(user)) {
+    		//double-check
+    		if (vote.getOwner().equals(user)) {
+    			vote.setOwner(null);
+    			update(vote);
+    		}
+    	}
+    }
+    
     public List<Vote<?,?>> findByOwner(User user) {
     	return repository.findByOwner(user);
     }

@@ -41,6 +41,11 @@ public class UserService {
         repository.deleteById(id);
     }
 
+    public void unhookPollsAndVotesAndDelete(User user, PollService pollService, VoteService voteService) {
+    	
+    	
+    }
+    
     public Page<User> list(Pageable pageable) {
         return repository.findAll(pageable);
     }
@@ -65,4 +70,5 @@ public class UserService {
         return (int) repository.count();
     }
 
+    
 }

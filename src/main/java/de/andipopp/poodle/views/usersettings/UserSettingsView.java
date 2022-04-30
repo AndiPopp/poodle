@@ -19,7 +19,9 @@ import com.vaadin.flow.router.Route;
 
 import de.andipopp.poodle.data.Role;
 import de.andipopp.poodle.data.entity.User;
+import de.andipopp.poodle.data.service.PollService;
 import de.andipopp.poodle.data.service.UserService;
+import de.andipopp.poodle.data.service.VoteService;
 import de.andipopp.poodle.security.AuthenticatedUser;
 import de.andipopp.poodle.util.NotAUuidException;
 import de.andipopp.poodle.util.UUIDUtils;
@@ -40,6 +42,10 @@ public class UserSettingsView extends VerticalLayout implements BeforeEnterObser
 	
 	private UserService userService;
 	
+	private VoteService voteService;
+	
+	private PollService pollService;
+	
 	private AuthenticatedUser authenticatedUser;
 
 	private User editedUser;
@@ -58,8 +64,10 @@ public class UserSettingsView extends VerticalLayout implements BeforeEnterObser
 	 * @param userService
 	 * @param authenticatedUser
 	 */
-	public UserSettingsView(UserService userService, AuthenticatedUser authenticatedUser) {
+	public UserSettingsView(UserService userService, AuthenticatedUser authenticatedUser, VoteService voteService, PollService pollService) {
 		this.userService = userService;
+		this.pollService = pollService;
+		this.voteService = voteService;
 		this.authenticatedUser = authenticatedUser;
 		if (!authenticatedUser.get().isEmpty()) editedUser = authenticatedUser.get().get(); //default to the user editing themselves
 		
@@ -110,7 +118,7 @@ public class UserSettingsView extends VerticalLayout implements BeforeEnterObser
 			}	
 		}
 		
-		generalUserSettingsView = new GeneralUserSettingsView(editedUser, authenticatedUser, userService);
+		generalUserSettingsView = new GeneralUserSettingsView(editedUser, authenticatedUser, userService, voteService, pollService);
 		tabs.setSelectedTab(datePollTab);
 		tabs.setSelectedTab(generalTab);
 	}
