@@ -64,6 +64,8 @@ public class GeneralUserSettingsView extends VerticalLayout {
 	
 	private Button delete = new Button("DeleteUser");
 	
+	private Checkbox deletePollsWithUser = new Checkbox("also delete my polls");
+	
 	private Binder<User> binder = new BeanValidationBinder<>(User.class);
 
 	private Binder<User> pwBinder = new Binder<>(User.class);
@@ -171,8 +173,8 @@ public class GeneralUserSettingsView extends VerticalLayout {
 		HorizontalLayout header = new HorizontalLayout(headerText, dangerZoneActive);
 		header.setDefaultVerticalComponentAlignment(Alignment.BASELINE);
 		
-		HorizontalLayout buttons = new HorizontalLayout(delete);
-		
+		HorizontalLayout buttons = new HorizontalLayout(delete, deletePollsWithUser);
+		buttons.setDefaultVerticalComponentAlignment(Alignment.CENTER);
 		
 		dangerZone.add(header, buttons);
 		dangerZone.addClassName("danger-zone");
@@ -182,6 +184,7 @@ public class GeneralUserSettingsView extends VerticalLayout {
 	
 	private void configureDangerZone() {
 		delete.setEnabled(dangerZoneActive.getValue());
+		deletePollsWithUser.setEnabled(dangerZoneActive.getValue());
 	}
 	
 	private void saveUser() {
@@ -220,7 +223,7 @@ public class GeneralUserSettingsView extends VerticalLayout {
 
 	
 	private void confirmDeleteUser() {
-		ConfirmationDialog confirmationDialog = new ConfirmationDialog("Delete user "+user.getUsername()+"?", "This can NOT be undond!");
+		ConfirmationDialog confirmationDialog = new ConfirmationDialog("Delete user "+user.getUsername()+"?", "This can NOT be undone!");
 		confirmationDialog.getOk().addThemeVariants(ButtonVariant.LUMO_ERROR);
 		confirmationDialog.getCancel().removeThemeVariants(ButtonVariant.LUMO_ERROR);
 		confirmationDialog.addOkListener(e -> deleteUser());
@@ -229,8 +232,12 @@ public class GeneralUserSettingsView extends VerticalLayout {
 
 	private void deleteUser() {
 		if (!authenticatedUser.get().isEmpty() && (UserSettingsView.isAdmin(authenticatedUser) || authenticatedUser.get().get().equals(user))) {
-			pollService.orphenatePolls(user);
 			voteService.orphenateVotes(user);
+			if (deletePollsWithUser.getValue()){
+				pollService.delete(user);
+			} else {
+				pollService.orphenatePolls(user);
+			}
 			if (authenticatedUser.get().get().equals(user)) authenticatedUser.logout();
 			else Notification.show("User deleted").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 			userService.delete(user.getId());

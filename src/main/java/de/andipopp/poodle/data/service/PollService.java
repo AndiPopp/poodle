@@ -39,6 +39,13 @@ public class PollService {
         repository.deleteById(id);
     }
 
+    public void delete(User owner) {
+    	for(AbstractPoll<?,?> poll : findByOwner(owner)) {
+    		//double-check
+    		if (poll.getOwner().equals(owner)) delete(poll);
+    	}
+    }
+    
     public void orphenatePolls(User user) {
     	for(AbstractPoll<?,?> poll : findByOwner(user)) {
     		//double-check
