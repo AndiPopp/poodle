@@ -1,9 +1,8 @@
 package de.andipopp.poodle.views.components;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.HasValue.ValueChangeEvent;
@@ -48,17 +47,17 @@ public class TextFieldList extends VerticalLayout implements HasValue<ValueChang
 	/**
 	 * Set of value change listeners
 	 */
-	private Set<ValueChangeListener<? super ValueChangeEvent<List<String>>>> listeners;
+	private Collection<ValueChangeListener<? super ValueChangeEvent<List<String>>>> listeners;
 	
 	/**
 	 * Create a new empty text field list
 	 */
 	public TextFieldList() {
-		HorizontalLayout buttonLayout = new HorizontalLayout(new LineAwesomeIcon("plus-circle"), new Label("add entry"));
+		HorizontalLayout buttonLayout = new HorizontalLayout(new LineAwesomeIcon("plus-circle", "x-large"), new Label("add entry"));
 		addEntryButton = new Button(buttonLayout);
 		addEntryButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_SUCCESS);
 		addEntryButton.addClickListener(e -> addEntry(new TextFieldListEntry(this)));
-		listeners = new TreeSet<>();
+		listeners = new ArrayList<>();
 		update();
 	}
 	

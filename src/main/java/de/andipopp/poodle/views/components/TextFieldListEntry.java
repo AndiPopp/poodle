@@ -25,11 +25,11 @@ public class TextFieldListEntry extends HorizontalLayout implements HasValue<Val
 	
 	private final TextField textField = new TextField();
 	
-	private final Button remove = new Button(new LineAwesomeIcon("minus-circle"));
+	private final Button remove = new Button(new LineAwesomeIcon("minus-circle", "x-large"));
 	
-	private final Button up = new Button(new LineAwesomeIcon("caret-up"));
+	private final Button up = new Button(new LineAwesomeIcon("caret-up", "x-large"));
 	
-	private final Button down = new Button(new LineAwesomeIcon("caret-down"));
+	private final Button down = new Button(new LineAwesomeIcon("caret-down", "x-large"));
 	
 	/**
 	 * Create a new entry for the given list
@@ -45,6 +45,8 @@ public class TextFieldListEntry extends HorizontalLayout implements HasValue<Val
 		down.addClickListener(e -> this.parentList.moveDown(this));
 		this.add(remove, textField, up, down);
 		this.addValueChangeListener(this.parentList);
+		this.setWidthFull();
+		this.textField.setWidthFull();
 	}
 	
 	/**

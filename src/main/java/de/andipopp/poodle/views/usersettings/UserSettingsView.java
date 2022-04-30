@@ -58,6 +58,8 @@ public class UserSettingsView extends VerticalLayout implements BeforeEnterObser
 	
 	private Tab datePollTab;
 	
+	DatePollSettingsView datePollSettingsView;
+	
 	VerticalLayout content = new VerticalLayout();
 	
 	/**
@@ -91,7 +93,7 @@ public class UserSettingsView extends VerticalLayout implements BeforeEnterObser
     private void setContent(Tab tab) {
     	this.content.removeAll();
     	if (tab.equals(generalTab)) this.content.add(generalUserSettingsView); 
-    	else if (tab.equals(datePollTab)); 
+    	else if (tab.equals(datePollTab)) this.content.add(datePollSettingsView);
     }
 
 	@Override
@@ -119,6 +121,7 @@ public class UserSettingsView extends VerticalLayout implements BeforeEnterObser
 		}
 		
 		generalUserSettingsView = new GeneralUserSettingsView(editedUser, authenticatedUser, userService, voteService, pollService);
+		datePollSettingsView = new DatePollSettingsView(authenticatedUser, editedUser, userService);
 		tabs.setSelectedTab(datePollTab);
 		tabs.setSelectedTab(generalTab);
 	}

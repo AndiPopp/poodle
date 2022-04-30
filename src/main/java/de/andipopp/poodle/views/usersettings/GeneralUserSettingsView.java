@@ -3,6 +3,8 @@ package de.andipopp.poodle.views.usersettings;
 import java.util.Date;
 import java.util.UUID;
 
+import javax.annotation.security.PermitAll;
+
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.avatar.AvatarVariant;
@@ -35,6 +37,7 @@ import de.andipopp.poodle.views.components.ImageUpload;
 import de.andipopp.poodle.views.components.ImageUpload.ImageReceiver;
 import de.andipopp.poodle.views.components.PoodleAvatar;
 
+@PermitAll
 public class GeneralUserSettingsView extends VerticalLayout {
 
 	private TextField userName = new TextField("User Name");
