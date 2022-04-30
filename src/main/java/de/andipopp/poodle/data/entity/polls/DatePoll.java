@@ -20,6 +20,7 @@ import com.vaadin.flow.server.StreamResource;
 import biweekly.Biweekly;
 import biweekly.ICalendar;
 import de.andipopp.poodle.PoodleApplication;
+import de.andipopp.poodle.data.calendar.CalendarEventComparator;
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.util.UUIDUtils;
 

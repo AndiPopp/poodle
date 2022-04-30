@@ -60,6 +60,7 @@ public class ExampleDataGenerator {
             user.setRoles(Collections.singleton(Role.USER));
             user.setZoneId("Japan");
             user.addIcsPath("https://calendar.google.com/calendar/ical/en-gb.german%23holiday%40group.v.calendar.google.com/public/basic.ics");
+            user.addIcsPath("https://raw.githubusercontent.com/AndiPopp/poodle/main/examples/johns_calendar.ics");
             user = userRepository.save(user);
             File userAvatar = new File(Config.getCurrent().getUserImagePath() + System.getProperty("file.separator") + "john.png");
             File userAvatarCopy = new File(Config.getCurrent().getUserImagePath() + System.getProperty("file.separator") + UUIDUtils.uuidToBase64url(user.getId()) + ImageUpload.FILE_EXTENSION);

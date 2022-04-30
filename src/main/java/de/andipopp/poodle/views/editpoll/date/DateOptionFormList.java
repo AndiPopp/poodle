@@ -11,7 +11,7 @@ import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 
-import de.andipopp.poodle.data.entity.polls.CalendarEventComparator;
+import de.andipopp.poodle.data.calendar.CalendarEventComparator;
 import de.andipopp.poodle.data.entity.polls.DateOption;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
 import de.andipopp.poodle.views.components.ZoneIdComboBox;

@@ -18,8 +18,8 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.shared.Registration;
 
-import de.andipopp.poodle.data.entity.polls.CalendarEvent;
-import de.andipopp.poodle.data.entity.polls.CalendarEventComparator;
+import de.andipopp.poodle.data.calendar.CalendarEvent;
+import de.andipopp.poodle.data.calendar.CalendarEventComparator;
 import de.andipopp.poodle.data.entity.polls.DateOption;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
 import de.andipopp.poodle.util.TimeUtils;

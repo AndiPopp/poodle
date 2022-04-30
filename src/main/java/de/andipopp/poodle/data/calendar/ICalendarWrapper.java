@@ -1,4 +1,4 @@
-package de.andipopp.poodle.data.entity.polls;
+package de.andipopp.poodle.data.calendar;
 
 import biweekly.ICalendar;
 

@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import biweekly.component.VEvent;
+import de.andipopp.poodle.data.calendar.CalendarEvent;
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.util.JSoupUtils;
 import de.andipopp.poodle.views.vote.date.DateOptionVoteListItem;
