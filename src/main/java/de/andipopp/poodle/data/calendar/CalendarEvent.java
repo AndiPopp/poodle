@@ -39,7 +39,9 @@ public interface CalendarEvent {
 	 */
 	public String getLocation();
 	
-	
+	public default String toString2() {
+		return getTitle() + ", " + getStart() + " to " + getEnd();
+	}
 	
 	/**
 	 * Check if two calendar events overlap

@@ -3,6 +3,8 @@ package de.andipopp.poodle.data.calendar;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.TimeZone;
 
 import biweekly.component.VEvent;
 import biweekly.util.ICalDate;
@@ -41,23 +43,31 @@ public class VEventWrapper implements CalendarEvent {
 
 	@Override
 	public Date getStart() {
-		return moveAllDayEventToTimeZone(vEvent.getDateStart().getValue());
+		return moveIcalAllDayEventToTimeZone(vEvent.getDateStart().getValue());
 	}
 
 	@Override
 	public Date getEnd() {
-		return moveAllDayEventToTimeZone(vEvent.getDateEnd().getValue());
+		return moveIcalAllDayEventToTimeZone(vEvent.getDateEnd().getValue());
 	}
 
+	private long getDuration() {
+		return vEvent.getDateEnd().getValue().getTime() - vEvent.getDateStart().getValue().getTime();
+	}
+	
 	/**
 	 * Checks whether an ICalDate is an all day event and translates it to {@link #zoneId} if necessary
 	 * @param originalDate the original date
 	 * @return the original date if it's {@link ICalDate#hasTime()} is true, the translated date otherwise
 	 */
-	public Date moveAllDayEventToTimeZone(ICalDate originalDate) {
+	private Date moveIcalAllDayEventToTimeZone(ICalDate originalDate) {
 		//if it is not an all day event, return the argument
 		if (originalDate.hasTime()) return originalDate;
-		
+		//if not, move it to the specified time zone
+		return moveFromDefaultTimeZone(originalDate);
+	}
+	
+	private Date moveFromDefaultTimeZone(Date originalDate) {
 		//The original date is at 0:00 at the system's default time zone, build the local date
 		LocalDateTime localDateTime = originalDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 		//Now move the local date to this object's time zone
@@ -74,4 +84,26 @@ public class VEventWrapper implements CalendarEvent {
 		return vEvent.getLocation().getValue();
 	}
 	
+	public class RecurrenceIterator implements Iterator<SimpleCalendarEvent> {
+
+		Iterator<Date> startIterator;
+	
+		public RecurrenceIterator() {
+			startIterator = vEvent.getDateIterator(TimeZone.getTimeZone(zoneId));
+		}
+
+		@Override
+		public boolean hasNext() {
+			return startIterator != null && startIterator.hasNext();
+		}
+
+		@Override
+		public SimpleCalendarEvent next() {
+			Date nextStart = startIterator.next();
+			if (!vEvent.getDateStart().getValue().hasTime()) nextStart = moveFromDefaultTimeZone(nextStart);
+			Date nextEnd = new Date(nextStart.getTime() + getDuration());
+			return new SimpleCalendarEvent(getUid(), nextStart, nextEnd, getTitle(), getLocation());
+		}
+		
+	}
 }

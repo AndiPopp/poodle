@@ -38,7 +38,9 @@ public class SimpleCalendarEvent implements CalendarEvent {
 	/**
 	 * Empty constructor
 	 */
-	public SimpleCalendarEvent() {}
+	public SimpleCalendarEvent() {
+		this.uid = UUID.randomUUID().toString();
+	}
 	
 	/**
 	 * Canonical constructor
@@ -61,7 +63,7 @@ public class SimpleCalendarEvent implements CalendarEvent {
 	 * @param event the event to be copied
 	 */
 	public SimpleCalendarEvent(CalendarEvent event) {
-		this.uid = UUID.randomUUID().toString();
+		this();
 		this.setStart(event.getStart());
 		this.setEnd(event.getEnd());
 		this.setTitle(event.getTitle());
