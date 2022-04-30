@@ -1,10 +1,9 @@
 package de.andipopp.poodle.views.components;
 
-import com.vaadin.flow.component.html.Span;
-
-public class LineAwesomeMenuIcon extends Span{
+public class LineAwesomeMenuIcon extends LineAwesomeIcon{
 
 	public LineAwesomeMenuIcon(String laName) {
-		this.addClassNames("las", laName, "menu-pretext-icon");
+		super(laName);
+		this.addClassNames("menu-pretext-icon");
 	}
 }

@@ -1,15 +1,19 @@
 package de.andipopp.poodle.data.entity;
 
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nullable;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;
@@ -41,6 +45,7 @@ public class User extends AbstractAutoIdEntity {
 	@Size(max = 64)
     private String hashedPassword;
     
+    @JsonIgnore
     @Transient
     private String hashedPassword2;
     
@@ -53,7 +58,14 @@ public class User extends AbstractAutoIdEntity {
 	@Size(max = 40)
     private String zoneId;
 	
-    public String getUsername() {
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "ics_paths", joinColumns = @JoinColumn(name = "owner_id")) 
+    @Column(name = "path", length = 255)
+    @Size(max = 255)
+    private List<String> icsPaths;
+    
+	public String getUsername() {
         return username;
     }
     
@@ -140,4 +152,40 @@ public class User extends AbstractAutoIdEntity {
 		if (timeZone != null) this.zoneId = timeZone.getId();
 		else this.zoneId = null;
 	}
+
+	/**
+	 * Getter for {@link #icsPaths}
+	 * @return the {@link #icsPaths}
+	 */
+	public List<String> getIcsPaths() {
+		if (this.icsPaths == null) this.icsPaths = new ArrayList<>();
+		return icsPaths;
+	}
+
+	/**
+	 * Setter for {@link #icsPaths}
+	 * @param icsPaths the {@link #icsPaths} to set
+	 */
+	public void setIcsPaths(List<String> icsPaths) {
+		this.icsPaths = icsPaths;
+	}
+	
+	/**
+	 * Add a new path to {@link #icsPaths}
+	 * @param path the path to add
+	 */
+	public void addIcsPath(String path) {
+		if (this.icsPaths == null) this.icsPaths = new ArrayList<>();
+		this.icsPaths.add(path);
+	}
+	
+	/**
+	 * Remove a path from {@link #icsPaths} if it is in the list
+	 * @param path the path to remove
+	 */
+	public void removePath(String path) {
+		if (this.icsPaths != null) this.icsPaths.remove(path);
+	}
+	
+	
 }

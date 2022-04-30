@@ -58,6 +58,7 @@ public class ExampleDataGenerator {
             user.setUsername("user");
             user.setHashedPassword(passwordEncoder.encode("user"));
             user.setRoles(Collections.singleton(Role.USER));
+            user.addIcsPath("https://calendar.google.com/calendar/ical/en-gb.german%23holiday%40group.v.calendar.google.com/public/basic.ics");
             user = userRepository.save(user);
             File userAvatar = new File(Config.getCurrent().getUserImagePath() + System.getProperty("file.separator") + "john.png");
             File userAvatarCopy = new File(Config.getCurrent().getUserImagePath() + System.getProperty("file.separator") + UUIDUtils.uuidToBase64url(user.getId()) + ImageUpload.FILE_EXTENSION);
