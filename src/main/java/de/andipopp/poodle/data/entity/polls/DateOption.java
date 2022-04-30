@@ -7,7 +7,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
-import java.util.UUID;
 
 import javax.annotation.Nullable;
 import javax.persistence.Column;
@@ -295,8 +294,8 @@ public class DateOption extends AbstractOption<DatePoll, DateOption> implements 
 	}
 
 	@Override
-	public UUID getUuid() {
-		return getId();
+	public String getUid() {
+		return getId().toString();
 	}
 	
 }

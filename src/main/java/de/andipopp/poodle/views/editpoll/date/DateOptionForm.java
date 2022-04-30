@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.UUID;
 
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -306,8 +305,8 @@ public class DateOptionForm extends AbstractOptionForm implements CalendarEvent{
 	//Implementation of CalendarEvent
 	
 	@Override
-	public UUID getUuid() {
-		return getOption().getId();
+	public String getUid() {
+		return getOption().getId().toString();
 	}
 
 	@Override

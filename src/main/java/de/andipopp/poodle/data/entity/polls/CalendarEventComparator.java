@@ -51,7 +51,7 @@ public class CalendarEventComparator implements Comparator<CalendarEvent> {
 		int result = 0;
 		
 		//first check if UUID are the same
-		if (arg0.getUuid() != null && arg0.getUuid().equals(arg1.getUuid())) return 0;
+		if (arg0.getUid() != null && arg0.getUid().equals(arg1.getUid())) return 0;
 		
 		//compare start date first, an event with a start date is always considered smaller than an event without
 		if (arg0.getStart() != null && arg1.getStart() != null) {
@@ -93,11 +93,11 @@ public class CalendarEventComparator implements Comparator<CalendarEvent> {
 		if (!ensureConsistentWithEquals) return result;
 
 		//else sort by UUID, events with UUID are always considered smaller than events without
-		if (arg0.getUuid() != null && arg1.getUuid() != null) {
-			result = arg0.getUuid().compareTo(arg1.getUuid());
-		} else if (arg0.getUuid() != null && arg1.getUuid() == null) {
+		if (arg0.getUid() != null && arg1.getUid() != null) {
+			result = arg0.getUid().compareTo(arg1.getUid());
+		} else if (arg0.getUid() != null && arg1.getUid() == null) {
 			return -1;
-		} else if (arg0.getUuid() != null && arg1.getUuid() == null) {
+		} else if (arg0.getUid() != null && arg1.getUid() == null) {
 			return 1;
 		}
 		if (result != 0) return result;
