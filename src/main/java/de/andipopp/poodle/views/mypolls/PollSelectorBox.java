@@ -6,14 +6,15 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.avatar.AvatarVariant;
 import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
+import de.andipopp.poodle.data.entity.polls.SimplePoll;
 import de.andipopp.poodle.util.TimeUtils;
+import de.andipopp.poodle.views.components.LineAwesomeIcon;
 
 public class PollSelectorBox extends VerticalLayout{
 	
@@ -59,21 +60,11 @@ public class PollSelectorBox extends VerticalLayout{
 		 * 
 		 */
 		public iconLabel(AbstractPoll<?,?> poll) {
-			if (poll instanceof DatePoll) {
-				Span icon = new Span();
-				icon.addClassNames("las", "la-calendar");
-				this.add(icon);
-			}
-			if (poll.isClosed()) {
-				Span icon = new Span();
-				icon.addClassNames("las", "la-lock");
-				this.add(icon);
-			}
+			if (poll instanceof DatePoll) this.add(new LineAwesomeIcon("calendar"));
+			if (poll instanceof SimplePoll) this.add(new LineAwesomeIcon("vote-yea"));
+			if (poll.isClosed()) this.add(new LineAwesomeIcon("lock"));
 			this.getStyle().set("font-size", "larger");
 		}
-		
-		
-		
 	}
 	
 	

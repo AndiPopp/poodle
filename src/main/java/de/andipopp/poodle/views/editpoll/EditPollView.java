@@ -32,6 +32,7 @@ import com.vaadin.flow.router.Route;
 import de.andipopp.poodle.data.entity.Config;
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
+import de.andipopp.poodle.data.entity.polls.SimplePoll;
 import de.andipopp.poodle.data.service.PollService;
 import de.andipopp.poodle.security.AuthenticatedUser;
 import de.andipopp.poodle.util.TimeUtils;
@@ -43,6 +44,7 @@ import de.andipopp.poodle.views.components.ImageUpload;
 import de.andipopp.poodle.views.components.ImageUpload.ImageReceiver;
 import de.andipopp.poodle.views.components.PoodleAvatar;
 import de.andipopp.poodle.views.editpoll.date.DateOptionFormList;
+import de.andipopp.poodle.views.editpoll.simple.SimpleOptionFormList;
 import de.andipopp.poodle.views.mypolls.MyPollsView;
 
 @PageTitle("Edit Poodle Poll")
@@ -55,7 +57,7 @@ public class EditPollView extends PollView implements ValueChangeListener<ValueC
     public static final String CREATE_POLL_KEY = "createPoll";
 
     /**
-     * Max width at which the two colum form layout looks appealing
+     * Max width at which the two column form layout looks appealing
      */
     private static final String MAX_WIDTH = "1000px";
     
@@ -105,6 +107,9 @@ public class EditPollView extends PollView implements ValueChangeListener<ValueC
     
     //specific binder for each possible type of poll to bind the poll's direct data
     Binder<DatePoll> datePollBinder;
+    
+    Binder<SimplePoll> simplePollBinder;
+    
     
     /**
      * Remember if there are any changes in the poll to warn the user if the leave 
@@ -193,6 +198,8 @@ public class EditPollView extends PollView implements ValueChangeListener<ValueC
 		
 		if (poll instanceof DatePoll) 
 			optionFormList = new DateOptionFormList((DatePoll) this.poll, TimeUtils.getUserTimeZone(getCurrentUser()));
+		else if (poll instanceof SimplePoll)
+			optionFormList = new SimpleOptionFormList((SimplePoll) this.poll);
 		optionFormList.buildList();
 		optionFormList.setPadding(false);
 
@@ -247,6 +254,9 @@ public class EditPollView extends PollView implements ValueChangeListener<ValueC
 			case DatePoll.TYPE_NAME:
 				newPoll = new DatePoll();
 				break;
+			case SimplePoll.TYPE_NAME:
+				newPoll = new SimplePoll();
+				break;
 			default:
 				showTypeNotFound(pollType);
 				break;
@@ -278,23 +288,37 @@ public class EditPollView extends PollView implements ValueChangeListener<ValueC
 	}
 	
 	private void bindAndLoad() {
+		bind();
+		load();
+	}
+	
+	private void bind() {
+		Binder<? extends AbstractPoll<?, ?>> binder = null;
 		if (this.poll instanceof DatePoll) {
 			datePollBinder = new BeanValidationBinder<>(DatePoll.class);
-			
-			//Bind the deleteBy date first, so we can configure a validator ...
-			;
-			datePollBinder.forField(pollCoredataForm.deleteDate)
-				.asRequired("Must specify a delete date")
-				.withValidator(
-					deleteDate -> Config.getCurrent().checkDeleteDate(deleteDate),
-					"Delete date must be within " +Config.getCurrent().getMinPollRetentionDays() + " to " + Config.getCurrent().getMaxPollRetentionDays() + " days (" + Config.getCurrent().getEarliestPollRetentionDate() + " to " + Config.getCurrent().getLatestPollRetentionDate()+ ")"
-				)
-				.bind("deleteDate");
-			//... bind the rest with bindInstanceFields, it will ignore the delete date (https://vaadin.com/docs/latest/flow/binding-data/components-binder-beans)
-			datePollBinder.bindInstanceFields(pollCoredataForm);
-			datePollBinder.bindInstanceFields(pollSettingsForm);
-			datePollBinder.readBean((DatePoll) this.poll);
+			binder = datePollBinder;
 		}
+		else if (this.poll instanceof SimplePoll) {
+			simplePollBinder = new BeanValidationBinder<>(SimplePoll.class); 
+			binder = simplePollBinder;
+		}
+		
+		//Bind the deleteBy date first, so we can configure a validator ...
+		binder.forField(pollCoredataForm.deleteDate)
+			.asRequired("Must specify a delete date")
+			.withValidator(
+				deleteDate -> Config.getCurrent().checkDeleteDate(deleteDate),
+				"Delete date must be within " +Config.getCurrent().getMinPollRetentionDays() + " to " + Config.getCurrent().getMaxPollRetentionDays() + " days (" + Config.getCurrent().getEarliestPollRetentionDate() + " to " + Config.getCurrent().getLatestPollRetentionDate()+ ")"
+			)
+			.bind("deleteDate");
+		//... bind the rest with bindInstanceFields, it will ignore the delete date (https://vaadin.com/docs/latest/flow/binding-data/components-binder-beans)
+		binder.bindInstanceFields(pollCoredataForm);
+		binder.bindInstanceFields(pollSettingsForm);
+	}
+	
+	private void load() {
+		if (this.poll instanceof DatePoll) datePollBinder.readBean((DatePoll) this.poll);
+		else if (this.poll instanceof SimplePoll) simplePollBinder.readBean((SimplePoll) this.poll);
 	}
 	
 	private void showTypeNotFound(String type) {
@@ -392,6 +416,7 @@ public class EditPollView extends PollView implements ValueChangeListener<ValueC
 		
 		//check the poll specific binders first
 		if (poll instanceof DatePoll) result = result & datePollBinder.validate().isOk();
+		else if (poll instanceof SimplePoll) result = result & simplePollBinder.validate().isOk();
 		
 		//check the options
 		for(AbstractOptionForm optionForm : optionFormList.getOptionForms()) {
@@ -407,7 +432,7 @@ public class EditPollView extends PollView implements ValueChangeListener<ValueC
 	 */
 	private void writeAllIfValid() {
 		if (poll instanceof DatePoll) datePollBinder.writeBeanIfValid((DatePoll) poll);
-		
+		else if (poll instanceof SimplePoll) simplePollBinder.writeBeanIfValid((SimplePoll) poll);
 		for(AbstractOptionForm optionForm : optionFormList.getOptionForms()) {
 			optionForm.writeIfValidAndNotDeleteFlagged();
 		}
@@ -420,7 +445,10 @@ public class EditPollView extends PollView implements ValueChangeListener<ValueC
 		if (poll instanceof DatePoll && optionFormList instanceof DateOptionFormList) {
 			((DateOptionFormList) optionFormList).deleteAndConnect((DatePoll) poll);
 			return true;
-		}else if(poll instanceof DatePoll) {
+		}else if (poll instanceof SimplePoll && optionFormList instanceof SimpleOptionFormList){
+			((SimpleOptionFormList) optionFormList).deleteAndConnect((SimplePoll) poll);
+			return true;
+		}else if(poll instanceof DatePoll || poll instanceof SimplePoll) {
 			Notification.show("Unexpected error: Poll type and list type do not match")
 				.addThemeVariants(NotificationVariant.LUMO_ERROR);
 			return false;

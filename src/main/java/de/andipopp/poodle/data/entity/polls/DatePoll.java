@@ -136,6 +136,7 @@ public class DatePoll extends AbstractPoll<DatePoll, DateOption> {
 	 * = Other methods =
 	 * ================= */
 	
+	@Override
 	public List<DateOption> sortOptions() {
 		getOptions().sort(new CalendarEventComparator());
 		return getOptions();

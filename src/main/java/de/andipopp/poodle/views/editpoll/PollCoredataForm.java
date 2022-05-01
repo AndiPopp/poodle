@@ -9,6 +9,7 @@ import com.vaadin.flow.data.binder.Binder;
 
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
+import de.andipopp.poodle.data.entity.polls.SimplePoll;
 import de.andipopp.poodle.views.components.HasValueFields;
 
 /**
@@ -51,8 +52,8 @@ public class PollCoredataForm extends PollBindableForm{
 	@Override
 	public void configureInputFields(AbstractPoll<?, ?> poll) {
 		removeAll();
-		
 		if (poll instanceof DatePoll) configureForDatePoll((DatePoll) poll);
+		else if (poll instanceof SimplePoll) configureForSimplePoll((SimplePoll) poll);
 	}
 	
 	/**
@@ -69,6 +70,21 @@ public class PollCoredataForm extends PollBindableForm{
 		setColspan(location, 2);
 		setColspan(description, 3);
 		setColspan(deleteDate, 1);
+	}
+	
+	/**
+	 * Configure the form for a {@link SimplePoll}
+	 * @param poll the poll to configure
+	 */
+	private void configureForSimplePoll(SimplePoll poll) {
+		setResponsiveSteps(
+			new ResponsiveStep("0", 1),
+			new ResponsiveStep("640px", 4)
+		);
+		add(title, deleteDate, description);
+		setColspan(title, 3);
+		setColspan(deleteDate, 1);
+		setColspan(description, 4);
 	}
 	
 	public void addValueChangeListenerToFields(ValueChangeListener<ValueChangeEvent<?>> listener) {

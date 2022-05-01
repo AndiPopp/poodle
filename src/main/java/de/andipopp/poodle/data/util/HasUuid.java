@@ -1,4 +1,4 @@
-package de.andipopp.poodle.data.entity;
+package de.andipopp.poodle.data.util;
 
 import java.util.UUID;
 

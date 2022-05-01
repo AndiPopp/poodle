@@ -36,6 +36,8 @@ import de.andipopp.poodle.data.Role;
 import de.andipopp.poodle.data.entity.AbstractAutoIdEntity;
 import de.andipopp.poodle.data.entity.Config;
 import de.andipopp.poodle.data.entity.User;
+import de.andipopp.poodle.data.util.OptionComparatorByPositiveVotes;
+import de.andipopp.poodle.data.util.TitleComparator;
 import de.andipopp.poodle.util.UUIDUtils;
 import de.andipopp.poodle.views.components.PoodleAvatar;
 import de.andipopp.poodle.views.editpoll.EditPollView;
@@ -597,4 +599,8 @@ public abstract class AbstractPoll<P extends AbstractPoll<P,O>, O extends Abstra
 		sorted = null;
 	}
 	
+	public List<O> sortOptions() {
+		getOptions().sort(new TitleComparator());
+		return getOptions();
+	}
 }

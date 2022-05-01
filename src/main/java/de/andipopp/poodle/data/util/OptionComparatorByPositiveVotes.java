@@ -1,6 +1,9 @@
-package de.andipopp.poodle.data.entity.polls;
+package de.andipopp.poodle.data.util;
 
 import java.util.Comparator;
+
+import de.andipopp.poodle.data.entity.polls.AbstractOption;
+import de.andipopp.poodle.data.entity.polls.AnswerType;
 
 /**
  * Compares options by the sum of {@link AnswerType#YES} and {@link AnswerType#IF_NEED_BE} answer.

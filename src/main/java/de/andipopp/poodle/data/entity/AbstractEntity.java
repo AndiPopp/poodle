@@ -4,6 +4,8 @@ import java.util.UUID;
 
 import javax.persistence.MappedSuperclass;
 
+import de.andipopp.poodle.data.util.HasUuid;
+
 @MappedSuperclass
 public abstract class AbstractEntity implements HasUuid {
 

@@ -18,6 +18,7 @@ import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
 
 import de.andipopp.poodle.data.entity.polls.DatePoll;
+import de.andipopp.poodle.data.entity.polls.SimplePoll;
 import de.andipopp.poodle.views.MainLayout;
 
 @PageTitle("New Poodle Poll")
@@ -28,12 +29,12 @@ public class NewPollView extends HorizontalLayout {
 	private static final String MAX_WIDTH = "800px";
 	
 	private PollTypeSelectorBox simplePollSelector = new PollTypeSelectorBox(
-			"la-vote-yea",
-			"Simple Poll",
-			"Name a few options and get people to vote for them. The best kind of poll for when you "
-			+ "do not need the fancy features."
-			
-		);
+		"la-vote-yea",
+		"Simple Poll",
+		"Name a few options and get people to vote for them. The best kind of poll for when you "
+		+ "do not need the fancy features."
+		
+	);
 	
 	private PollTypeSelectorBox datePollSelector = new PollTypeSelectorBox(
 		"la-calendar",
@@ -49,6 +50,7 @@ public class NewPollView extends HorizontalLayout {
 		this.setJustifyContentMode(JustifyContentMode.CENTER);
 		
 		datePollSelector.addClickListener(e -> UI.getCurrent().navigate("edit", newPollQueryParameters(DatePoll.TYPE_NAME)));
+		simplePollSelector.addClickListener(e -> UI.getCurrent().navigate("edit", newPollQueryParameters(SimplePoll.TYPE_NAME)));
 	}
 
 

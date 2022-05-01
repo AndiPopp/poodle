@@ -21,6 +21,8 @@ import de.andipopp.poodle.data.entity.Config;
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.data.entity.polls.DateOption;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
+import de.andipopp.poodle.data.entity.polls.SimpleOption;
+import de.andipopp.poodle.data.entity.polls.SimplePoll;
 import de.andipopp.poodle.data.entity.polls.Vote;
 import de.andipopp.poodle.data.service.OptionRepository;
 import de.andipopp.poodle.data.service.PollRepository;
@@ -108,6 +110,20 @@ public class ExampleDataGenerator {
     		User user, 
     		User admin) throws IOException {
     	
+    	Vote<?,?>  vote;
+    	
+    	SimplePoll simplePoll = new SimplePoll("Lunch Venue", "Where do we want to go for lunch today?");
+    	simplePoll.addOption(new SimpleOption("Ichiraku Ramen"));
+    	simplePoll.addOption(new SimpleOption("The Baratie"));
+    	simplePoll.addOption(new SimpleOption("Bob's Burgers"));
+    	simplePoll.setOwner(user);
+    	simplePoll.generateEditKey();
+    	NameGenerator.addRandomVotes(simplePoll, 4);
+    	vote = NameGenerator.addRandomVote(simplePoll);
+    	vote.setOwner(user);
+    	vote.setDisplayName(user.getDisplayName());
+    	pollRepository.save(simplePoll);
+    	
     	DatePoll poll = new DatePoll("Example Poll", "Description", "Location");
     	pollRepository.save(poll);    	
     	
@@ -162,7 +178,7 @@ public class ExampleDataGenerator {
     		));
     	
     	NameGenerator.addRandomVotes(poll, 12);
-    	Vote<?,?>  vote = NameGenerator.addRandomVote(poll);
+    	vote = NameGenerator.addRandomVote(poll);
     	vote.setOwner(user);
     	vote.setDisplayName(user.getDisplayName());
     	vote = NameGenerator.addRandomVote(poll);
@@ -216,7 +232,6 @@ public class ExampleDataGenerator {
     	vote.setDisplayName(user.getDisplayName());
     	pollRepository.save(poll);
     	
-
     	
     	
     	logger.info("Created " + pollRepository.count() + " example polls with " 

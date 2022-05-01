@@ -7,8 +7,6 @@ import de.andipopp.poodle.data.entity.User;
 public enum Role {
     USER, ADMIN;
 	
-
-	
 	public static class UserRoleCheckboxGroup extends CheckboxGroup<Role> {
 		
 		User user;
@@ -29,8 +27,5 @@ public enum Role {
 			user.getRoles().clear();
 			user.getRoles().addAll(getSelectedItems());
 		}
-		
-		
-		
 	}
 }

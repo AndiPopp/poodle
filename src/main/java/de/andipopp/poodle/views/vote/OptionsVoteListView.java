@@ -77,7 +77,6 @@ public abstract class OptionsVoteListView<P extends AbstractPoll<P, O>, O extend
 		//configure layout
 		this.setPadding(false);
 		this.setSpacing(false);
-		this.setMaxWidth("800px");
 
 		this.header = new HorizontalLayout();
 		this.header.setWidthFull();

@@ -25,6 +25,7 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 import de.andipopp.poodle.data.entity.polls.AbstractPoll;
 import de.andipopp.poodle.data.entity.polls.DatePoll;
+import de.andipopp.poodle.data.entity.polls.SimplePoll;
 import de.andipopp.poodle.data.service.PollService;
 import de.andipopp.poodle.data.service.VoteService;
 import de.andipopp.poodle.security.AuthenticatedUser;
@@ -35,6 +36,7 @@ import de.andipopp.poodle.views.MainLayout;
 import de.andipopp.poodle.views.PollView;
 import de.andipopp.poodle.views.components.LineAwesomeMenuIcon;
 import de.andipopp.poodle.views.vote.date.DateOptionsVoteListView;
+import de.andipopp.poodle.views.vote.simple.SimpleOptionsVoteListView;
 
 @Route(value = "poll", layout = MainLayout.class)
 @AnonymousAllowed
@@ -102,11 +104,15 @@ public class PollVoteView extends PollView implements HasDynamicTitle {
 		
 		if (poll instanceof DatePoll) {
 			listView = new DateOptionsVoteListView((DatePoll) poll, getCurrentUser(), voteService, pollService); 
-			listView.guessVote(currentUser);
-			listView.addListener(OptionsVoteListView.ViewChangeEvent.class, e -> configureTopRightContextMenu());
 			//TODO also build table view
-			if (state == ViewToggleState.LIST) this.pollContent.add(listView);
+			
+		} else if (poll instanceof SimplePoll) {
+			listView = new SimpleOptionsVoteListView((SimplePoll) poll, getCurrentUser(), voteService, pollService);
+			//TODO also build table view
 		}
+		listView.guessVote(currentUser);
+		listView.addListener(OptionsVoteListView.ViewChangeEvent.class, e -> configureTopRightContextMenu());
+		if (state == ViewToggleState.LIST) this.pollContent.add(listView);
 		
 		//now that we know the view toggle state, we can build the top right context menu
 		configureTopRightContextMenu();
@@ -313,7 +319,6 @@ public class PollVoteView extends PollView implements HasDynamicTitle {
 			this.setPadding(false);
 			if (fullWidth) this.setWidthFull();
 			this.setDefaultVerticalComponentAlignment(Alignment.CENTER);
-//			this.getStyle().set("border", "2px dotted DarkOrange") ; //for debug purposes
 		}
 		
 	}

@@ -20,6 +20,8 @@ import org.jsoup.safety.Safelist;
 
 import de.andipopp.poodle.data.entity.AbstractAutoIdEntity;
 import de.andipopp.poodle.data.entity.User;
+import de.andipopp.poodle.data.util.HasUuidAndTitle;
+import de.andipopp.poodle.data.util.OptionComparatorByPositiveVotes;
 import de.andipopp.poodle.views.vote.OptionVoteListItem;
 
 /**
@@ -27,7 +29,7 @@ import de.andipopp.poodle.views.vote.OptionVoteListItem;
  * @author Andi Popp
  */
 @Entity(name = "Option")
-public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> extends AbstractAutoIdEntity {	
+public abstract class AbstractOption<P extends AbstractPoll<P,O>, O extends AbstractOption<P,O>> extends AbstractAutoIdEntity implements HasUuidAndTitle {	
 
 	@ManyToOne(targetEntity=AbstractPoll.class)
 	private P parent;

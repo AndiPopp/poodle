@@ -119,4 +119,5 @@ public abstract class AbstractOptionFormList<F extends AbstractOptionForm> exten
 	 * Add a new form with a complete new option
 	 */
 	public abstract void addEmptyForm();
+
 }

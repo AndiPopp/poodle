@@ -2,7 +2,7 @@ package de.andipopp.poodle.views.components;
 
 import com.vaadin.flow.component.html.Label;
 
-import de.andipopp.poodle.data.entity.HasUuid;
+import de.andipopp.poodle.data.util.HasUuid;
 import de.andipopp.poodle.util.UUIDUtils;
 import de.andipopp.poodle.util.UUIDUtils.Part;
 
