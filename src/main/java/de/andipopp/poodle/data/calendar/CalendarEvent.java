@@ -80,6 +80,22 @@ public interface CalendarEvent {
 	}
 	
 	/**
+	 * Calculates the time gap between two events in seconds
+	 * @param event0 the first event
+	 * @param event1 the second event
+	 * @return the time gap between the events in seconds
+	 */
+	public static long timeGapSeconds(CalendarEvent event0, CalendarEvent event1) {
+		//case event0 starts after event1
+		if (event0.getStart().getTime() > event1.getStart().getTime()) {
+			return (event0.getStart().getTime() - event1.getEnd().getTime())/1000;
+		//case event1 starts after or at the same time as event0
+		} else {
+			return (event1.getStart().getTime() - event0.getEnd().getTime())/1000;
+		}
+	}
+	
+	/**
 	 * Check whether two events are within a specific time frame of each other
 	 * @param event0 the first event
 	 * @param event1 the second event
@@ -87,12 +103,6 @@ public interface CalendarEvent {
 	 * @return true if the gap between the events is smaller than the time frame, false otherwise
 	 */
 	public static boolean within(CalendarEvent event0, CalendarEvent event1, long seconds) {
-		//case event0 starts after event1
-		if (event0.getStart().getTime() > event1.getStart().getTime()) {
-			return event0.getStart().getTime() - event1.getEnd().getTime() <= seconds;
-		//case event1 starts before or at the same time as event0
-		} else {
-			return event1.getStart().getTime() - event0.getEnd().getTime() <= seconds;
-		}
+		return timeGapSeconds(event0, event1) < seconds;
 	}
 }

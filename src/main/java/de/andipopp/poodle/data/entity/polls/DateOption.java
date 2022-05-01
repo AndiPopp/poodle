@@ -317,7 +317,7 @@ public class DateOption extends AbstractOption<DatePoll, DateOption> implements 
 	public CalendarEventConflicts checkConflicts(int softConflictMinutes, Collection<String> calendarUrls, ZoneId zoneId) throws TooManyCalendarEventsException, IOException {
 		CalendarEventConflicts conflicts = new CalendarEventConflicts(this, softConflictMinutes);
 		for(String calendarUrl : calendarUrls) {
-			ICalendarWrapper calendar = new ICalendarWrapper(calendarUrl, this.getEnd(), zoneId);
+			ICalendarWrapper calendar = new ICalendarWrapper(calendarUrl, new Date(this.getEnd().getTime()+softConflictMinutes*60000+1), zoneId);
 			conflicts.checkConflicts(calendar.new ICalendarWrapperEventIterator());
 		}
 		return conflicts;

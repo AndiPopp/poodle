@@ -130,6 +130,7 @@ public class DateOptionVoteListItem extends OptionVoteListItem {
 		super.build();
 		VerticalLayout conflictLayout = new VerticalLayout();
 		conflictLayout.setPadding(false);
+		conflictLayout.setSpacing(false);
 		if (conflicts.hasHardConflicts()) conflictLayout.add(hardConflictHeader);
 		if (conflicts.hasSoftConflicts()) conflictLayout.add(softConflictHeader);
 		if (conflicts.hasHardConflicts() || conflicts.hasSoftConflicts())
