@@ -373,7 +373,4 @@ public class Config extends AbstractEntity {
 		this.minPasswordLength = minPasswordLength;
 	}
 	
-	
-	
-	
 }

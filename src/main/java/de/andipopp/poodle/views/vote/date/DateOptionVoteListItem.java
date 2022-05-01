@@ -1,20 +1,33 @@
 package de.andipopp.poodle.views.vote.date;
 
+import java.io.IOException;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.Collection;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.details.Details;
+import com.vaadin.flow.component.details.DetailsVariant;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.html.UnorderedList;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
+import biweekly.ICalendar;
+import de.andipopp.poodle.data.calendar.CalendarEvent;
+import de.andipopp.poodle.data.calendar.CalendarEventConflicts;
+import de.andipopp.poodle.data.calendar.TooManyCalendarEventsException;
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.data.entity.polls.AbstractOption;
 import de.andipopp.poodle.data.entity.polls.DateOption;
 import de.andipopp.poodle.data.entity.polls.Vote;
 import de.andipopp.poodle.util.JSoupUtils;
 import de.andipopp.poodle.util.VaadinUtils;
+import de.andipopp.poodle.views.components.LineAwesomeIcon;
 import de.andipopp.poodle.views.vote.OptionVoteListItem;
 
 /**
@@ -26,12 +39,27 @@ public class DateOptionVoteListItem extends OptionVoteListItem {
 
 	ZoneId zoneId = ZoneId.systemDefault();
 	
+	CalendarEventConflicts conflicts;
+	
+	UnorderedList hardConflictsList;
+	
+	UnorderedList softConflictsList;
+	
+	Details hardConflictHeader;
+	
+	Details softConflictHeader;
+	
+	Label hardConflictsLabel = new Label("Hard Conflicts");
+	
+	Label softConflictsLabel = new Label("Soft Conflicts");
+	
 	/**
 	 * @param option
 	 * @param vote
 	 */
 	public DateOptionVoteListItem(AbstractOption<?, ?> option, Vote<?, ?> vote, User currentUser) {
 		super(option, vote, currentUser);
+		subConstructor();
 	}
 
 	/**
@@ -39,6 +67,73 @@ public class DateOptionVoteListItem extends OptionVoteListItem {
 	 */
 	public DateOptionVoteListItem(AbstractOption<?, ?> option, User currentUser) {
 		super(option, currentUser);
+		subConstructor();
+	}
+
+	/**
+	 * Operations which are to be done by all constructors
+	 */
+	private void subConstructor() {
+		this.setSpacing(false);
+		
+		hardConflictsList = new UnorderedList();
+		hardConflictsList.getStyle().set("margin", "0px");
+		hardConflictsList.getStyle().set("padding-left", "0em");
+		
+		LineAwesomeIcon red = new LineAwesomeIcon("la-exclamation-circle");
+		red.getStyle().set("color", "var(--vote-color-no)");
+
+		hardConflictHeader = new Details(new Div(red, hardConflictsLabel), hardConflictsList);
+		hardConflictHeader.setWidthFull();
+		hardConflictHeader.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.SMALL, DetailsVariant.FILLED);
+		hardConflictHeader.addClassName("details-no-left-padding");
+		
+		
+		softConflictsList = new UnorderedList();
+		softConflictsList.getStyle().set("margin", "0px");
+		softConflictsList.getStyle().set("padding-left", "0em");
+		
+		LineAwesomeIcon yellow = new LineAwesomeIcon("la-exclamation-circle");
+		yellow.getStyle().set("color", "var(--vote-color-if-need-be)");
+		
+		softConflictHeader  = new Details(new Div(yellow, softConflictsLabel), softConflictsList);
+		softConflictHeader.setWidthFull();
+		softConflictHeader.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.SMALL, DetailsVariant.FILLED);
+		softConflictHeader.addClassName("details-no-left-padding");
+	}
+	
+	protected void updateConflicts() {
+		//reset
+		hardConflictsList.removeAll();
+		softConflictsList.removeAll();
+		
+		//check if we have conflicts
+		if (conflicts != null) {
+			if(conflicts.hasHardConflicts()) {
+				hardConflictsLabel.setText(" "+ conflicts.getHardConflicts().size() + " Hard Conflict(s)");
+				for(CalendarEvent event : conflicts.getHardConflicts()) {
+					hardConflictsList.add(new ListItem(event.format(zoneId)));
+				}
+			}
+			if(conflicts.hasSoftConflicts()) {
+				softConflictsLabel.setText(" "+ conflicts.getSoftConflicts().size() + " Soft Conflict(s)");
+				for(CalendarEvent event : conflicts.getSoftConflicts()) {
+					softConflictsList.add(new ListItem(event.format(zoneId)));
+				}
+			}
+		}
+	}
+	
+	
+	@Override
+	public void build() {
+		super.build();
+		VerticalLayout conflictLayout = new VerticalLayout();
+		conflictLayout.setPadding(false);
+		if (conflicts.hasHardConflicts()) conflictLayout.add(hardConflictHeader);
+		if (conflicts.hasSoftConflicts()) conflictLayout.add(softConflictHeader);
+		if (conflicts.hasHardConflicts() || conflicts.hasSoftConflicts())
+			this.add(conflictLayout);
 	}
 
 	/**
@@ -64,6 +159,22 @@ public class DateOptionVoteListItem extends OptionVoteListItem {
 	 */
 	protected void setZoneId(ZoneId zoneId) {
 		this.zoneId = zoneId;
+	}
+	
+	/**
+	 * Getter for {@link #conflicts}
+	 * @return the {@link #conflicts}
+	 */
+	public CalendarEventConflicts getConflicts() {
+		return conflicts;
+	}
+
+	/**
+	 * Setter for {@link #conflicts}
+	 * @param conflicts the {@link #conflicts} to set
+	 */
+	public void setConflicts(CalendarEventConflicts conflicts) {
+		this.conflicts = conflicts;
 	}
 
 	@Override
@@ -144,6 +255,15 @@ public class DateOptionVoteListItem extends OptionVoteListItem {
 		return result;
 	}
 	
-	
+	/**
+	 * Loads conflicts for this item's option with a set of {@link ICalendar}s
+	 * @param softConflictMinutes passed to {@link DateOption#checkConflicts(int, Collection, ZoneId)}
+	 * @param iCalUrls passed to {@link DateOption#checkConflicts(int, Collection, ZoneId)}
+	 * @throws TooManyCalendarEventsException from {@link DateOption#checkConflicts(int, Collection, ZoneId)}
+	 * @throws IOException from {@link DateOption#checkConflicts(int, Collection, ZoneId)}
+	 */
+	protected void loadConflicts(int softConflictMinutes, Collection<String> iCalUrls) throws TooManyCalendarEventsException, IOException {
+		this.conflicts = getOption().checkConflicts(softConflictMinutes, iCalUrls, zoneId);
+	}
 	
 }

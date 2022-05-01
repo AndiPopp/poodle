@@ -16,6 +16,9 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -58,12 +61,16 @@ public class User extends AbstractAutoIdEntity {
 	@Size(max = 40)
     private String zoneId;
 	
-
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "ics_paths", joinColumns = @JoinColumn(name = "owner_id")) 
     @Column(name = "path", length = 255)
     @Size(max = 255)
     private List<String> icsPaths;
+    
+    @NotNull
+    @Min(Integer.MIN_VALUE)
+    @Max(Integer.MAX_VALUE)
+    private int softConflictMinutes = 4 * 60;
     
 	public String getUsername() {
         return username;
@@ -185,6 +192,22 @@ public class User extends AbstractAutoIdEntity {
 	 */
 	public void removePath(String path) {
 		if (this.icsPaths != null) this.icsPaths.remove(path);
+	}
+
+	/**
+	 * Getter for {@link #softConflictMinutes}
+	 * @return the {@link #softConflictMinutes}
+	 */
+	public int getSoftConflictMinutes() {
+		return softConflictMinutes;
+	}
+
+	/**
+	 * Setter for {@link #softConflictMinutes}
+	 * @param softConflictMinutes the {@link #softConflictMinutes} to set
+	 */
+	public void setSoftConflictMinutes(int softConflictMinutes) {
+		this.softConflictMinutes = softConflictMinutes;
 	}
 	
 	

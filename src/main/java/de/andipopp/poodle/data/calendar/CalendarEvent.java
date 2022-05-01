@@ -1,5 +1,8 @@
 package de.andipopp.poodle.data.calendar;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -39,8 +42,28 @@ public interface CalendarEvent {
 	 */
 	public String getLocation();
 	
-	public default String toString2() {
-		return getTitle() + ", " + getStart() + " to " + getEnd();
+	static final DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("dd MMM");
+	
+	static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+	
+	public default String format(ZoneId zoneId) {
+		String result = getTitle();
+		ZonedDateTime start = getStart().toInstant().atZone(zoneId);
+		ZonedDateTime end = getEnd().toInstant().atZone(zoneId);
+		
+		//for all day events, tighten end by one day
+		if (start.getHour() == 0 || end.getHour() == 0) end = end.minusDays(1);
+		
+		result += ", " + start.format(dayFormatter);
+		if (start.getHour() != 0 || end.getHour() != 0) result += " " + start.format(timeFormatter);
+		
+		if (start.getDayOfMonth() != end.getDayOfMonth() || start.getHour() != 0 || end.getHour() != 0) 
+			result += "–";
+
+		if (start.getDayOfMonth() != end.getDayOfMonth()) result += end.format(dayFormatter) +" ";
+		if (start.getHour() != 0 || end.getHour() != 0) result += end.format(timeFormatter);
+		
+		return result;
 	}
 	
 	/**

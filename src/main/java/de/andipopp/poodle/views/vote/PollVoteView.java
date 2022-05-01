@@ -60,7 +60,7 @@ public class PollVoteView extends PollView implements HasDynamicTitle {
 	private H6 subtitle = new H6();
 	
 	private VerticalLayout info = new VerticalLayout();
-
+	
 	ViewToggleState state = ViewToggleState.LIST;
 	
 	private enum ViewToggleState {
@@ -85,7 +85,7 @@ public class PollVoteView extends PollView implements HasDynamicTitle {
 		this.content = new VerticalLayout();
 		this.content.add(notFound());
 	    this.add(content);
-//	    this.content.getStyle().set("border", "2px dotted FireBrick"); //for debug purposes
+
 	}
 
 	@Override
@@ -125,6 +125,13 @@ public class PollVoteView extends PollView implements HasDynamicTitle {
 		this.content.add(horizontalAlignmentWrapper);
 	}
 
+
+	@Override
+	public String getPageTitle() {
+		String title = "Poll not found";
+		if (poll != null && poll.getTitle() != null) title = poll.getTitle();
+		return title;
+	}
 	
 	/* ===============
 	 * = Sub-Layouts =
@@ -311,10 +318,4 @@ public class PollVoteView extends PollView implements HasDynamicTitle {
 		
 	}
 
-	@Override
-	public String getPageTitle() {
-		String title = "Poll not found";
-		if (poll != null && poll.getTitle() != null) title = poll.getTitle();
-		return title;
-	}
 }

@@ -1,10 +1,12 @@
 package de.andipopp.poodle.data.entity.polls;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Locale;
 
@@ -14,8 +16,12 @@ import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import biweekly.ICalendar;
 import biweekly.component.VEvent;
 import de.andipopp.poodle.data.calendar.CalendarEvent;
+import de.andipopp.poodle.data.calendar.CalendarEventConflicts;
+import de.andipopp.poodle.data.calendar.ICalendarWrapper;
+import de.andipopp.poodle.data.calendar.TooManyCalendarEventsException;
 import de.andipopp.poodle.data.entity.User;
 import de.andipopp.poodle.util.JSoupUtils;
 import de.andipopp.poodle.views.vote.date.DateOptionVoteListItem;
@@ -297,6 +303,24 @@ public class DateOption extends AbstractOption<DatePoll, DateOption> implements 
 	@Override
 	public String getUid() {
 		return getId().toString();
+	}
+	
+	/**
+	 * Checks conflicts for this date option against a collection of {@link ICalendar}s
+	 * @param softConflictMinutes the minutes within a which a time gap is considered a soft conflict
+	 * @param calendarUrls the urls to the {@link ICalendar} files
+	 * @param zoneId the time zone for all-day events an recurring events in the {@link ICalendar}
+	 * @return the collection of conflicts
+	 * @throws TooManyCalendarEventsException if one of the calendars has too many events
+	 * @throws IOException if one of the URLs could not be read
+	 */
+	public CalendarEventConflicts checkConflicts(int softConflictMinutes, Collection<String> calendarUrls, ZoneId zoneId) throws TooManyCalendarEventsException, IOException {
+		CalendarEventConflicts conflicts = new CalendarEventConflicts(this, softConflictMinutes);
+		for(String calendarUrl : calendarUrls) {
+			ICalendarWrapper calendar = new ICalendarWrapper(calendarUrl, this.getEnd(), zoneId);
+			conflicts.checkConflicts(calendar.new ICalendarWrapperEventIterator());
+		}
+		return conflicts;
 	}
 	
 }

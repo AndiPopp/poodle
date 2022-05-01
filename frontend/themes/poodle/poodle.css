@@ -20,6 +20,11 @@
 	color: var(--lumo-error-text-color);
 }
 
+.details-no-left-padding::part(summary) {
+	/* color: var(--vote-color-no);	*/
+	padding-left: 0px;
+}
+
 .dialog-error {
 	background-color: var(--lumo-error-color-10pct);
 }

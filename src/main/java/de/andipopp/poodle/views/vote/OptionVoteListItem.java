@@ -25,13 +25,15 @@ import de.andipopp.poodle.util.InvalidException;
  * @author Andi Popp
  *
  */
-public class OptionVoteListItem extends HorizontalLayout {
+public class OptionVoteListItem extends VerticalLayout {
 	
 	private AbstractOption<?,?> option;
 	
 	private User currentUser;
 	
 	private boolean closingMode;
+	
+	HorizontalLayout mainContent = new HorizontalLayout();
 	
 	/**
 	 * Getter for {@link #option}
@@ -77,8 +79,10 @@ public class OptionVoteListItem extends HorizontalLayout {
 		
 		//general format
 		this.setPadding(true);
-		this.setDefaultVerticalComponentAlignment(Alignment.CENTER);
-		this.setWidthFull();
+		this.setSpacing(true);
+		mainContent.setPadding(false);
+		mainContent.setDefaultVerticalComponentAlignment(Alignment.CENTER);
+		mainContent.setWidthFull();
 	}
 
 
@@ -106,20 +110,22 @@ public class OptionVoteListItem extends HorizontalLayout {
 
 	public void build() {
 		this.removeAll();
+		mainContent.removeAll();
+		this.add(mainContent);
 		Component left = left();
 		Component center = center();
-		if (left != null) this.add(left);
-		if (center != null) this.add(center);
+		if (left != null) mainContent.add(left);
+		if (center != null) mainContent.add(center);
 		
 		if (option.getParent().isClosed() || closingMode) {
 			winnerToggleButton = new OptionSelectToggleButton(this);
 			winnerToggleButton.setEnabled(!option.getParent().isClosed() &&
 					(currentUser != null && currentUser.equals(option.getParent().getOwner())));
-			this.add(winnerToggleButton);
+			mainContent.add(winnerToggleButton);
 		} else {
 			answerToggleButton = new AnswerListToggleButton(findAnswer());
 			answerToggleButton.setEnabled(!option.getParent().isClosed() && vote.canEdit(currentUser));
-			this.add(answerToggleButton);
+			mainContent.add(answerToggleButton);
 		}
 	}
 	

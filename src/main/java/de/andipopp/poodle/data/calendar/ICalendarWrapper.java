@@ -1,10 +1,15 @@
 package de.andipopp.poodle.data.calendar;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import biweekly.Biweekly;
 import biweekly.ICalendar;
 import biweekly.component.VEvent;
 
@@ -41,6 +46,28 @@ public class ICalendarWrapper {
 		this.iCalendar = iCalendar;
 		this.maxDate = maxDate;
 		this.zoneId = zoneId;
+	}
+	
+	/**
+	 * Construct new Wrapper with the given {@link #maxDate} and {@link #zoneId}, parsing
+	 * the {@link #iCalendar} from the given URL
+	 * @param iCalendarUrl url to construct {@link #iCalendar} from
+	 * @param maxDate value for {@link #maxDate}
+	 * @param zoneId value for {@link #zoneId}
+	 * @throws IOException when reading the URL fails
+	 */
+	public ICalendarWrapper(String iCalendarUrl, Date maxDate, ZoneId zoneId) throws IOException {
+		this.maxDate = maxDate;
+		this.zoneId = zoneId;
+		try {
+			InputStream in = new URL(iCalendarUrl).openStream();
+			this.iCalendar = Biweekly.parse(in).first();
+			in.close();
+		} catch (MalformedURLException e) {
+			throw new IOException("The URL " + iCalendarUrl + " is invalid.", e);
+		} catch (IOException e) {
+			throw new IOException("Error reading "+iCalendarUrl+"\n"+e.getMessage(), e);
+		}
 	}
 
 	/**

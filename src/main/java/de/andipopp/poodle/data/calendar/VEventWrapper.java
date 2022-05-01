@@ -81,6 +81,7 @@ public class VEventWrapper implements CalendarEvent {
 
 	@Override
 	public String getLocation() {
+		if (vEvent.getLocation() == null) return "";
 		return vEvent.getLocation().getValue();
 	}
 	
