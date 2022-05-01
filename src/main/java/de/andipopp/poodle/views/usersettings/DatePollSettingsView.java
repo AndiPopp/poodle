@@ -6,6 +6,7 @@ import javax.annotation.security.PermitAll;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Paragraph;
@@ -14,6 +15,7 @@ import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
@@ -33,6 +35,8 @@ public class DatePollSettingsView extends VerticalLayout {
 	
 	ZoneIdComboBox timeZonePicker;
 	
+	IntegerField softConflictMinutes = new IntegerField("Time Frame for Soft Conflicts (Minutes)");
+	
 	TextFieldList icsPaths;
 	
 	Button saveButton = new Button("Save");
@@ -44,7 +48,7 @@ public class DatePollSettingsView extends VerticalLayout {
 	private User currentUser;
 	
 	private UserService userService;
-
+	
 	private Binder<User> binder = new BeanValidationBinder<>(User.class);
 	
 	/**
@@ -61,6 +65,10 @@ public class DatePollSettingsView extends VerticalLayout {
 		timeZonePicker.setMinWidth("20em");
 		if (currentUser.getZoneId() != null && !currentUser.getZoneId().isBlank()) timeZonePicker.setValue(ZoneId.of(currentUser.getZoneId()));
 
+		softConflictMinutes.setHasControls(true);
+		
+		FormLayout generalSettings = new FormLayout(timeZonePicker, softConflictMinutes);
+		
 		icsPaths = new TextFieldList();
 		icsPaths.setPadding(false);
 		
@@ -70,7 +78,7 @@ public class DatePollSettingsView extends VerticalLayout {
 		this.setPadding(false);
 		this.setSpacing(false); //spacing with heading
 		
-		H4 firstHeading = new H4("Time Zone");
+		H4 firstHeading = new H4("General Date Poll Settings");
 		firstHeading.getStyle().set("margin-top", "0px");
 		
 		HorizontalLayout buttonBar = new HorizontalLayout(saveButton);
@@ -79,8 +87,8 @@ public class DatePollSettingsView extends VerticalLayout {
 		
 		if (mayEdit()) {
 			this.add(
-				firstHeading,
-				timeZonePicker, 
+//				firstHeading,
+				generalSettings, 
 				new H4("ICS Paths for Conflict Warning"), 
 				icsPaths,
 				new Paragraph(),
@@ -122,6 +130,7 @@ public class DatePollSettingsView extends VerticalLayout {
 		binder.forField(timeZonePicker)
 			.withConverter(new ZoneIdConverter())
 			.bind("zoneId");
+		binder.bindInstanceFields(this);
 		binder.readBean(currentUser); 
 		icsPaths.update();
 	}
