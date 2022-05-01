@@ -21,8 +21,7 @@
 }
 
 .details-no-left-padding::part(summary) {
-	/* color: var(--vote-color-no);	*/
-	padding-left: 0px;
+	padding-left: 1px;
 }
 
 .dialog-error {

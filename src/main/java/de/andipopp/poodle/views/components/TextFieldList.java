@@ -94,6 +94,7 @@ public class TextFieldList extends VerticalLayout implements HasValue<ValueChang
 				entries.add(new TextFieldListEntry(this, value));
 			}
 		}
+		update();
 		event.setValue(getValue());
 		fireValueChangeEvent(event);
 	}

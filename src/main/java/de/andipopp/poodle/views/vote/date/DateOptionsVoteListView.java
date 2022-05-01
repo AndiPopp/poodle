@@ -4,14 +4,20 @@ import java.io.IOException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import de.andipopp.poodle.data.calendar.CalendarEventComparator;
 import de.andipopp.poodle.data.calendar.CalendarEventConflicts;
@@ -34,14 +40,41 @@ public class DateOptionsVoteListView extends OptionsVoteListView<DatePoll, DateO
 	
 	private TextFieldList icsPaths = new TextFieldList();
 	
+	private List<String> rollBackValue;
+	
+	private Dialog icsPathsDialog = new Dialog();
+	
+	private Button icsPathsDialogOk = new Button("OK");
+	
+	private Button icsPathsDialogCancel = new Button("Cancel");
+	
 	private final Map<DateOption, CalendarEventConflicts> conflicts = new TreeMap<>(new CalendarEventComparator(true));
 	
 	public DateOptionsVoteListView(DatePoll poll, User user, VoteService voteService, PollService pollService) {		
 		super(poll, user, voteService, pollService);
 		
+		//configure specific elements
 		zoneId = TimeUtils.getUserTimeZone(getUser());
 		icsPaths.setValue(user.getIcsPaths());
 		loadConflicts();
+		
+		HorizontalLayout buttons = new HorizontalLayout(icsPathsDialogCancel, icsPathsDialogOk);
+		buttons.setJustifyContentMode(JustifyContentMode.BETWEEN);
+		buttons.setWidthFull();
+		icsPathsDialogOk.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+		icsPathsDialogOk.addClickListener(e -> {
+			loadConflicts();
+			buildAll();
+			icsPathsDialog.close();
+		});
+		icsPathsDialogCancel.addThemeVariants(ButtonVariant.LUMO_ERROR);
+		icsPathsDialogCancel.addClickListener(e -> {
+			if (rollBackValue != null) icsPaths.setValue(rollBackValue);
+			icsPathsDialog.close();
+		});
+		VerticalLayout dialogLayout = new VerticalLayout(icsPaths, buttons);
+		dialogLayout.setPadding(false);
+		icsPathsDialog.add(dialogLayout);
 		
 		//configure the selector with the given zoneId and add the listener afterwards, so we do not fire the event here
 		zoneIdSelector = new ZoneIdComboBox(zoneId);
@@ -121,4 +154,13 @@ public class DateOptionsVoteListView extends OptionsVoteListView<DatePoll, DateO
 		}
 	
 	}
+	
+	/**
+	 * Prepares the {@link #rollBackValue} and opens the {@link #icsPathsDialog}
+	 */
+	public void openIcsPathsDialog() {
+		rollBackValue = icsPaths.getValue();
+		icsPathsDialog.open();
+	}
+	
 }

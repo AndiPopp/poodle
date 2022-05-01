@@ -4,6 +4,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * An interface representing a calendar event
@@ -42,9 +43,9 @@ public interface CalendarEvent {
 	 */
 	public String getLocation();
 	
-	static final DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("dd MMM");
+	static final DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("dd MMM", Locale.US);
 	
-	static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+	static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm", Locale.US);
 	
 	public default String format(ZoneId zoneId) {
 		String result = getTitle();

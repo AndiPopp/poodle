@@ -282,8 +282,8 @@ public class PollVoteView extends PollView implements HasDynamicTitle {
 		switchToListView.addComponentAsFirst(new LineAwesomeMenuIcon("la-list-ul"));
 		switchToListView.setVisible(state == ViewToggleState.TABLE);
 		
-		if (poll instanceof DatePoll) {
-			MenuItem conflictSettings = topRightContextMenu.addItem(" Date Conflicts", e -> {});
+		if (listView instanceof DateOptionsVoteListView) {
+			MenuItem conflictSettings = topRightContextMenu.addItem(" Date Conflicts", e -> ((DateOptionsVoteListView) listView).openIcsPathsDialog());
 			conflictSettings.addComponentAsFirst(new LineAwesomeMenuIcon("la-calendar-times"));
 		}
 		
